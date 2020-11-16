@@ -1,24 +1,25 @@
 <template>
-  <Loader :visible="loading" />
-  <TheHeader />
-  <main class="main">
-    <div class="container">
-      <Nav />
-      <div class="page-view">
-        <router-view v-slot="{ Component }">
-          <transition name="fade" >
-            <component :is="Component" />
+  <div class="app">
+    <Loader :visible="loading" />
+    <TheHeader />
+    <main class="main">
+      <div class="container">
+        <Nav />
+        <div class="page-view">
+          <transition name="page">
+            <router-view />
           </transition>
-        </router-view>
+        </div>
       </div>
-    </div>
-<!--    br*40-->
-  </main>
-  <TheFooter />
+      <!--    br*40-->
+    </main>
+    <TheFooter />
+  </div>
 </template>
 
 <script>
   import { mapState } from "vuex";
+
   import Nav from '@/components/Nav/Nav';
   import TheFooter from '@/components/TheFooter/TheFooter';
   import TheHeader from '@/components/TheHeader/TheHeader';
@@ -35,13 +36,13 @@
       Loader,
     },
     computed: {
-      ...mapState("loader", ["loading"])
+      ...mapState('loader', ['loading'])
     },
   }
 </script>
 
 <style lang="scss">
-  #app {
+  .app {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -51,18 +52,18 @@
     position: relative;
   }
 
-  .fade-enter-active,
-  .fade-leave-active {
-    transition: transform 0.6s ease, opacity 0.4s ease;
+  .page-enter-active, .page-leave-active {
+    transition: opacity .8s, transform .8s;
     position: absolute;
     width: 100%;
     top: 0;
     left: 0;
   }
 
-  .fade-enter-from,
-  .fade-leave-active {
+  .page-enter, .page-leave-to {
     opacity: 0;
-    transform: translateX(-25px);
+    transform: translateX(-20%);
+    transition: opacity .3s, transform .8s;
   }
+
 </style>

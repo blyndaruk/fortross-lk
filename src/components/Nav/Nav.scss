@@ -20,7 +20,7 @@
       transition: color $easing-default;
 
       &:hover,
-      &.is-active {
+      &.is-exact-active {
         color: $secondary;
       }
     }

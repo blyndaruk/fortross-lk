@@ -1,7 +1,10 @@
-import { createStore } from 'vuex';
+import Vue from 'vue';
+import Vuex from 'vuex';
 import { loader } from './modules/loader';
 
-export const store = createStore({
+Vue.use(Vuex);
+
+export const store = new Vuex.Store({
   state() {
   },
   modules: {
