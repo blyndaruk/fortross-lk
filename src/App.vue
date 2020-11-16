@@ -1,19 +1,30 @@
 <template>
+  <TheHeader />
   <Loader :visible="loading" />
-  <Test></Test>
+  <main class="main">
+    <div id="nav">
+      <router-link to="/">Home</router-link>
+      <router-link to="/my-account">My account</router-link>
+      <router-view />
+    </div>
+  </main>
+  <TheFooter />
 </template>
 
 <script>
+  import TheFooter from '@/components/TheFooter/TheFooter';
+  import TheHeader from '@/components/TheHeader/TheHeader';
+  import '@/assets/styles/base/__base-dir.scss';
   import { mapState } from "vuex";
 
   import Loader from './components/Loader/Loader';
-  import Test from './components/Test';
 
   export default {
     name: 'App',
     components: {
+      TheFooter,
+      TheHeader,
       Loader,
-      Test,
     },
     computed: {
       ...mapState("loader", ["loading"])
@@ -22,12 +33,5 @@
 </script>
 
 <style>
-  #app {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
-    margin-top: 60px;
-  }
+
 </style>

@@ -3,7 +3,6 @@
        id="loader"
        class="loader"
   >
-
   </div>
 </template>
 

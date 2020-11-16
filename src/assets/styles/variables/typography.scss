@@ -1,0 +1,21 @@
+$ff-default: 'Montserrat', Arial, Helvetica, sans-serif;
+
+$fz-default: 16px;
+$fz-bigger: 18px;
+
+@mixin FMont {
+  font-family: 'Montserrat', Arial, Helvetica, sans-serif;
+  font-weight: 500;
+}
+
+@mixin bold {
+  font-weight: bold;
+}
+
+@mixin semi {
+  font-weight: 600;
+}
+
+@mixin lspacing {
+  letter-spacing: 0.05em;
+}

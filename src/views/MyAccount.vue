@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    Test
+    My account
     <div class="test-item"
          v-for="item in data"
          :key="item.id"
@@ -17,7 +17,7 @@
   import httpClient from '@/utils/httpClient';
 
   export default {
-    name: "Test",
+    name: "MyAccount",
     data() {
       return {
         data: null,
