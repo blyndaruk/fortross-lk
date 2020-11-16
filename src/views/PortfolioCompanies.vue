@@ -1,7 +1,6 @@
 <template>
   <div class="portfolio-companies-view">
     <Dashboard viewType="simple" />
-    <br>
     <p>PortfolioCompanies</p>
   </div>
 </template>

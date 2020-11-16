@@ -12,7 +12,7 @@
         </router-view>
       </div>
     </div>
-    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<!--    br*40-->
   </main>
   <TheFooter />
 </template>
@@ -41,6 +41,12 @@
 </script>
 
 <style lang="scss">
+  #app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
   .page-view {
     position: relative;
   }

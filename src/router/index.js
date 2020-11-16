@@ -3,6 +3,7 @@ import { createWebHistory, createRouter } from "vue-router";
 import Home from "@/views/Home.vue";
 import MyAccount from "@/views/MyAccount.vue";
 import PortfolioCompanies from '@/views/PortfolioCompanies';
+import Documents from '@/views/Documents';
 
 const routes = [
   {
@@ -19,6 +20,11 @@ const routes = [
     path: "/portfolio-companies",
     name: "Портфельные компании",
     component: PortfolioCompanies,
+  },
+  {
+    path: "/documents",
+    name: "Документы",
+    component: Documents,
   },
 ];
 
