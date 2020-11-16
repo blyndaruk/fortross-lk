@@ -1,6 +1,8 @@
 <template>
   <div class="home">
-    <Dashboard />
+    <div>
+      <Dashboard viewType="medium" />
+    </div>
   </div>
 </template>
 
