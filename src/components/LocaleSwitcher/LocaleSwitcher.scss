@@ -1,0 +1,18 @@
+.locale-switcher {
+  display: flex;
+  align-items: center;
+
+  &__item {
+    margin-right: 10px;
+    @include semi;
+    color: $primary;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color $easing-default;
+
+    &:hover,
+    &.is-active {
+      color: $secondary;
+    }
+  }
+}

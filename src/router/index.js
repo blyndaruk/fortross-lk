@@ -11,22 +11,22 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: "/",
-    name: "Главная",
+    name: "home",
     component: Home,
   },
   {
     path: "/my-account",
-    name: "Мой счет",
+    name: "my-account",
     component: MyAccount,
   },
   {
     path: "/portfolio-companies",
-    name: "Портфельные компании",
+    name: "portfolio-companies",
     component: PortfolioCompanies,
   },
   {
     path: "/documents",
-    name: "Документы",
+    name: "documents",
     component: Documents,
   },
 ];

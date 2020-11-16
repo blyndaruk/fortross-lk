@@ -1,0 +1,9 @@
+{
+  "nav": {
+    "home": "Home",
+    "my-account": "My account",
+    "portfolio-companies": "Portfolio Companies",
+    "documents": "Documents"
+  },
+  "fund": "fund"
+}

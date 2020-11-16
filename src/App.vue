@@ -54,14 +54,14 @@
 
   .page-enter-active, .page-leave-active {
     transition: opacity .8s, transform .8s;
-    position: absolute;
-    width: 100%;
-    top: 0;
-    left: 0;
   }
 
   .page-enter, .page-leave-to {
     opacity: 0;
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0;
     transform: translateX(-20%);
     transition: opacity .3s, transform .8s;
   }

@@ -1,8 +1,8 @@
 <template>
-  <div>
-    <a href="/">
+  <div class="logo">
+    <router-link to="/">
       <img :src="logoImg" alt="FortRoss" />
-    </a>
+    </router-link>
   </div>
 </template>
 
@@ -17,6 +17,11 @@
   }
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+  .logo {
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+  }
 </style>

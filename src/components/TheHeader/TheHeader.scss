@@ -18,9 +18,48 @@
   }
 
   &__inner {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
     min-height: 100px;
+  }
+
+  &__left {
+    display: flex;
+    align-items: center;
+    max-width: 40%;
+  }
+
+  &__center {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 175px;
+  }
+
+  &__langs {
+    margin-right: 30px;
+  }
+
+  &__id {
+    color: $primary;
+    @include semi;
+    @include lspacing;
+  }
+
+  &__fund {
+    display: flex;
+    align-items: center;
+    color: #bbbbbb;
+    @include semi;
+    @include lspacing;
+    text-transform: uppercase;
+
+    span {
+      color: $primary;
+      margin-left: 10px;
+    }
   }
 }

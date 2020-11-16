@@ -1,0 +1,9 @@
+{
+  "nav": {
+    "home": "Главная",
+    "my-account": "Мой счет",
+    "portfolio-companies": "Портфельные компании",
+    "documents": "Документы"
+  },
+  "fund": "фонд"
+}

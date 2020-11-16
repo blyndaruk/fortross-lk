@@ -11,7 +11,7 @@
               active-class="is-active"
               exact-active-class="is-exact-active"
           >
-            {{ route.name }}
+            {{ $t(`nav.${route.name}`) }}
           </router-link>
         </li>
       </ul>
