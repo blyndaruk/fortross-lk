@@ -2,11 +2,14 @@
   <TheHeader />
   <Loader :visible="loading" />
   <main class="main">
-    <div id="nav">
-      <router-link to="/">Home</router-link>
-      <router-link to="/my-account">My account</router-link>
+    <div class="container">
+      <div id="nav">
+        <router-link to="/">Home</router-link>
+        <router-link to="/my-account">My account</router-link>
+      </div>
       <router-view />
     </div>
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
   </main>
   <TheFooter />
 </template>

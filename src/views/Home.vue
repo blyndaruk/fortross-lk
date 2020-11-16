@@ -1,23 +1,18 @@
 <template>
-  <div class="hello">
-    Home
-    <div class="test-item"
-         v-for="item in data"
-         :key="item.id"
-    >
-    </div>
-
-    <pre style="text-align: left">
-      {{data}}
-    </pre>
+  <div class="home">
+    <Dashboard />
   </div>
 </template>
 
 <script>
+  import Dashboard from '@/components/Dashboard/Dashboard';
   import httpClient from '@/utils/httpClient';
 
   export default {
-    name: "Home",
+    name: 'Home',
+    components: {
+      Dashboard
+    },
     data() {
       return {
         data: null,

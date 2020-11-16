@@ -1,0 +1,33 @@
+.dashboard {
+  display: flex;
+  justify-content: space-between;
+  padding-right: 60px;
+
+  color: #ffffff;
+  background-color: $primary;
+  background-image: url(~@/assets/images/pattern.svg);
+
+  &__main {
+    padding: 25px 64px 25px 30px;
+  }
+
+  &__main-amount {
+    font-size: 40px;
+    @include bold;
+  }
+
+  &__main-note {
+    max-width: 230px;
+    margin-top: 10px;
+    @include semi;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+  }
+
+
+  &__info {
+    flex-grow: 1;
+    padding: 30px 40px;
+    background-color: $primary;
+  }
+}

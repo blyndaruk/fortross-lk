@@ -2,7 +2,9 @@
   position: fixed;
   top: 0;
   left: 0;
+  z-index: $z-header;
   width: 100%;
+  background-color: $main-bg;
 
   &:after {
     content: '';
