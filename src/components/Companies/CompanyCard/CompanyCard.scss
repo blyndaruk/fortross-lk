@@ -4,6 +4,9 @@
   position: relative;
   padding: 30px 30px 18px;
   background-color: #ffffff;
+  border: 1px solid transparent;
+  cursor: pointer;
+  overflow: hidden;
 
   &:after {
     content: '';
@@ -18,9 +21,20 @@
     transition: transform $easing-default;
   }
 
+  &.is-inactive {
+    border-color: rgba(187, 187, 187, 0.4);
+    background-color: $main-bg;
+    pointer-events: none;
+  }
+
   &:hover {
     &:after {
       transform: scaleX(1);
+    }
+
+    #{$this}__icon {
+      transform: translateX(0);
+      opacity: 1;
     }
 
     #{$this}__row {
@@ -30,6 +44,10 @@
         color: $primary;
       }
     }
+  }
+
+  &__inner {
+    text-decoration: none;
   }
 
   &__category {
@@ -72,5 +90,18 @@
       font-weight: 500;
       transition: color $easing-default;
     }
+  }
+
+  &__icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: $secondary;
+    transform: translateX(50px);
+    opacity: 0;
+    transition: all $easing-default;
   }
 }

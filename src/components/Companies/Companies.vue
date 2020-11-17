@@ -9,7 +9,7 @@
            v-for="(category, index) in filteredCategories"
            :key="index"
            :class="{ 'is-active': currentIndex === index }"
-           @click="onTabClick(category.id, index)"
+           @click="filterCompanies(category.id, index)"
       >
         {{ index === 0 ? $t('all-companies') : category.title }}
         <span class="companies__tab-amount">{{ category.amount }}</span>
@@ -21,7 +21,7 @@
            v-for="(company, index) in filteredCompanies"
            :key="index"
       >
-        <CompanyCard :company="company" />
+        <CompanyCard :company="company" @company-id="updateFilter" />
       </div>
     </div>
   </div>
@@ -119,13 +119,17 @@
       }
     },
     methods: {
-      onTabClick(id, index) {
+      filterCompanies(id, index) {
         this.currentTab = id;
         this.currentIndex = index;
         setTimeout(() => {
           window.scrollTo(0, this.$refs.companiesTabs.offsetTop);
         }, 5)
-      }
+      },
+      updateFilter(id) {
+        const index = this.categories.map((e) => e.id).indexOf(id);
+        this.filterCompanies(id, index);
+      },
     },
     computed: {
       filteredCompanies() {
