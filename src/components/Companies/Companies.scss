@@ -1,0 +1,64 @@
+.companies {
+  margin-bottom: 80px;
+
+  &__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+  }
+
+  &__title {
+    font-size: 30px;
+    @include semi;
+  }
+
+  &__tabs {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+
+  &__tab {
+    padding: 7px 0;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    color: $primary;
+    transition: color $easing-default;
+    border-bottom: 2px solid transparent;
+
+    &.is-active {
+      border-bottom: 2px solid $secondary;
+    }
+
+    &.is-active,
+    &:hover {
+      color: $secondary;
+    }
+
+    span {
+      margin-left: 4px;
+      color: #7c7c7c;
+      font-weight: 500;
+    }
+
+    &:not(:last-child) {
+      margin-right: 30px;
+    }
+  }
+
+  &__list {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  &__item {
+    width: 260px;
+    margin-bottom: 40px;
+
+    &:not(:nth-child(4n)) {
+      margin-right: 40px;
+    }
+  }
+}

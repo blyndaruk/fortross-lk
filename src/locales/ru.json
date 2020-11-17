@@ -5,5 +5,12 @@
     "portfolio-companies": "Портфельные компании",
     "documents": "Документы"
   },
-  "fund": "фонд"
+  "fund": "фонд",
+  "companies-title": "Компании в портфеле",
+  "all-companies": "Все компании",
+  "company-card": {
+    "valuation": "оценка компании",
+    "investments": "инвестиции фонда",
+    "share": "доля фонда"
+  }
 }

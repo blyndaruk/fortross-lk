@@ -5,5 +5,12 @@
     "portfolio-companies": "Portfolio Companies",
     "documents": "Documents"
   },
-  "fund": "fund"
+  "fund": "fund",
+  "companies-title": "Portfolio Companies",
+  "all-companies": "All companies",
+  "company-card": {
+    "valuation": "company valuation",
+    "investments": "fund investments",
+    "share": "fund share"
+  }
 }
