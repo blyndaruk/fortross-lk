@@ -17,8 +17,8 @@ module.exports = {
       enableInSFC: true
     }
   },
-//   publicPath: process.env.NODE_ENV === 'production'
-//               ? '/fortross/'
-//               : '/'
+  publicPath: process.env.NODE_ENV === 'production'
+              ? '/local/templates/fortross_lk/assets/'
+              : '/'
 };
 
