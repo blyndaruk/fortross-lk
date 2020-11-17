@@ -2,7 +2,7 @@
   <div class="company-card" :class="company.inactive && 'is-inactive'">
     <div class="company-card__category" @click="onClick(company.id)">{{company.category}}</div>
 
-    <a href="#." class="company-card__inner">
+    <a href="#." class="company-card__inner" target="_blank">
       <div class="company-card__image"></div>
       <div v-if="company.valuation" class="company-card__row">
         {{company.valuation}}
