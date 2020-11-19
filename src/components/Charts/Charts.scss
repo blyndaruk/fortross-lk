@@ -2,14 +2,119 @@
   background-color: #ffffff;
   padding: 30px;
   margin-bottom: 40px;
+
+  &__metrics {
+    display: flex;
+    align-items: center;
+    margin-bottom: 26px;
+    border-bottom: 1px solid $main-bg;
+  }
+}
+
+.chart-metric {
+  padding-bottom: 30px;
+  font-size: 14px;
+  font-weight: 500;
+  color: $primary;
+  transition: all $easing-default;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+
+  &:hover {
+    color: $secondary;
+  }
+
+  &.is-active {
+    color: $secondary;
+    border-color: $secondary;
+  }
+
+  &:not(:last-child) {
+    margin-right: 30px;
+  }
+}
+
+.chart-metric-more {
+  position: relative;
+
+  &__wrapper {
+    position: absolute;
+    top: calc(100% - 15px);
+    padding: 20px 30px;
+    left: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    transform: translateX(-50%) translateY(-10px);
+    white-space: nowrap;
+    background: #ffffff;
+    box-shadow: 0 5px 8px 1px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transition: all $easing-default;
+    pointer-events: none;
+
+    &.is-active {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+      pointer-events: auto;
+    }
+  }
+
+  &__item {
+    display: inline-flex;
+    font-size: 14px;
+    font-weight: 500;
+    color: $primary;
+    transition: all $easing-default;
+    cursor: pointer;
+
+    &:hover {
+      color: $secondary;
+    }
+
+    &.is-active {
+      color: $secondary;
+      border-color: $secondary;
+    }
+
+    &:not(:last-child) {
+      margin-bottom: 14px;
+    }
+  }
 }
 
 .charts-toggle-type {
   display: flex;
   justify-content: flex-end;
+  margin-bottom: 14px;
 
   button {
     padding: 7px 20px;
     margin: 0 5px;
   }
+}
+
+
+.companies {
+  margin-top: 36px;
+  font-size: 14px;
+  color: $primary;
+  font-weight: 500;
+
+  label {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  span:not(.company-color) {
+    margin-left: 10px;
+  }
+}
+
+.company-color {
+  margin-left: 5px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
 }
