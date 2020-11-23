@@ -2392,5 +2392,154 @@
     "metric_unit_text_1": "%",
     "metric_unit_text_2": "thousand",
     "metric_value": 0.10000000000000001
+  },
+
+
+
+
+
+
+  {
+    "company_id": "SomeCompany",
+    "name": "SomeCompany",
+    "period": "Q1 2016",
+    "metric_name": "Revenue",
+    "metric_data_type": "Number",
+    "metric_period_type": "During period",
+    "metric_unit_text_1": "USD",
+    "metric_unit_text_2": "thousand",
+    "metric_value": 1224
+  },
+  {
+    "company_id": "SomeCompany",
+    "name": "SomeCompany",
+    "period": "Q2 2016",
+    "metric_name": "Revenue",
+    "metric_data_type": "Number",
+    "metric_period_type": "During period",
+    "metric_unit_text_1": "USD",
+    "metric_unit_text_2": "thousand",
+    "metric_value": 2151.5
+  },
+  {
+    "company_id": "SomeCompany",
+    "name": "SomeCompany",
+    "period": "Q3 2016",
+    "metric_name": "Revenue",
+    "metric_data_type": "Number",
+    "metric_period_type": "During period",
+    "metric_unit_text_1": "USD",
+    "metric_unit_text_2": "thousand",
+    "metric_value": 553.6
+  },
+  {
+    "company_id": "SomeCompany",
+    "name": "SomeCompany",
+    "period": "Q4 2016",
+    "metric_name": "Revenue",
+    "metric_data_type": "Number",
+    "metric_period_type": "During period",
+    "metric_unit_text_1": "USD",
+    "metric_unit_text_2": "thousand",
+    "metric_value": 2123.3
+  },
+  {
+    "company_id": "SomeCompany",
+    "name": "SomeCompany",
+    "period": "Q3 2018",
+    "metric_name": "Fund share",
+    "metric_data_type": "Percentage",
+    "metric_period_type": "End of period",
+    "metric_unit_text_1": "%",
+    "metric_unit_text_2": "thousand",
+    "metric_value": 0.10000000000000001
+  },
+  {
+    "company_id": "SomeCompany",
+    "name": "SomeCompany",
+    "period": "Q4 2018",
+    "metric_name": "Fund share",
+    "metric_data_type": "Percentage",
+    "metric_period_type": "End of period",
+    "metric_unit_text_1": "%",
+    "metric_unit_text_2": "thousand",
+    "metric_value": 0.10000000000000001
+  },
+  {
+    "company_id": "SomeCompany",
+    "name": "SomeCompany",
+    "period": "Q1 2019",
+    "metric_name": "Fund share",
+    "metric_data_type": "Percentage",
+    "metric_period_type": "End of period",
+    "metric_unit_text_1": "%",
+    "metric_unit_text_2": "thousand",
+    "metric_value": 0.10000000000000001
+  },
+  {
+    "company_id": "SomeCompany",
+    "name": "SomeCompany",
+    "period": "Q2 2019",
+    "metric_name": "Fund share",
+    "metric_data_type": "Percentage",
+    "metric_period_type": "End of period",
+    "metric_unit_text_1": "%",
+    "metric_unit_text_2": "thousand",
+    "metric_value": 0.10000000000000001
+  },
+  {
+    "company_id": "SomeCompany",
+    "name": "SomeCompany",
+    "period": "Q3 2019",
+    "metric_name": "Fund share",
+    "metric_data_type": "Percentage",
+    "metric_period_type": "End of period",
+    "metric_unit_text_1": "%",
+    "metric_unit_text_2": "thousand",
+    "metric_value": 0.10000000000000001
+  },
+  {
+    "company_id": "GridGain",
+    "name": "GridGain",
+    "period": "Q4 2019",
+    "metric_name": "Fund share",
+    "metric_data_type": "Percentage",
+    "metric_period_type": "End of period",
+    "metric_unit_text_1": "%",
+    "metric_unit_text_2": "thousand",
+    "metric_value": 0.10000000000000001
+  },
+  {
+    "company_id": "SomeCompany",
+    "name": "SomeCompany",
+    "period": "Q1 2020",
+    "metric_name": "Fund share",
+    "metric_data_type": "Percentage",
+    "metric_period_type": "End of period",
+    "metric_unit_text_1": "%",
+    "metric_unit_text_2": "thousand",
+    "metric_value": 0.10000000000000001
+  },
+  {
+    "company_id": "SomeCompany",
+    "name": "SomeCompany",
+    "period": "Q2 2020",
+    "metric_name": "Fund share",
+    "metric_data_type": "Percentage",
+    "metric_period_type": "End of period",
+    "metric_unit_text_1": "%",
+    "metric_unit_text_2": "thousand",
+    "metric_value": 0.10000000000000001
+  },
+  {
+    "company_id": "SomeCompany",
+    "name": "SomeCompany",
+    "period": "Q3 2020",
+    "metric_name": "Fund share",
+    "metric_data_type": "Percentage",
+    "metric_period_type": "End of period",
+    "metric_unit_text_1": "%",
+    "metric_unit_text_2": "thousand",
+    "metric_value": 0.10000000000000001
   }
 ]

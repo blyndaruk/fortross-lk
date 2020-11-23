@@ -32,12 +32,39 @@
         </div>
       </div>
     </div>
-    <div class="charts-toggle-type">
-      <button @click="toggleType('line')">Bar</button>
-      <button @click="toggleType('pie')">Pie</button>
+
+    <div class="chart-head">
+      <div class="chart-timeline" v-click-outside="closeSelect">
+        <div class="chart-timeline__label">Срез</div>
+        <div class="chart-timeline__wrap" @blur="openTimeSelect = false">
+          <div class="chart-timeline__active" :class="{ 'is-open': openTimeSelect }"
+               @click="openTimeSelect = !openTimeSelect"
+          >
+            {{ currentTimeline.title }}
+          </div>
+          <div class="chart-timeline__options" :class="{ 'is-open': openTimeSelect }">
+            <div
+                class="chart-timeline__option"
+                v-for="(option, i) in timelineType"
+                :key="i"
+                @click="timeLineChange(option)"
+            >
+              {{ option.title }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="charts-toggle-type" v-if="!isHistorical">
+        <button @click="toggleType('line')">Bar</button>
+        <button @click="toggleType('pie')">Pie</button>
+      </div>
     </div>
-    <line-chart v-if="isLine" :chart-data="datacollection" :options="options"></line-chart>
-    <pie-chart v-if="isPie" :chart-data="datacollection" :options="options"></pie-chart>
+
+
+    <line-chart v-if="isHistorical" :chart-data="datacollection" :options="options"></line-chart>
+    <pie-chart v-if="isPie && !isHistorical" :chart-data="datacollection" :options="options"></pie-chart>
+    <bar-chart v-if="isLine && !isHistorical" :chart-data="datacollection" :options="options"></bar-chart>
 
     <div class="companies">
       <label :for="'company_name_'+index"
@@ -51,6 +78,7 @@
                :value="company"
                @change="onCompanyUpdate"
         >
+        <span class="companies__check"></span>
         <span>{{company.id}}</span>
         <span class="company-color" :style="{ backgroundColor: company.color }"></span>
       </label>
@@ -59,41 +87,50 @@
 </template>
 
 <script>
-  // import { Line } from 'vue-chartjs'
   import Chart from 'chart.js';
   import ClickOutside from 'vue-click-outside'
   import LineChart from '@/components/Charts/LineChart/LineChart';
   import PieChart from '@/components/Charts/PieChart/PieChart';
-  import chartData from '@/data/chart_example';
+  import BarChart from '@/components/Charts/BarChart/BarChart';
   import httpClient from '@/utils/httpClient';
 
   export default {
     name: 'Charts',
     components: {
+      BarChart,
       PieChart,
-      LineChart
+      LineChart,
     },
     data() {
       return {
         chartType: 'line',
-        graphData: [],
+        openTimeSelect: false,
+        timelineType: [
+          {
+            id: 'historical',
+            title: 'Исторические данные',
+          },
+          {
+            id: 'date',
+            title: 'Данные на дату',
+          },
+        ],
+        currentTimeline: {
+          id: 'historical',
+          title: 'Исторические данные',
+        },
+        data: [],
         metrics: [],
         currentMetricIndex: 0,
         maxMetricsToShow: 4,
         showMoreMetrics: false,
         companies: [],
         companiesSelected: [],
-        // metrics: ['Revenue', 'Gross margin', 'Investments', 'Valuation'],
         datacollection: {},
-        chartData,
+        currentData: [],
         labels: [],
         unit: 'USD',
-        // labels: ['January', 'February', 'Februaryss'],
-        datasets: [
-          {
-            data: []
-          }
-        ],
+        datasets: [],
         // datasets: [
         //   {
         //     label: false,
@@ -128,6 +165,12 @@
           scales: {
             xAxes: [{
               display: true,
+              // type: 'time',
+              ticks: {
+                autoSkip: true,
+                // suggestedMin: 12,
+                maxTicksLimit: 18
+              },
               gridLines: {
                 color: "#FFFFFF"
               },
@@ -138,6 +181,7 @@
                 color: "#FFFFFF"
               },
               ticks: {
+                beginAtZero: true,
                 // TODO: test with percentage units
                 callback: value => this.getUnit + value,
               }
@@ -156,27 +200,31 @@
     props: {},
     mounted() {
       httpClient
-        .get('/lk/graf_data_full_api.php')
+        // .get('/lk/graf_data_full_api.php')
+        .get('data/chart_example.json')
         .then((response) => {
-          this.graphData = response;
+          this.data = response;
           this.chartBackgroundColor();
 
-          this.data.forEach((el, index) => {
+
+          const map = new Map();
+          // const result = [];
+
+          this.data.forEach((el) => {
+            // get all available metrics
             this.metrics.indexOf(el.metric_name) === -1 ? this.metrics.push(el.metric_name) : '';
 
-            // TODO: Test with multiple companies
-            if (index === 0) {
-              this.companies.push({ id: el.company_id });
-            } else {
-              this.companies.map(c => {
-                return c.id.indexOf(el.company_id) === -1 || index === 0 ? this.companies.push({ id: el.company_id }) : '';
+            // set all available companies
+            if (!map.has(el.company_id)) {
+              map.set(el.company_id, true);
+              this.companies.push({
+                id: el.company_id,
+                color: this.randomColor(),
               });
             }
-
-            this.companies.map((el) => el.color = this.randomColor());
           });
 
-          // set first company as default
+          // set first company as default (for first load)
           this.companiesSelected.push(this.companies[0]);
           this.fillData();
         });
@@ -192,39 +240,53 @@
       hide() {
         this.showMoreMetrics = false;
       },
+      closeSelect() {
+        this.openTimeSelect = false;
+      },
       randomColor() {
-        return '#' + Math.floor(Math.random() * 16777215).toString(16);
+        // const color = Math.floor(Math.random() * 16777215).toString(16);
+        return '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
       },
       onCompanyUpdate() {
         this.fillData();
       },
       fillData() {
         this.$store.dispatch('loader/show');
-        const currentMetric = this.data.filter(el => el.metric_name === this.metrics[this.currentMetricIndex]);
-        let currentCompanies = [];
-        this.companiesSelected.map((company) => {
-          return currentCompanies = currentMetric.filter(el => {
-            el.color = company.color;
-            return el.company_id === company.id
-          });
-        });
+        // const currentMetric = this.data.filter(el => el.metric_name === this.metrics[this.currentMetricIndex]);
 
         // TODO: refactor this mess
         this.datacollection = {};
-        this.datasets = [
-          {
-            data: []
-          }
-        ];
+        this.datasets = [];
         this.labels = [];
+        this.currentData = [];
 
-        this.companiesSelected.forEach((company, index) => {
-          currentCompanies.forEach((el) => {
-            this.labels.push(el.period);
-            this.datasets[index].data.push(el.metric_value);
-            this.datasets[index].backgroundColor = el.color;
-            this.datasets[index].borderColor = el.color;
-            this.datasets[index].fill = false;
+        const map = new Map();
+
+        this.data.forEach((obj) => {
+          this.companiesSelected.some((company) => {
+            if (obj.company_id === company.id && this.metrics[this.currentMetricIndex] === obj.metric_name) {
+              obj.color = company.color;
+              this.labels.push(obj.period);
+              if (!map.has(obj.company_id)) {
+                map.set(obj.company_id, true);
+                this.datasets.push({
+                  id: obj.company_id,
+                  backgroundColor: obj.color,
+                  borderColor: obj.color,
+                  fill: false,
+                  data: [],
+                });
+              }
+              this.currentData.push(obj);
+            }
+          });
+        });
+
+        this.currentData.forEach((obj) => {
+          this.datasets.some((company) => {
+            if (obj.company_id === company.id) {
+              company.data.push(obj.metric_value)
+            }
           });
         });
 
@@ -279,6 +341,11 @@
           }
         });
       },
+      timeLineChange(option) {
+        this.currentTimeline = option;
+        this.openTimeSelect = false;
+        this.fillData();
+      },
     },
     computed: {
       isPie() {
@@ -286,6 +353,9 @@
       },
       isLine() {
         return this.chartType === 'line';
+      },
+      isHistorical() {
+        return this.currentTimeline.id === 'historical';
       },
       showedMetrics() {
         return this.metrics.slice(0, this.maxMetricsToShow);
@@ -296,10 +366,10 @@
       moreMetrics() {
         return this.metrics.slice(this.showedMetrics.length, this.metrics.length);
       },
-      data() {
-        // TODO: refactor
-        return this.graphData;
-      },
+      // data() {
+      //   // TODO: refactor
+      //   return this.graphData;
+      // },
     },
     directives: {
       ClickOutside
