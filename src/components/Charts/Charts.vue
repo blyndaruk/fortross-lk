@@ -200,8 +200,10 @@
     props: {},
     mounted() {
       const url = process.env.NODE_ENV === 'production'
-                  ? '/lk/graf_data_full_api.php'
-                  : 'data/chart_online.json';
+                  ? '/api/grafik_info.php'
+                  // ? '/lk/graf_data_full_api.php'
+                  : '/api/grafik_info.php';
+                  // : 'data/chart_online.json';
       httpClient
         .get(url)
         .then((response) => {
@@ -234,6 +236,7 @@
     methods: {
       onMetricClick(metric, index) {
         this.currentMetricIndex = index;
+        this.metrics[this.currentMetricIndex] === 'Gross profit margin' ? this.unit = '%' : this.unit = 'USD';
         this.fillData();
       },
       toggleOtherMetrics() {

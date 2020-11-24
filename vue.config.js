@@ -1,7 +1,7 @@
 module.exports = {
-  // devServer: {
-  //   proxy: 'https://www:Bureau@fortross.dev.vr.buroburo.tech/',
-  // },
+  devServer: {
+    proxy: 'https://www:Bureau@fortross.dev.vr.buroburo.tech/',
+  },
   css: {
     loaderOptions: {
       scss: {

@@ -38,7 +38,7 @@
               ticks: {
                 beginAtZero: true,
                 // TODO: test with percentage units
-                callback: value => this.unit + value,
+                callback: value => this.unit === '%' ? value + this.unit : this.unit + value,
               }
             }]
           },
