@@ -23,6 +23,11 @@
               gridLines: {
                 color: "#ffffff"
               },
+              ticks: {
+                beginAtZero: true,
+                // TODO: test with percentage units
+                callback: value => this.unit === '%' ? value + this.unit : this.unit + value,
+              }
             }],
             yAxes: [{
               display: false,
@@ -50,6 +55,8 @@
   }
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+  .chart-bar-horizontal {
+    margin-top: 40px;
+  }
 </style>

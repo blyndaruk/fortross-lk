@@ -19,16 +19,21 @@
           },
           scales: {
             xAxes: [{
-              display: true,
+              display: false,
               gridLines: {
                 color: "#ffffff"
               },
             }],
             yAxes: [{
-              display: false,
+              display: true,
               gridLines: {
                 color: "#ffffff"
               },
+              ticks: {
+                beginAtZero: true,
+                // TODO: test with percentage units
+                callback: value => this.unit === '%' ? value + this.unit : this.unit + value,
+              }
             }],
           },
         },

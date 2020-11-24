@@ -34,22 +34,45 @@
     </div>
 
     <div class="chart-head">
-      <div class="chart-timeline" v-click-outside="closeSelect">
-        <div class="chart-timeline__label">Срез</div>
-        <div class="chart-timeline__wrap" @blur="openTimeSelect = false">
-          <div class="chart-timeline__active" :class="{ 'is-open': openTimeSelect }"
-               @click="openTimeSelect = !openTimeSelect"
-          >
-            {{ currentTimeline.title }}
-          </div>
-          <div class="chart-timeline__options" :class="{ 'is-open': openTimeSelect }">
-            <div
-                class="chart-timeline__option"
-                v-for="(option, i) in timelineType"
-                :key="i"
-                @click="timeLineChange(option)"
+      <div class="chart-head__selects">
+        <div class="chart-timeline" v-click-outside="closeSelect">
+          <div class="chart-timeline__label">Срез</div>
+          <div class="chart-timeline__wrap" @blur="openTimeSelect = false">
+            <div class="chart-timeline__active" :class="{ 'is-open': openTimeSelect }"
+                 @click="openTimeSelect = !openTimeSelect"
             >
-              {{ option.title }}
+              {{ currentTimeline.title }}
+            </div>
+            <div class="chart-timeline__options" :class="{ 'is-open': openTimeSelect }">
+              <div
+                  class="chart-timeline__option"
+                  v-for="(option, i) in timelineType"
+                  :key="i"
+                  @click="timeLineChange(option)"
+              >
+                {{ option.title }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-timeline" v-if="!isHistorical" v-click-outside="closeDateSelect">
+          <div class="chart-timeline__label">Срез</div>
+          <div class="chart-timeline__wrap" @blur="openDateSelect = false">
+            <div class="chart-timeline__active" :class="{ 'is-open': openDateSelect }"
+                 @click="openDateSelect = !openDateSelect"
+            >
+              {{ currentQuoter }}
+            </div>
+            <div class="chart-timeline__options" :class="{ 'is-open': openDateSelect }">
+              <div
+                  class="chart-timeline__option"
+                  v-for="(option, i) in labelsAvailable"
+                  :key="i"
+                  @click="dateChange(option)"
+              >
+                {{ option }}
+              </div>
             </div>
           </div>
         </div>
@@ -82,9 +105,9 @@
         <line-chart class="chart" v-if="isHistorical" :chart-data="datacollection" :unit="getUnit"></line-chart>
         <pie-chart class="chart-pie" v-if="isPie && !isHistorical" :chart-data="datacollection"
                    :unit="getUnit"></pie-chart>
-        <bar-chart class="chart" v-if="isLine && !isHistorical" :chart-data="datacollection"
+        <bar-chart class="chart-bar" v-if="isLine && !isHistorical" :chart-data="datacollection"
                    :unit="getUnit"></bar-chart>
-        <horizontal-bar-chart class="chart" v-if="isLine && !isHistorical" :chart-data="datacollection"
+        <horizontal-bar-chart class="chart-bar-horizontal" v-if="isLine && !isHistorical" :chart-data="datacollection"
                               :unit="getUnit"></horizontal-bar-chart>
       </vue-custom-scrollbar>
     </div>
@@ -104,6 +127,15 @@
         <span class="companies__check"></span>
         <span>{{company.id}}</span>
         <span class="company-color" :style="{ backgroundColor: company.color }"></span>
+      </label>
+    </div>
+
+    <div class="check-all-companies">
+      <label for="all_companies">
+        <input type="checkbox" name="all_companies" id="all_companies" @change="onCompanyUpdate('all')"
+               v-model="selectAll" />
+        <span>Выделить все компании</span>
+        <span class="companies__check"></span>
       </label>
     </div>
   </div>
@@ -135,6 +167,7 @@
         chartType: 'line',
         rectangleSet: false,
         openTimeSelect: false,
+        openDateSelect: false,
         settings: {
           suppressScrollY: false,
           suppressScrollX: false,
@@ -154,6 +187,7 @@
           id: 'historical',
           title: 'Исторические данные',
         },
+        currentQuoter: '',
         data: [],
         metrics: [],
         currentMetricIndex: 0,
@@ -164,6 +198,7 @@
         datacollection: {},
         currentData: [],
         labels: [],
+        labelsAvailable: [],
         unit: 'USD',
         datasets: [],
         // datasets: [
@@ -201,9 +236,9 @@
     mounted() {
       const url = process.env.NODE_ENV === 'production'
                   ? '/api/grafik_info.php'
-                  // ? '/lk/graf_data_full_api.php'
+        // ? '/lk/graf_data_full_api.php'
                   : '/api/grafik_info.php';
-                  // : 'data/chart_online.json';
+      // : 'data/chart_online.json';
       httpClient
         .get(url)
         .then((response) => {
@@ -230,6 +265,8 @@
 
           // set first company as default (for first load)
           this.companiesSelected.push(this.companies[0]);
+          this.companiesSelected.push(this.companies[1]);
+          this.companiesSelected.push(this.companies[2]);
           this.fillData();
         });
     },
@@ -247,6 +284,9 @@
       },
       closeSelect() {
         this.openTimeSelect = false;
+      },
+      closeDateSelect() {
+        this.openDateSelect = false;
       },
       randomColor() {
         // const color = Math.floor(Math.random() * 16777215).toString(16);
@@ -267,12 +307,13 @@
         this.currentData = [];
 
         const map = new Map();
+        const periodMap = new Map();
 
         this.data.forEach((obj) => {
           this.companiesSelected.some((company) => {
             if (obj.company_id === company.id && this.metrics[this.currentMetricIndex] === obj.metric_name) {
               obj.color = company.color;
-              if (obj.period) this.labels.push(obj.period);
+              // if (obj.period) this.labels.push(obj.period);
               if (!map.has(obj.company_id)) {
                 map.set(obj.company_id, true);
                 this.datasets.push({
@@ -283,10 +324,22 @@
                   data: [],
                 });
               }
-              this.currentData.push(obj);
+              if (!periodMap.has(obj.period) && obj.period) {
+                periodMap.set(obj.period, true);
+                this.labels.push(obj.period)
+              }
+
+              if (!this.isHistorical) {
+                if (this.currentQuoter === obj.period) {
+                  this.currentData.push(obj);
+                }
+              } else {
+                this.currentData.push(obj);
+              }
             }
           });
         });
+
 
         this.currentData.forEach((obj) => {
           this.datasets.some((company) => {
@@ -296,6 +349,16 @@
             }
           });
         });
+
+        this.labelsAvailable = this.labels;
+
+        if (this.isHistorical) {
+          // set first quoter as default
+          this.currentQuoter = this.labels[0];
+        } else {
+          this.labels = [];
+          this.labels[0] = this.currentQuoter;
+        }
 
         setTimeout(() => {
           this.$store.dispatch('loader/hide');
@@ -353,6 +416,11 @@
         this.openTimeSelect = false;
         this.fillData();
       },
+      dateChange(option) {
+        this.currentQuoter = option;
+        this.openDateSelect = false;
+        this.fillData();
+      },
     },
     computed: {
       isPie() {
@@ -373,10 +441,20 @@
       moreMetrics() {
         return this.metrics.slice(this.showedMetrics.length, this.metrics.length);
       },
-      // data() {
-      //   // TODO: refactor
-      //   return this.graphData;
-      // },
+      selectAll: {
+        get() {
+          return this.companies ? this.companiesSelected.length === this.companies.length : false;
+        },
+        set(value) {
+          const selected = [];
+          if (value) {
+            this.companies.forEach((company) => {
+              selected.push(company);
+            });
+          }
+          this.companiesSelected = selected;
+        }
+      },
     },
     directives: {
       ClickOutside

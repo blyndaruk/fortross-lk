@@ -18,7 +18,7 @@
   overflow-x: auto;
 
   .chart {
-    width: 3000px;
+    width: 2000px;
   }
 
   .ps-container {
@@ -190,6 +190,11 @@
   justify-content: space-between;
   margin-bottom: 20px;
   z-index: 2;
+
+  &__selects {
+    display: flex;
+    align-items: center;
+  }
 }
 
 .chart-timeline {
@@ -197,6 +202,10 @@
   display: flex;
   align-items: center;
   font-size: 14px;
+
+  & + & {
+    margin-left: 43px;
+  }
 
   &__active {
     @include semi;
@@ -247,6 +256,9 @@
     transition: all 0.3s ease;
     pointer-events: none;
 
+    max-height: 290px;
+    overflow-y: auto;
+
     &.is-open {
       opacity: 1;
       transform: translateX(-50%) translateY(0);
@@ -264,7 +276,8 @@
   }
 }
 
-.companies {
+.companies,
+.check-all-companies {
   display: flex;
   flex-wrap: wrap;
   margin-top: 36px;
@@ -300,6 +313,13 @@
 
   span:not(.company-color) {
     margin-left: 10px;
+  }
+}
+
+.check-all-companies {
+  flex-direction: row-reverse;
+  label {
+    justify-content: flex-end;
   }
 }
 
