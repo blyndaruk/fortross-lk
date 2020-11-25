@@ -101,15 +101,28 @@
 
     <!-- TODO: data.length canvas width  -->
     <div class="chart-wrapper">
-      <vue-custom-scrollbar class="scroll-area" :settings="settings">
-        <line-chart class="chart" v-if="isHistorical" :chart-data="datacollection" :unit="getUnit"></line-chart>
-        <pie-chart class="chart-pie" v-if="isPie && !isHistorical" :chart-data="datacollection"
-                   :unit="getUnit"></pie-chart>
-        <bar-chart class="chart-bar" v-if="isLine && !isHistorical" :chart-data="datacollection"
-                   :unit="getUnit"></bar-chart>
-        <horizontal-bar-chart class="chart-bar-horizontal" v-if="isLine && !isHistorical" :chart-data="datacollection"
-                              :unit="getUnit"></horizontal-bar-chart>
+      <vue-custom-scrollbar class="scroll-area" v-if="isHistorical" :settings="settings">
+        <line-chart class="chart" :chart-data="datacollection" :unit="getUnit"></line-chart>
       </vue-custom-scrollbar>
+
+      <pie-chart
+          class="chart-pie"
+          v-if="isPie && !isHistorical"
+          :chart-data="datacollection"
+          :unit="getUnit"
+      ></pie-chart>
+      <bar-chart
+          class="chart-bar"
+          v-if="isLine && !isHistorical"
+          :chart-data="datacollection"
+          :unit="getUnit"
+      ></bar-chart>
+      <horizontal-bar-chart
+          class="chart-bar-horizontal"
+          v-if="isLine && !isHistorical"
+          :chart-data="datacollection"
+          :unit="getUnit"
+      ></horizontal-bar-chart>
     </div>
 
     <div class="companies">
@@ -148,9 +161,10 @@
   import LineChart from '@/components/Charts/LineChart/LineChart';
   import PieChart from '@/components/Charts/PieChart/PieChart';
   import BarChart from '@/components/Charts/BarChart/BarChart';
-  import vueCustomScrollbar from 'vue-custom-scrollbar'
-  import "vue-custom-scrollbar/dist/vueScrollbar.css"
+  import vueCustomScrollbar from 'vue-custom-scrollbar';
   import httpClient from '@/utils/httpClient';
+
+  import 'vue-custom-scrollbar/dist/vueScrollbar.css';
 
   export default {
     name: 'Charts',
@@ -362,7 +376,7 @@
 
         setTimeout(() => {
           this.$store.dispatch('loader/hide');
-        }, 1000);
+        }, 650);
 
         this.datacollection = {
           labels: this.labels,
