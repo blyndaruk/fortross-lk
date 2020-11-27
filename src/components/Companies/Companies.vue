@@ -6,7 +6,7 @@
 
     <div class="companies__tabs" ref="companiesTabs">
       <div class="companies__tab"
-           v-for="(category, index) in filteredCategories"
+           v-for="(category, index) in filteredIndustries"
            :key="index"
            :class="{ 'is-active': currentIndex === index }"
            @click="filterCompanies(category.id, index)"
@@ -29,6 +29,7 @@
 
 <script>
   import CompanyCard from '@/components/Companies/CompanyCard/CompanyCard';
+  import httpClient from '@/utils/httpClient';
 
   export default {
     name: 'Companies',
@@ -37,86 +38,33 @@
       return {
         currentIndex: 0,
         currentTab: 'all',
-        categories: [
-          {
-            id: 'all',
-            title: 'All companies'
-          },
-          {
-            id: 'ai',
-            title: 'Ai'
-          },
-          {
-            id: 'fintech',
-            title: 'Fintech'
-          },
-          {
-            id: 'highLoad-platforms',
-            title: 'HighLoad Platforms'
-          },
-        ],
-        companies: [
-          {
-            id: 'ai',
-            category: 'Ai',
-            image: '',
-            valuation: '12.5M USD',
-            investments: '$0.2M USD',
-            share: '4.5%'
-          },
-          {
-            id: 'highLoad-platforms',
-            category: 'HighLoad platforms',
-            image: '',
-            valuation: '246.58M USD',
-            investments: '0.2M USD',
-            share: '3.2%',
-          },
-          {
-            id: 'fintech',
-            category: 'Fintech',
-            image: '',
-            valuation: '246.58M USD',
-            investments: '$12.5M USD',
-            share: '5%'
-          },
-          {
-            id: 'fintech',
-            category: 'Fintech',
-            image: '',
-            valuation: '246.58M USD',
-            investments: '$12.5M USD',
-            share: '5%'
-          },
-          {
-            id: 'highLoad-platforms',
-            category: 'HighLoad platforms',
-            image: '',
-            valuation: '246.58M USD',
-            investments: '0.2M USD',
-            share: '3.2%',
-            inactive: true,
-          },
-          {
-            id: 'ai',
-            category: 'Ai',
-            image: '',
-            valuation: '12.5M USD',
-            investments: '$0.2M USD',
-            share: '4.5%',
-            inactive: true,
-          },
-          {
-            id: 'highLoad-platforms',
-            category: 'HighLoad platforms',
-            image: '',
-            valuation: '246.58M USD',
-            investments: '0.2M USD',
-            share: '3.2%',
-            inactive: true,
-          },
-        ]
+        companies: [],
+        industriesAmount: [],
+        industries: [{
+          id: 'all',
+          title: 'All companies'
+        }],
       }
+    },
+
+    mounted() {
+      const url = '/api/company_info_iblock.php';
+      httpClient
+        .get(url)
+        .then((response) => {
+          this.companies = response;
+
+          const map = new Map();
+          this.companies.forEach((company) => {
+            if (!map.has(company.industry) && company.industry) {
+              map.set(company.industry, true);
+              this.industries.push({
+                id: company.industry,
+                title: company.industry,
+              });
+            }
+          });
+        });
     },
     methods: {
       filterCompanies(id, index) {
@@ -127,7 +75,7 @@
         }, 5)
       },
       updateFilter(id) {
-        const index = this.categories.map((e) => e.id).indexOf(id);
+        const index = this.companies.map((e) => e.id).indexOf(id);
         this.filterCompanies(id, index);
       },
     },
@@ -137,13 +85,13 @@
           return this.companies;
         } else {
           return this.companies.filter((company) => {
-            return company.id === this.currentTab;
+            return company.industry === this.currentTab;
           })
         }
       },
       companiesCount() {
         return this.companies.reduce((obj, cat) => {
-          const id = cat.id;
+          const id = cat.industry;
           if (!Object.prototype.hasOwnProperty.call(obj, id)) {
             obj[id] = 0;
           }
@@ -151,11 +99,11 @@
           return obj;
         }, {});
       },
-      filteredCategories() {
-        return this.categories.map(category => {
+      filteredIndustries() {
+        return this.industries.map(category => {
           const amount = category.id === 'all' ? this.companies.length : this.companiesCount[category.id];
           return { ...category, amount };
-        })
+        });
       },
     }
   }

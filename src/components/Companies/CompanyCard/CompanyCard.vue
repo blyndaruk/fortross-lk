@@ -1,19 +1,19 @@
 <template>
   <div class="company-card" :class="company.inactive && 'is-inactive'">
-    <div class="company-card__category" @click="onClick(company.id)">{{company.category}}</div>
+    <div class="company-card__category" @click="onClick(company.industry)">{{company.industry}}</div>
 
-    <a href="#." class="company-card__inner" target="_blank">
+    <a :href="protocolFix(company.website)" class="company-card__inner" target="_blank">
       <div class="company-card__image"></div>
-      <div v-if="company.valuation" class="company-card__row">
-        {{company.valuation}}
+      <div v-if="company.company_valuation" class="company-card__row">
+        ${{company.company_valuation}} USD
         <span>{{$t('company-card.valuation')}}</span>
       </div>
-      <div v-if="company.investments" class="company-card__row">
-        {{company.investments}}
+      <div v-if="company.total_invested" class="company-card__row">
+        ${{company.total_invested}} USD
         <span>{{$t('company-card.investments')}}</span>
       </div>
-      <div v-if="company.share" class="company-card__row">
-        {{company.share}}
+      <div v-if="company.fund_share" class="company-card__row">
+        {{company.fund_share}}%
         <span>{{$t('company-card.share')}}</span>
       </div>
       <span class="company-card__icon"></span>
@@ -33,10 +33,10 @@
     methods: {
       onClick(id) {
         this.$emit('company-id', id);
-      }
-    },
-    mounted() {
-      // console.log(this.company);
+      },
+      protocolFix(url) {
+        return url.indexOf('http') === -1 || url.indexOf('https') === -1 ? '//' + url : url;
+      },
     },
   }
 </script>

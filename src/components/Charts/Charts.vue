@@ -248,10 +248,7 @@
     },
     props: {},
     mounted() {
-      const url = process.env.NODE_ENV === 'production'
-                  ? '/api/grafik_info.php'
-        // ? '/lk/graf_data_full_api.php'
-                  : '/api/grafik_info.php';
+      const url = '/api/grafik_info_iblock.php';
       // : 'data/chart_online.json';
       httpClient
         .get(url)
@@ -279,8 +276,6 @@
 
           // set first company as default (for first load)
           this.companiesSelected.push(this.companies[0]);
-          this.companiesSelected.push(this.companies[1]);
-          this.companiesSelected.push(this.companies[2]);
           this.fillData();
         });
     },
@@ -322,6 +317,10 @@
 
         const map = new Map();
         const periodMap = new Map();
+
+        // test with more data
+        // this.data.sort(this.sortByTime);
+        // this.data.sort(this.sortByQuoter);
 
         this.data.forEach((obj) => {
           this.companiesSelected.some((company) => {
