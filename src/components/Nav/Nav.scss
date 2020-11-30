@@ -4,9 +4,12 @@
   &__menu {
     display: flex;
     align-items: center;
+    overflow-x: auto;
   }
 
   &__item {
+    white-space: nowrap;
+
     &:not(:last-child) {
       margin-right: 40px;
     }

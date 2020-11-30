@@ -100,30 +100,32 @@
 
 
     <!-- TODO: data.length canvas width  -->
-    <div class="chart-wrapper">
-      <vue-custom-scrollbar class="scroll-area" v-if="isHistorical" :settings="settings">
-        <line-chart class="chart" :chart-data="datacollection" :unit="getUnit"></line-chart>
-      </vue-custom-scrollbar>
+    <mq-layout mq="laptop+">
+      <div class="chart-wrapper">
+        <vue-custom-scrollbar class="scroll-area" v-if="isHistorical" :settings="settings">
+          <line-chart class="chart" :chart-data="datacollection" :unit="getUnit"></line-chart>
+        </vue-custom-scrollbar>
 
-      <pie-chart
-          class="chart-pie"
-          v-if="isPie && !isHistorical"
-          :chart-data="datacollection"
-          :unit="getUnit"
-      ></pie-chart>
-      <bar-chart
-          class="chart-bar"
-          v-if="isLine && !isHistorical"
-          :chart-data="datacollection"
-          :unit="getUnit"
-      ></bar-chart>
-      <horizontal-bar-chart
-          class="chart-bar-horizontal"
-          v-if="isLine && !isHistorical"
-          :chart-data="datacollection"
-          :unit="getUnit"
-      ></horizontal-bar-chart>
-    </div>
+        <pie-chart
+            class="chart-pie"
+            v-if="isPie && !isHistorical"
+            :chart-data="datacollection"
+            :unit="getUnit"
+        ></pie-chart>
+        <bar-chart
+            class="chart-bar"
+            v-if="isLine && !isHistorical"
+            :chart-data="datacollection"
+            :unit="getUnit"
+        ></bar-chart>
+        <horizontal-bar-chart
+            class="chart-bar-horizontal"
+            v-if="isLine && !isHistorical"
+            :chart-data="datacollection"
+            :unit="getUnit"
+        ></horizontal-bar-chart>
+      </div>
+    </mq-layout>
 
     <div class="companies">
       <label :for="'company_name_'+index"
@@ -215,29 +217,6 @@
         labelsAvailable: [],
         unit: 'USD',
         datasets: [],
-        // datasets: [
-        //   {
-        //     label: false,
-        //     // label: 'Data One',
-        //     // backgroundColor: '#f87979',
-        //     // fillColor: '#f87979',
-        //     // fill: false,
-        //     data: [40, 20, 10]
-        //   },
-        //   {
-        //     // label: 'Data One',
-        //     // backgroundColor: '#f87979',
-        //     // fill: false,
-        //     data: [30, 20, 40]
-        //   },
-        //   {
-        //     // label: 'Data One',
-        //     // backgroundColor: '#f87979',
-        //     // fill: false,
-        //     data: [30, 40, 20]
-        //   },
-        // ],
-
         quarters: {
           "Q1": 0,
           "Q2": 3,
@@ -436,6 +415,9 @@
       },
     },
     computed: {
+      isMobile() {
+        return this.$mq === 'tablet' || this.$mq === 'mobile';
+      },
       isPie() {
         return this.chartType === 'pie';
       },

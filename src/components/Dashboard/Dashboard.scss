@@ -10,6 +10,15 @@
   background-color: $primary;
   background-image: url(~@/assets/images/pattern.svg);
 
+  @include lg {
+    flex-wrap: wrap;
+  }
+
+  @include xs {
+    margin-left: -20px;
+    margin-right: -20px;
+  }
+
   &__main {
     padding: 25px 64px 25px 30px;
   }
@@ -38,6 +47,23 @@
     width: 100%;
     padding-right: 60px;
 
+    @include lg {
+      width: 50%;
+      &:before {
+        content: '';
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        height: 1px;
+        width: 100%;
+        background-color: $main-bg;
+      }
+    }
+
+    @include r(650) {
+      width: 100%;
+    }
+
     &:not(:last-child) {
       &:after {
         content: '';
@@ -47,6 +73,17 @@
         height: 100%;
         width: 1px;
         background-color: $main-bg;
+        @include r(650) {
+          display: none;
+        }
+      }
+    }
+
+    &:nth-child(2n) {
+      @include lg {
+        &:after {
+          display: none;
+        }
       }
     }
   }
@@ -55,6 +92,9 @@
     padding: 20px 30px;
     height: 100%;
     background-color: $primary;
+    @include r(650) {
+      padding: 10px 20px;
+    }
   }
 
   &__title-value {

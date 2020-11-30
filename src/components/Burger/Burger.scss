@@ -1,0 +1,18 @@
+.burger {
+  width: 30px;
+
+  span {
+    display: block;
+    height: 2px;
+    width: 100%;
+    background-color: $primary;
+
+    &:first-child {
+      transform: translateY(-8px);
+    }
+
+    &:last-child {
+      transform: translateY(8px);
+    }
+  }
+}
