@@ -100,11 +100,10 @@
 
 
     <!-- TODO: data.length canvas width  -->
+    <!--    <vue-custom-scrollbar class="scroll-area" v-if="isHistorical" :settings="settings">-->
     <mq-layout mq="laptop+">
       <div class="chart-wrapper">
-        <vue-custom-scrollbar class="scroll-area" v-if="isHistorical" :settings="settings">
-          <line-chart class="chart" :chart-data="datacollection" :unit="getUnit"></line-chart>
-        </vue-custom-scrollbar>
+        <line-chart class="chart" :chart-data="datacollection" :unit="getUnit"></line-chart>
 
         <pie-chart
             class="chart-pie"
@@ -163,10 +162,10 @@
   import LineChart from '@/components/Charts/LineChart/LineChart';
   import PieChart from '@/components/Charts/PieChart/PieChart';
   import BarChart from '@/components/Charts/BarChart/BarChart';
-  import vueCustomScrollbar from 'vue-custom-scrollbar';
+  // import vueCustomScrollbar from 'vue-custom-scrollbar';
   import httpClient from '@/utils/httpClient';
 
-  import 'vue-custom-scrollbar/dist/vueScrollbar.css';
+  // import 'vue-custom-scrollbar/dist/vueScrollbar.css';
 
   export default {
     name: 'Charts',
@@ -175,8 +174,6 @@
       BarChart,
       PieChart,
       LineChart,
-      // eslint-disable-next-line vue/no-unused-components
-      vueCustomScrollbar,
     },
     data() {
       return {
@@ -255,6 +252,8 @@
 
           // set first company as default (for first load)
           this.companiesSelected.push(this.companies[0]);
+          this.companiesSelected.push(this.companies[1]);
+          this.companiesSelected.push(this.companies[2]);
           this.fillData();
         });
     },
@@ -309,16 +308,19 @@
               if (!map.has(obj.company_id)) {
                 map.set(obj.company_id, true);
                 this.datasets.push({
+                  label: obj.company_id,
                   id: obj.company_id,
                   backgroundColor: obj.color,
                   borderColor: obj.color,
                   fill: false,
                   data: [],
+                  pointHoverRadius: 5,
                 });
               }
               if (!periodMap.has(obj.period) && obj.period) {
                 periodMap.set(obj.period, true);
-                this.labels.push(obj.period)
+                const str = obj.period.replace(" ", "'").slice(0, 3);
+                this.labels.push(str + obj.period.slice(5))
               }
 
               if (!this.isHistorical) {
@@ -455,8 +457,6 @@
       ClickOutside
     },
   }
-  // TODO: for scrollable graph, take width of container
-  // Make two canvases, one just with YAxe, another - everything else without Y labels and big width
 </script>
 
 <style lang="scss" scoped>

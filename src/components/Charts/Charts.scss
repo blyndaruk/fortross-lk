@@ -15,15 +15,15 @@
 
 .chart-wrapper {
   //width: 600px;
-  overflow-x: auto;
+  //overflow-x: auto;
 
-  .chart {
-    width: 2000px;
-  }
+  //.chart {
+  //  width: 2000px;
+  //}
 
-  .ps-container {
-    padding-bottom: 20px;
-  }
+  //.ps-container {
+  //  padding-bottom: 20px;
+  //}
 
 }
 
@@ -294,6 +294,7 @@
 
   label {
     width: 25%;
+    margin-bottom: 10px;
     display: inline-flex;
     align-items: center;
     cursor: pointer;
@@ -329,3 +330,5 @@
   height: 12px;
   border-radius: 50%;
 }
+
+

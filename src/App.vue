@@ -66,4 +66,38 @@
     transition: opacity .3s, transform .8s;
   }
 
+  #chartjs-tooltip {
+    background-color: $primary;
+    border-radius: 8px;
+    padding: 10px;
+    color: #ffffff;
+
+    thead {
+      @include semi;
+      font-size: 14px;
+      margin-bottom: 11px;
+      display: block;
+    }
+
+    tbody {
+      td {
+        padding: 2px 0;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        font-size: 12px;
+      }
+
+      span {
+        display: inline-flex;
+        width: 12px;
+        height: 12px;
+        align-self: center;
+        border-radius: 50%;
+        margin-right: 5px;
+      }
+    }
+  }
+
+
 </style>
