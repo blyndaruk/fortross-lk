@@ -272,11 +272,7 @@
     font-weight: $weight
     font-style: $style
     src: url("#{$file-path}.eot")
-    src: local("#{$font-family} #{$alias}"), local('#{$font-family}-#{$alias}'),
-    url("#{$file-path}.eot?#iefix") format('embedded-opentype'),
-    url("#{$file-path}.woff") format('woff2'),
-    url("#{$file-path}.woff") format('woff'),
-    url("#{$file-path}.ttf") format('truetype')
+    src: local("#{$font-family} #{$alias}"), local('#{$font-family}-#{$alias}'), url("#{$file-path}.eot?#iefix") format('embedded-opentype'), url("#{$file-path}.woff") format('woff2'), url("#{$file-path}.woff") format('woff'), url("#{$file-path}.ttf") format('truetype')
 
 
 =center($axis)

@@ -100,4 +100,30 @@
   }
 
 
+  // TODO: separate component
+  .chartjs-legend {
+    display: flex;
+    justify-content: center;
+    max-width: 700px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    margin-right: 30px;
+    margin-bottom: 30px;
+    font-size: 14px;
+
+    &__circle {
+      width: 20px;
+      height: 20px;
+      margin-right: 10px;
+      border-radius: 50%;
+      border: 4px solid transparent;
+    }
+  }
+
+
 </style>

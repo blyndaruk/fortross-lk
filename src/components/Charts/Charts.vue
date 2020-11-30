@@ -103,26 +103,21 @@
     <!--    <vue-custom-scrollbar class="scroll-area" v-if="isHistorical" :settings="settings">-->
     <mq-layout mq="laptop+">
       <div class="chart-wrapper">
-        <line-chart class="chart" :chart-data="datacollection" :unit="getUnit"></line-chart>
-
-        <pie-chart
-            class="chart-pie"
-            v-if="isPie && !isHistorical"
-            :chart-data="datacollection"
-            :unit="getUnit"
-        ></pie-chart>
+        <line-chart class="chart" v-if="isHistorical" :chart-data="datacollection" :unit="getUnit"></line-chart>
         <bar-chart
             class="chart-bar"
             v-if="isLine && !isHistorical"
             :chart-data="datacollection"
             :unit="getUnit"
         ></bar-chart>
-        <horizontal-bar-chart
-            class="chart-bar-horizontal"
-            v-if="isLine && !isHistorical"
+        <pie-chart
+            class="chart-pie"
+            v-if="isPie && !isHistorical"
             :chart-data="datacollection"
             :unit="getUnit"
-        ></horizontal-bar-chart>
+            @generated-legends="setLegends"
+        ></pie-chart>
+        <div v-if="!isHistorical && isPie" class="legends" v-html="legendHTML"></div>
       </div>
     </mq-layout>
 
@@ -156,7 +151,6 @@
 </template>
 
 <script>
-  import HorizontalBarChart from '@/components/Charts/HorizontalBarChart/BarChart';
   import Chart from 'chart.js';
   import ClickOutside from 'vue-click-outside'
   import LineChart from '@/components/Charts/LineChart/LineChart';
@@ -170,7 +164,6 @@
   export default {
     name: 'Charts',
     components: {
-      HorizontalBarChart,
       BarChart,
       PieChart,
       LineChart,
@@ -186,6 +179,7 @@
           suppressScrollX: false,
           wheelPropagation: false
         },
+        legendHTML: '',
         timelineType: [
           {
             id: 'historical',
@@ -314,7 +308,21 @@
                   borderColor: obj.color,
                   fill: false,
                   data: [],
-                  pointHoverRadius: 5,
+                  barPercentage: 0.75,
+                  // barThickness: 6,
+                  // borderRadius: 4,
+                  // borderRadius: 20,
+                  // hoverBorderRadius: 50,
+                  // hoverBorderWidth: 10,
+                  // hoverBorderColor: '#000000',
+                  // fillColor: obj.color,
+                  // fillColor: "rgba(220,220,220,0.5)",
+                  // strokeColor: "rgba(220,220,220,0.8)",
+                  // highlightFill: "rgba(151,187,205,0.75)",
+                  // highlightStroke: "rgba(220,220,220,1)",
+
+                  // hoverBorderWidth: 5,
+                  // hoverBorderColor: obj.color
                 });
               }
               if (!periodMap.has(obj.period) && obj.period) {
@@ -324,7 +332,8 @@
               }
 
               if (!this.isHistorical) {
-                if (this.currentQuoter === obj.period) {
+                const str = obj.period.replace(" ", "'").slice(0, 3);
+                if (this.currentQuoter === (str + obj.period.slice(5))) {
                   this.currentData.push(obj);
                 }
               } else {
@@ -358,10 +367,21 @@
           this.$store.dispatch('loader/hide');
         }, 650);
 
+
+        // sorting from min to max for bar chart
+        if (!this.isHistorical && !this.isPie) {
+          this.datasets = this.sortMinMax(this.datasets);
+        }
+
         this.datacollection = {
           labels: this.labels,
           datasets: this.datasets,
         };
+
+        // rewrite data for doughnut chart
+        if (!this.isHistorical && this.isPie) {
+          this.datacollection = this.drawPie(this.datacollection);
+        }
       },
       sortByTime(lhs, rhs) {
         const lhsPeriod = lhs.period;
@@ -388,8 +408,8 @@
         return lhsDate.getTime() - rhsDate.getTime();
       },
       toggleType(type) {
-        this.fillData();
         this.chartType = type;
+        this.fillData();
       },
       chartBackgroundColor() {
         Chart.pluginService.register({
@@ -414,6 +434,45 @@
         this.currentQuoter = option;
         this.openDateSelect = false;
         this.fillData();
+      },
+      // TODO: refactor
+      sortMinMax(data) {
+        const dataArray = [];
+        let dataset = data;
+        dataset.forEach(function (obj) {
+          dataArray.push(obj.data);
+        });
+        let dataIndexes = dataArray.map((d, i) => i);
+        dataIndexes.sort((a, b) => {
+          return dataArray[a] - dataArray[b];
+        });
+        const tempDatasets = [];
+        dataIndexes.forEach(function (ind) {
+          tempDatasets.push(dataset[ind]);
+        });
+        return tempDatasets;
+      },
+      drawPie(datasets) {
+        const data = {
+          datasets: [
+            {
+              data: [],
+              backgroundColor: [],
+            }
+          ],
+          labels: [],
+        };
+        datasets.datasets.forEach((obj) => {
+          if (obj.data[0]) {
+            data.labels.push(obj.label);
+            data.datasets[0].data.push(obj.data);
+            data.datasets[0].backgroundColor.push(obj.backgroundColor)
+          }
+        });
+        return data;
+      },
+      setLegends(html) {
+        this.legendHTML = html
       },
     },
     computed: {

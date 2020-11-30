@@ -89,8 +89,6 @@
                 return bodyItem.lines;
               }
 
-              // console.log(tooltipModel);
-
               // Set Text
               if (tooltipModel.body) {
                 const titleLines = tooltipModel.title || [];
@@ -110,7 +108,10 @@
                   style += '; border-color:' + colors.borderColor;
                   style += '; border-width: 2px';
                   const span = '<span style="' + style + '"></span>';
-                  innerHtml += '<tr><td>' + span + body + '</td></tr>';
+                  const str = body[0].split(': ');
+                  const title = str[0];
+                  const value = parseFloat( str[1] ).toLocaleString();
+                  innerHtml += '<tr><td>' + span + title + ': ' + value + '</td></tr>';
                 });
                 innerHtml += '</tbody>';
 
