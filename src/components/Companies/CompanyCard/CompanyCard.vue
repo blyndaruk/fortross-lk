@@ -5,15 +5,15 @@
     <a :href="protocolFix(company.website)" class="company-card__inner" target="_blank">
       <div class="company-card__image"></div>
       <div v-if="company.company_valuation" class="company-card__row">
-        ${{company.company_valuation}} USD
+        ${{parseInt(company.company_valuation, 10)}} USD
         <span>{{$t('company-card.valuation')}}</span>
       </div>
       <div v-if="company.total_invested" class="company-card__row">
-        ${{company.total_invested}} USD
+        ${{parseInt(company.total_invested, 10)}} USD
         <span>{{$t('company-card.investments')}}</span>
       </div>
       <div v-if="company.fund_share" class="company-card__row">
-        {{company.fund_share}}%
+        {{parseFloat(company.fund_share).toFixed(1)}}%
         <span>{{$t('company-card.share')}}</span>
       </div>
       <span class="company-card__icon"></span>
