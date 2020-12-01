@@ -1,7 +1,14 @@
 .charts-wrapper {
+  position: relative;
   background-color: #ffffff;
   padding: 30px;
   margin-bottom: 40px;
+
+  @include xs {
+    margin-left: -20px;
+    margin-right: -20px;
+    padding: 20px;
+  }
 
   &__metrics {
     position: relative;
@@ -10,6 +17,40 @@
     margin-bottom: 26px;
     border-bottom: 1px solid $main-bg;
     z-index: 3;
+  }
+}
+
+.charts-wrapper-notification {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  color: #ffffff;
+  @include xs {
+    font-size: 22px;
+  }
+
+  span {
+    position: relative;
+    @include semi;
+    z-index: 6;
+  }
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 5;
+    width: 100%;
+    height: 100%;
+    background-color: $secondary;
+    opacity: .94;
   }
 }
 
@@ -36,6 +77,9 @@
   transition: all $easing-default;
   border-bottom: 2px solid transparent;
   cursor: pointer;
+  @include xs {
+    padding-bottom: 20px;
+  }
 
   &:hover {
     color: $secondary;
@@ -69,6 +113,8 @@
     opacity: 0;
     transition: all $easing-default;
     pointer-events: none;
+    overflow-y: auto;
+    max-height: 300px;
 
     &.is-active {
       opacity: 1;
@@ -108,6 +154,11 @@
   height: 30px;
   border-radius: 30px;
   background-color: rgba(187, 187, 187, 0.2);
+
+  &.is-disabled {
+    pointer-events: none;
+    opacity: 0.25;
+  }
 
   &.is-active {
     .charts-toggle-type__active {
@@ -288,6 +339,7 @@
   &__check {
     width: 20px;
     height: 20px;
+    flex-shrink: 0;
     border-radius: 4px;
     border: 1px solid #bbbbbb;
   }
@@ -298,6 +350,12 @@
     display: inline-flex;
     align-items: center;
     cursor: pointer;
+    @include lg {
+      width: 50%;
+    }
+    @include xs {
+      width: 100%;
+    }
   }
 
   input {
@@ -319,7 +377,11 @@
 
 .check-all-companies {
   flex-direction: row-reverse;
+  @include sm {
+    flex-direction: row;
+  }
   label {
+    width: auto;
     justify-content: flex-end;
   }
 }

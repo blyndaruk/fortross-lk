@@ -4,14 +4,15 @@
     <TheHeader />
     <main class="main">
       <div class="container">
-        <Nav />
+        <mq-layout mq="tablet+">
+          <Nav />
+        </mq-layout>
         <div class="page-view">
           <transition name="page">
             <router-view />
           </transition>
         </div>
       </div>
-      <!--    br*40-->
     </main>
     <TheFooter />
   </div>

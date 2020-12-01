@@ -23,12 +23,18 @@
     align-items: center;
     justify-content: space-between;
     min-height: 100px;
+    @include xs {
+      min-height: 70px;
+    }
   }
 
   &__left {
     display: flex;
     align-items: center;
     max-width: 40%;
+    @include xs {
+      display: none;
+    }
   }
 
   &__center {
@@ -37,6 +43,10 @@
     top: 50%;
     transform: translate(-50%, -50%);
     max-width: 175px;
+    @include xs {
+      position: static;
+      transform: translate(0, 0);
+    }
   }
 
   &__langs {

@@ -113,5 +113,8 @@
   // Simple type dashboard
   &--simple {
     padding: 0;
+    @include xs {
+      margin-bottom: 0;
+    }
   }
 }

@@ -5,7 +5,9 @@
         <div class="header__inner">
           <div class="header__left">
             <div class="header__langs">
-              <LocaleSwitcher />
+              <mq-layout mq="tablet+">
+                <LocaleSwitcher />
+              </mq-layout>
             </div>
             <mq-layout mq="laptop+">
               <div class="header__id">ID 2345098-781-23</div>

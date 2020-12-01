@@ -23,5 +23,9 @@
       max-width: 100%;
       height: auto;
     }
+
+    @include xs {
+      max-width: 136px;
+    }
   }
 </style>

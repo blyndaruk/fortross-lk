@@ -1,33 +1,27 @@
 <template>
-  <div v-if="isSimple">
-    <div class="dashboard dashboard--simple">
-      <div class="dashboard__col" v-for="item in data.simpleSummary" :key="item.title">
-        <div class="dashboard__col-inner">
-          <div class="dashboard__title-value">{{ item.title }}</div>
-          <div class="dashboard__note">{{ item.note }}</div>
-        </div>
+  <div v-if="isSimple" class="dashboard dashboard--simple">
+    <div class="dashboard__col" v-for="item in data.simpleSummary" :key="item.title">
+      <div class="dashboard__col-inner">
+        <div class="dashboard__title-value">{{ item.title }}</div>
+        <div class="dashboard__note">{{ item.note }}</div>
       </div>
     </div>
   </div>
 
-  <div v-else-if="isMedium">
-    <div class="dashboard">
-      <div class="dashboard__main">
-        <div class="dashboard__main-amount">{{ mainAmount }}</div>
-        <div class="dashboard__main-note">Current state of the account</div>
-      </div>
-      <div class="dashboard__info">info</div>
+  <div v-else-if="isMedium" class="dashboard">
+    <div class="dashboard__main">
+      <div class="dashboard__main-amount">{{ mainAmount }}</div>
+      <div class="dashboard__main-note">Current state of the account</div>
     </div>
+    <div class="dashboard__info">info</div>
   </div>
 
-  <div v-else-if="isFull">
-    <div class="dashboard">
-      <div class="dashboard__main">
-        <div class="dashboard__main-amount">{{ mainAmount }}</div>
-        <div class="dashboard__main-note">Current state of the account</div>
-      </div>
-      <div class="dashboard__info">info</div>
+  <div v-else-if="isFull" class="dashboard">
+    <div class="dashboard__main">
+      <div class="dashboard__main-amount">{{ mainAmount }}</div>
+      <div class="dashboard__main-note">Current state of the account</div>
     </div>
+    <div class="dashboard__info">info</div>
   </div>
 </template>
 

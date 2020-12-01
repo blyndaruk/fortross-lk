@@ -1,5 +1,8 @@
 <template>
   <div class="charts-wrapper">
+    <mq-layout :mq="['lg', 'md', 'tablet', 'mobile']">
+      <div class="charts-wrapper-notification"><span>Open desktop version</span></div>
+    </mq-layout>
     <div class="charts-wrapper__metrics">
       <div class="chart-metric"
            :class="{ 'is-active': currentMetricIndex === index }"
@@ -7,7 +10,7 @@
            :key="index"
            @click="onMetricClick(metric, index)"
       >
-        {{metric}}
+        {{metric.id}}
       </div>
       <div class="chart-metric-more">
         <div class="chart-metric"
@@ -27,7 +30,7 @@
                :class="{ 'is-active': currentMetricIndex === showedMetrics.length+index }"
                @click="onMetricClick(metric, showedMetrics.length+index)"
           >
-            {{metric}}
+            {{metric.id}}
           </div>
         </div>
       </div>
@@ -56,8 +59,8 @@
           </div>
         </div>
 
-        <div class="chart-timeline" v-if="!isHistorical" v-click-outside="closeDateSelect">
-          <div class="chart-timeline__label">Срез</div>
+        <div class="chart-timeline" v-if="!isHistorical && currentQuoter" v-click-outside="closeDateSelect">
+          <div class="chart-timeline__label">Период</div>
           <div class="chart-timeline__wrap" @blur="openDateSelect = false">
             <div class="chart-timeline__active" :class="{ 'is-open': openDateSelect }"
                  @click="openDateSelect = !openDateSelect"
@@ -78,7 +81,7 @@
         </div>
       </div>
 
-      <div class="charts-toggle-type" :class="{'is-active': isPie}" v-if="!isHistorical">
+      <div class="charts-toggle-type" :class="{'is-active': isPie, 'is-disabled': getUnit === '%'}" v-if="!isHistorical">
         <div class="charts-toggle-type__active"></div>
         <div class="charts-toggle-type__inner">
           <button @click="toggleType('line')">
@@ -157,9 +160,9 @@
   import PieChart from '@/components/Charts/PieChart/PieChart';
   import BarChart from '@/components/Charts/BarChart/BarChart';
   // import vueCustomScrollbar from 'vue-custom-scrollbar';
+  // import 'vue-custom-scrollbar/dist/vueScrollbar.css';
   import httpClient from '@/utils/httpClient';
 
-  // import 'vue-custom-scrollbar/dist/vueScrollbar.css';
 
   export default {
     name: 'Charts',
@@ -231,10 +234,21 @@
             .then((response) => {
               const companies = response;
               const map = new Map();
+              const metricsMap = new Map();
 
               this.data.forEach((el) => {
                 // get all available metrics
-                this.metrics.indexOf(el.metric_name) === -1 ? this.metrics.push(el.metric_name) : '';
+                // this.metrics.indexOf(el.metric_name) === -1 ? this.metrics.push(el.metric_name) : '';
+
+                // console.log(this.metrics);
+                // set all available metrics
+                if (!metricsMap.has(el.metric_name)) {
+                  metricsMap.set(el.metric_name, true);
+                  this.metrics.push({
+                    id: el.metric_name,
+                    unit: el.metric_unit_text_1
+                  });
+                }
 
                 // set all available companies
                 if (!map.has(el.company_id)) {
@@ -256,7 +270,12 @@
     methods: {
       onMetricClick(metric, index) {
         this.currentMetricIndex = index;
-        this.metrics[this.currentMetricIndex] === 'Gross profit margin' ? this.unit = '%' : this.unit = 'USD';
+        this.currentTimeline = {
+          id: 'historical',
+          title: 'Исторические данные',
+        };
+        // console.log(this.currentTimeline);
+        this.unit = this.getUnit;
         this.fillData();
       },
       toggleOtherMetrics() {
@@ -293,7 +312,7 @@
 
         this.data.forEach((obj) => {
           this.companiesSelected.some((company) => {
-            if (obj.company_id === company.id && this.metrics[this.currentMetricIndex] === obj.metric_name) {
+            if (obj.company_id === company.id && this.metrics[this.currentMetricIndex].id === obj.metric_name) {
               obj.color = company.color;
               // if (obj.period) this.labels.push(obj.period);
               if (!map.has(obj.company_id)) {
@@ -385,8 +404,8 @@
         const rhsPeriod = rhs.period;
         if (!lhsPeriod || !rhsPeriod) return;
 
-        var lhsQuarterYear = lhsPeriod.split(" ");
-        var rhsQuarterYear = rhsPeriod.split(" ");
+        const lhsQuarterYear = lhsPeriod.split(" ");
+        const rhsQuarterYear = rhsPeriod.split(" ");
         // var lhsDate = new Date(lhsQuarterYear[1], this.quarters[lhsQuarterYear[0]]);
         // var rhsDate = new Date(rhsQuarterYear[1], this.quarters[rhsQuarterYear[0]]);
         return new Date(lhsQuarterYear[1]).getTime() - new Date(rhsQuarterYear[1]).getTime();
@@ -397,10 +416,10 @@
         const rhsPeriod = rhs.period;
         if (!lhsPeriod || !rhsPeriod) return;
 
-        var lhsQuarterYear = lhsPeriod.split(" ");
-        var rhsQuarterYear = rhsPeriod.split(" ");
-        var lhsDate = new Date(lhsQuarterYear[1], this.quarters[lhsQuarterYear[0]]);
-        var rhsDate = new Date(rhsQuarterYear[1], this.quarters[rhsQuarterYear[0]]);
+        const lhsQuarterYear = lhsPeriod.split(" ");
+        const rhsQuarterYear = rhsPeriod.split(" ");
+        const lhsDate = new Date(lhsQuarterYear[1], this.quarters[lhsQuarterYear[0]]);
+        const rhsDate = new Date(rhsQuarterYear[1], this.quarters[rhsQuarterYear[0]]);
         // return new Date(lhsQuarterYear[1]).getTime() - new Date(rhsQuarterYear[1]).getTime();
         return lhsDate.getTime() - rhsDate.getTime();
       },
@@ -486,10 +505,11 @@
         return this.currentTimeline.id === 'historical';
       },
       showedMetrics() {
-        return this.metrics.slice(0, this.maxMetricsToShow);
+        // this.maxMetricsToShow = this.isMobile ? 2 : 4;
+        return this.metrics.slice(0, this.isMobile ? 1 : 4);
       },
       getUnit() {
-        return this.unit === 'USD' ? '$' : '%';
+        return this.metrics[this.currentMetricIndex] && this.metrics[this.currentMetricIndex].unit === 'USD' ? '$' : '%';
       },
       moreMetrics() {
         return this.metrics.slice(this.showedMetrics.length, this.metrics.length);

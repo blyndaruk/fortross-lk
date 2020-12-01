@@ -1,5 +1,8 @@
 .nav {
   padding: 40px 0;
+  @include sm {
+    margin-right: -40px;
+  }
 
   &__menu {
     display: flex;

@@ -1,19 +1,22 @@
 <template>
   <div class="companies">
-    <div class="companies__head">
-      <div class="companies__title">{{ $t('companies-title') }}</div>
-    </div>
-
-    <div class="companies__tabs" ref="companiesTabs">
-      <div class="companies__tab"
-           v-for="(category, index) in filteredIndustries"
-           :key="index"
-           :class="{ 'is-active': currentIndex === index }"
-           @click="filterCompanies(category.id, index)"
-      >
-        {{ index === 0 ? $t('all-companies') : category.title }}
-        <span class="companies__tab-amount">{{ category.amount }}</span>
+    <div class="companies__tabs-wrap" ref="companiesTabs">
+      <div class="companies__head">
+        <div class="companies__title">{{ $t('companies-title') }}</div>
       </div>
+      <vue-custom-scrollbar class="scroll-area" :settings="scrollSettings">
+        <div class="companies__tabs">
+          <div class="companies__tab"
+               v-for="(category, index) in filteredIndustries"
+               :key="index"
+               :class="{ 'is-active': currentIndex === index }"
+               @click="filterCompanies(category.id, index)"
+          >
+            {{ index === 0 ? $t('all-companies') : category.title }}
+            <span class="companies__tab-amount">{{ category.amount }}</span>
+          </div>
+        </div>
+      </vue-custom-scrollbar>
     </div>
 
     <div class="companies__list">
@@ -31,9 +34,15 @@
   import CompanyCard from '@/components/Companies/CompanyCard/CompanyCard';
   import httpClient from '@/utils/httpClient';
 
+  import vueCustomScrollbar from 'vue-custom-scrollbar';
+  import 'vue-custom-scrollbar/dist/vueScrollbar.css';
+
   export default {
     name: 'Companies',
-    components: { CompanyCard },
+    components: {
+      CompanyCard,
+      vueCustomScrollbar,
+    },
     data() {
       return {
         currentIndex: 0,
@@ -44,6 +53,11 @@
           id: 'all',
           title: 'All companies'
         }],
+        scrollSettings: {
+          suppressScrollY: false,
+          suppressScrollX: false,
+          wheelPropagation: false
+        },
       }
     },
 
