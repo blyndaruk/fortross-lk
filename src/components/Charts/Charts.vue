@@ -226,29 +226,31 @@
           this.data = response;
           this.chartBackgroundColor();
 
+          httpClient
+            .get('/api/company_info_iblock.php')
+            .then((response) => {
+              const companies = response;
+              const map = new Map();
 
-          const map = new Map();
-          // const result = [];
+              this.data.forEach((el) => {
+                // get all available metrics
+                this.metrics.indexOf(el.metric_name) === -1 ? this.metrics.push(el.metric_name) : '';
 
-          this.data.forEach((el) => {
-            // get all available metrics
-            this.metrics.indexOf(el.metric_name) === -1 ? this.metrics.push(el.metric_name) : '';
-
-            // set all available companies
-            if (!map.has(el.company_id)) {
-              map.set(el.company_id, true);
-              this.companies.push({
-                id: el.company_id,
-                color: this.randomColor(),
+                // set all available companies
+                if (!map.has(el.company_id)) {
+                  map.set(el.company_id, true);
+                  this.companies.push({
+                    id: el.company_id,
+                    color: companies.find(x => x.company_id === el.company_id).color
+                  });
+                }
               });
-            }
-          });
 
-          // set first company as default (for first load)
-          this.companiesSelected.push(this.companies[0]);
-          this.companiesSelected.push(this.companies[1]);
-          this.companiesSelected.push(this.companies[2]);
-          this.fillData();
+              // set first company as default (for first load)
+              this.companiesSelected.push(this.companies[0]);
+
+              this.fillData();
+            });
         });
     },
     methods: {
@@ -268,11 +270,6 @@
       },
       closeDateSelect() {
         this.openDateSelect = false;
-      },
-      randomColor() {
-        // const color = Math.floor(Math.random() * 16777215).toString(16);
-        // "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
-        return '#' + (Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0');
       },
       onCompanyUpdate() {
         this.fillData();
@@ -325,7 +322,7 @@
                   // hoverBorderColor: obj.color
                 });
               }
-              if (!periodMap.has(obj.period) && obj.period) {
+              if (!periodMap.has(obj.period) && obj.period && obj.metric_value) {
                 periodMap.set(obj.period, true);
                 const str = obj.period.replace(" ", "'").slice(0, 3);
                 this.labels.push(str + obj.period.slice(5))

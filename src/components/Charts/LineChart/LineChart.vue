@@ -23,7 +23,7 @@
               display: true,
               // type: 'time',
               ticks: {
-                // autoSkip: true,
+                autoSkip: true,
                 // suggestedMin: 12,
                 // maxTicksLimit: 18
               },
