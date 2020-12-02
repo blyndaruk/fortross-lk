@@ -102,6 +102,11 @@
       }
     }
   }
+  .ps-container {
+    @include xs {
+      margin-right: -20px;
+    }
+  }
 }
 
 .companies::v-deep {

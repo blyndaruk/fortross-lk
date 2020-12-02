@@ -11,7 +11,7 @@ import App from './App.vue';
 Vue.use(VueMq, {
   breakpoints: {
     mobile: 560,
-    tablet: 760,
+    tablet: 768,
     md: 968,
     lg: 1200,
     laptop: 1440,

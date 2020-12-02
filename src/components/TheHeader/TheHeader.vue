@@ -1,6 +1,6 @@
 <template>
   <div>
-    <header class="header">
+    <header class="header" :class="{ 'is-burger-active': this.isBurgerActive }">
       <div class="container">
         <div class="header__inner">
           <div class="header__left">
@@ -24,10 +24,36 @@
               </div>
             </mq-layout>
             <mq-layout :mq="['lg', 'md', 'tablet', 'mobile']">
-              <burger></burger>
+              <Burger @burger-toggle="onBurgerToggle"></Burger>
             </mq-layout>
           </div>
         </div>
+
+        <mq-layout :mq="['lg', 'md', 'tablet']">
+          <div class="header__sub-row">
+            <div class="header__id">ID 2345098-781-23</div>
+            <div class="header__fund">
+              {{ $t('fund') }}
+              <span>FRV LATE STAGE FUND</span>
+            </div>
+          </div>
+        </mq-layout>
+
+        <mq-layout :mq="['mobile']">
+          <div class="header__mob">
+            <div class="header__mob-top">
+              <div class="header__id">ID 2345098-781-23</div>
+              <div class="header__fund">
+                {{ $t('fund') }}
+                <span>FRV LATE STAGE FUND</span>
+              </div>
+            </div>
+            <div class="header__mob-nav">
+              <Nav />
+            </div>
+          </div>
+        </mq-layout>
+
       </div>
     </header>
   </div>
@@ -37,13 +63,25 @@
   import Burger from '@/components/Burger/Burger';
   import LocaleSwitcher from '@/components/LocaleSwitcher/LocaleSwitcher';
   import Logo from '@/components/Logo/Logo';
+  import Nav from '@/components/Nav/Nav';
 
   export default {
     name: 'TheHeader',
     components: {
+      Nav,
       Burger,
       LocaleSwitcher,
       Logo,
+    },
+    data() {
+      return {
+       isBurgerActive: false,
+      }
+    },
+    methods: {
+      onBurgerToggle(burger) {
+        this.isBurgerActive = burger;
+      },
     },
   }
 </script>

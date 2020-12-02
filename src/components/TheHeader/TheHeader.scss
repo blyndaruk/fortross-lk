@@ -1,4 +1,6 @@
 .header {
+  $this: &;
+
   position: fixed;
   top: 0;
   left: 0;
@@ -66,10 +68,73 @@
     @include semi;
     @include lspacing;
     text-transform: uppercase;
+    @include xs {
+      margin-top: 20px;
+    }
 
     span {
       color: $primary;
       margin-left: 10px;
+    }
+  }
+
+  &__sub-row {
+    position: absolute;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 30px 40px;
+    background-color: $main-bg;
+    transition: transform .2s ease, opacity $easing-default;
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+  }
+
+  &__mob {
+    position: absolute;
+    left: 0;
+    height: calc(100vh - 70px);
+    overflow-y: auto;
+    //display: flex;
+    //align-items: center;
+    //justify-content: space-between;
+    width: 100%;
+    padding: 20px;
+    background-color: $main-bg;
+    transition: transform .2s ease, opacity $easing-default;
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+  }
+
+  &__mob-nav {
+    position: relative;
+    padding-top: 20px;
+    margin-top: 20px;
+
+    &:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -20px;
+      width: 100vw;
+      height: 1px;
+      background-color: $primary;
+      opacity: 0.1;
+    }
+  }
+
+
+
+  &.is-burger-active {
+    #{$this}__sub-row,
+    #{$this}__mob {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
     }
   }
 }

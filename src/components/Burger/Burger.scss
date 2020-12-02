@@ -12,6 +12,7 @@
     height: 2px;
     width: 100%;
     background-color: $primary;
+    transition: all $easing-default;
 
     &:first-child {
       transform: translateY(-8px);
@@ -19,6 +20,38 @@
 
     &:last-child {
       transform: translateY(8px);
+    }
+  }
+
+  &.is-active {
+    span {
+      &:first-child {
+        transform: translateY(1px);
+      }
+
+      &:nth-child(2) {
+        opacity: 0;
+      }
+
+      &:last-child {
+        transform: translateY(-1px);
+      }
+    }
+  }
+
+  &.is-open {
+    span {
+      &:first-child {
+        transform: translateY(100%) rotate(45deg);
+      }
+
+      &:nth-child(2) {
+        opacity: 0;
+      }
+
+      &:last-child {
+        transform: translateY(-100%) rotate(-45deg);
+      }
     }
   }
 }

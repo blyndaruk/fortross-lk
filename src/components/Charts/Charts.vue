@@ -1,7 +1,7 @@
 <template>
   <div class="charts-wrapper">
     <mq-layout :mq="['lg', 'md', 'tablet', 'mobile']">
-      <div class="charts-wrapper-notification"><span>Open desktop version</span></div>
+      <div class="charts-wrapper-notification" @click="setDesktopViewport"><span>Open desktop version</span></div>
     </mq-layout>
     <div class="charts-wrapper__metrics">
       <div class="chart-metric"
@@ -67,21 +67,36 @@
             >
               {{ currentQuoter }}
             </div>
-            <div class="chart-timeline__options" :class="{ 'is-open': openDateSelect }">
-              <div
-                  class="chart-timeline__option"
-                  v-for="(option, i) in labelsAvailable"
-                  :key="i"
-                  @click="dateChange(option)"
-              >
-                {{ option }}
-              </div>
+            <div class="chart-timeline__options" :class="{ 'is-open': openDateSelect }">  <div
+                class="chart-timeline__option"
+                v-for="(option, i) in labelsAvailable"
+                :key="i"
+                @click="dateChange(option)"
+            >
+              {{ option }}
+            </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-timeline" v-if="!isHistorical && !isPie" v-click-outside="closeSortSelect">
+          <div class="chart-timeline__label">Сортировка</div>
+          <div class="chart-timeline__wrap" @blur="openSortSelect = false">
+            <div class="chart-timeline__active" ref="sortingSelected" :class="{ 'is-open': openSortSelect }"
+                 @click="openSortSelect = !openSortSelect"
+            >
+              По убыванию
+            </div>
+            <div class="chart-timeline__options" :class="{ 'is-open': openSortSelect }">
+              <div class="chart-timeline__option" @click="sortChange('to-low', 'По убыванию')">По убыванию</div>
+              <div class="chart-timeline__option" @click="sortChange('to-big', 'По возрастанию')">По возрастанию</div>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="charts-toggle-type" :class="{'is-active': isPie, 'is-disabled': getUnit === '%'}" v-if="!isHistorical">
+      <div class="charts-toggle-type" :class="{'is-active': isPie, 'is-disabled': getUnit === '%'}"
+           v-if="!isHistorical">
         <div class="charts-toggle-type__active"></div>
         <div class="charts-toggle-type__inner">
           <button @click="toggleType('line')">
@@ -177,6 +192,8 @@
         rectangleSet: false,
         openTimeSelect: false,
         openDateSelect: false,
+        openSortSelect: false,
+        sorting: 'to-low',
         settings: {
           suppressScrollY: false,
           suppressScrollX: false,
@@ -262,6 +279,8 @@
 
               // set first company as default (for first load)
               this.companiesSelected.push(this.companies[0]);
+              // this.companiesSelected.push(this.companies[1]);
+              // this.companiesSelected.push(this.companies[2]);
 
               this.fillData();
             });
@@ -274,7 +293,6 @@
           id: 'historical',
           title: 'Исторические данные',
         };
-        // console.log(this.currentTimeline);
         this.unit = this.getUnit;
         this.fillData();
       },
@@ -289,6 +307,9 @@
       },
       closeDateSelect() {
         this.openDateSelect = false;
+      },
+      closeSortSelect() {
+        this.openSortSelect = false;
       },
       onCompanyUpdate() {
         this.fillData();
@@ -324,13 +345,14 @@
                   borderColor: obj.color,
                   fill: false,
                   data: [],
-                  barPercentage: 0.75,
+                  // barPercentage: 0.75,
                   // barThickness: 6,
                   // borderRadius: 4,
                   // borderRadius: 20,
                   // hoverBorderRadius: 50,
                   // hoverBorderWidth: 10,
                   // hoverBorderColor: '#000000',
+                  // hoverBackgroundColor: '#000000',
                   // fillColor: obj.color,
                   // fillColor: "rgba(220,220,220,0.5)",
                   // strokeColor: "rgba(220,220,220,0.8)",
@@ -398,6 +420,10 @@
         if (!this.isHistorical && this.isPie) {
           this.datacollection = this.drawPie(this.datacollection);
         }
+        // rewrite data for doughnut chart
+        if (!this.isHistorical && this.isLine) {
+          this.datacollection = this.drawBar(this.datacollection);
+        }
       },
       sortByTime(lhs, rhs) {
         const lhsPeriod = lhs.period;
@@ -451,6 +477,12 @@
         this.openDateSelect = false;
         this.fillData();
       },
+      sortChange(param, option) {
+        this.sorting = param;
+        this.$refs.sortingSelected.innerText = option;
+        this.openSortSelect = false;
+        this.fillData();
+      },
       // TODO: refactor
       sortMinMax(data) {
         const dataArray = [];
@@ -460,7 +492,7 @@
         });
         let dataIndexes = dataArray.map((d, i) => i);
         dataIndexes.sort((a, b) => {
-          return dataArray[a] - dataArray[b];
+          return this.sorting === 'to-low' ? dataArray[b] - dataArray[a] : dataArray[a] - dataArray[b];
         });
         const tempDatasets = [];
         dataIndexes.forEach(function (ind) {
@@ -474,6 +506,7 @@
             {
               data: [],
               backgroundColor: [],
+              hoverBackgroundColor: [],
             }
           ],
           labels: [],
@@ -482,14 +515,86 @@
           if (obj.data[0]) {
             data.labels.push(obj.label);
             data.datasets[0].data.push(obj.data);
-            data.datasets[0].backgroundColor.push(obj.backgroundColor)
+            data.datasets[0].backgroundColor.push(obj.backgroundColor);
+            data.datasets[0].hoverBackgroundColor.push(this.darkerHEX( -0.3, obj.backgroundColor ));
           }
         });
         return data;
       },
+      drawBar(datasets) {
+        // TODO: refactor this
+        let currData = {};
+        const labels = [];
+        const dataArr = [];
+        const backgroundColorArr = [];
+        const hoverBackgroundColorArr = [];
+
+        datasets.datasets.forEach((obj) => {
+          if (obj.data[0]) {
+
+            labels.push(obj.label);
+            dataArr.push(parseFloat(obj.data[0]).toFixed(2));
+            backgroundColorArr.push(obj.backgroundColor);
+            hoverBackgroundColorArr.push(this.darkerHEX( -0.3, obj.backgroundColor ));
+          }
+        });
+
+        currData = {
+          labels: labels,
+          datasets: [
+            {
+              data: dataArr,
+              backgroundColor: backgroundColorArr,
+              hoverBackgroundColor: hoverBackgroundColorArr,
+              labels: backgroundColorArr
+            }
+          ]
+        };
+        return currData;
+      },
       setLegends(html) {
         this.legendHTML = html
       },
+      darkerHEX(p, c0, c1, l) {
+        let r, g, b, P, f, t, h, i = parseInt, m = Math.round, a = typeof (c1) == "string";
+        if (typeof (p) != "number" || p < -1 || p > 1 || typeof (c0) != "string" || (c0[0] !== 'r' && c0[0] !== '#') || (c1 && !a)) return null;
+        if (!this.pSBCr) this.pSBCr = (d) => {
+          let n = d.length, x = {};
+          if (n > 9) {
+            [r, g, b, a] = d = d.split(","), n = d.length;
+            if (n < 3 || n > 4) return null;
+            x.r = i(r[3] === "a" ? r.slice(5) : r.slice(4)), x.g = i(g), x.b = i(b), x.a = a ? parseFloat(a) : -1
+          } else {
+            if (n === 8 || n === 6 || n < 4) return null;
+            if (n < 6) d = "#" + d[1] + d[1] + d[2] + d[2] + d[3] + d[3] + (n > 4 ? d[4] + d[4] : "");
+            d = i(d.slice(1), 16);
+            if (n === 9 || n === 5) x.r = d >> 24 & 255, x.g = d >> 16 & 255, x.b = d >> 8 & 255, x.a = m((d & 255) / 0.255) / 1000;
+            else x.r = d >> 16, x.g = d >> 8 & 255, x.b = d & 255, x.a = -1
+          }
+          return x
+        };
+        h = c0.length > 9, h = a ? c1.length > 9 ? true : c1 === "c" ? !h : false : h, f = this.pSBCr(c0), P = p < 0, t = c1 && c1 !== "c" ? this.pSBCr(c1) : P ? {
+          r: 0,
+          g: 0,
+          b: 0,
+          a: -1
+        } : { r: 255, g: 255, b: 255, a: -1 }, p = P ? p * -1 : p, P = 1 - p;
+        if (!f || !t) return null;
+        if (l) r = m(P * f.r + p * t.r), g = m(P * f.g + p * t.g), b = m(P * f.b + p * t.b);
+        else r = m((P * f.r ** 2 + p * t.r ** 2) ** 0.5), g = m((P * f.g ** 2 + p * t.g ** 2) ** 0.5), b = m((P * f.b ** 2 + p * t.b ** 2) ** 0.5);
+        a = f.a, t = t.a, f = a >= 0 || t >= 0, a = f ? a < 0 ? t : t < 0 ? a : a * P + t * p : 0;
+        if (h) return "rgb" + (f ? "a(" : "(") + r + "," + g + "," + b + (f ? "," + m(a * 1000) / 1000 : "") + ")";
+        else return "#" + (4294967296 + r * 16777216 + g * 65536 + b * 256 + (f ? m(a * 255) : 0)).toString(16).slice(1, f ? undefined : -2)
+      },
+      setDesktopViewport() {
+        document.querySelector('#meta-viewport').setAttribute('content', 'width=device-width,initial-scale=0,user-scalable=yes');
+      },
+      setMobileViewport() {
+        document.querySelector('#meta-viewport').setAttribute('content', 'width=device-width,initial-scale=1,user-scalable=yes');
+      }
+    },
+    beforeDestroy() {
+      this.setMobileViewport();
     },
     computed: {
       isMobile() {
@@ -500,6 +605,9 @@
       },
       isLine() {
         return this.chartType === 'line';
+      },
+      isBar() {
+        return this.chartType === 'bar';
       },
       isHistorical() {
         return this.currentTimeline.id === 'historical';

@@ -101,8 +101,8 @@
                   const span = '<span style="' + style + '"></span>';
                   const str = body[0].split(': ');
                   const title = str[0];
-                  const value = parseFloat( str[1] ).toLocaleString();
-                  innerHtml += '<tr><td>' + span + title + ': ' + value + '</td></tr>';
+                  // const value = parseFloat( str[1] ).toLocaleString();
+                  innerHtml += '<tr><td>' + span + title + '</td></tr>';
                 });
                 innerHtml += '</tbody>';
 

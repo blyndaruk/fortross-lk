@@ -3,11 +3,18 @@
   @include sm {
     margin-right: -40px;
   }
+  @include xs {
+    margin-right: 0;
+    padding: 0;
+  }
 
   &__menu {
     display: flex;
     align-items: center;
     overflow-x: auto;
+    @include xs {
+      display: block;
+    }
   }
 
   &__item {
@@ -15,6 +22,10 @@
 
     &:not(:last-child) {
       margin-right: 40px;
+      @include xs {
+        margin-right: 0;
+        margin-bottom: 20px;
+      }
     }
 
     a {

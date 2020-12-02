@@ -5,6 +5,12 @@
     "portfolio-companies": "Portfolio Companies",
     "documents": "Documents"
   },
+  "dashboard": {
+    "state": "Current state of the account",
+    "unfunded": "Unfunded commitment",
+    "contributed-capital": "Contributed capital",
+    "contributed-account": "Contribution to the account"
+  },
   "fund": "fund",
   "companies-title": "Portfolio Companies",
   "all-companies": "All companies",

@@ -1,23 +1,26 @@
 <template>
-  <div class="hello">
-    My account
+  <div class="my-account">
+    <Dashboard viewType="medium" />
+    <!--
     <div class="test-item"
          v-for="item in data"
          :key="item.id"
     >
     </div>
-
     <pre style="text-align: left">
       {{data}}
     </pre>
+-->
   </div>
 </template>
 
 <script>
+  import Dashboard from '@/components/Dashboard/Dashboard';
   import httpClient from '@/utils/httpClient';
 
   export default {
     name: "MyAccount",
+    components: { Dashboard },
     data() {
       return {
         data: null,
