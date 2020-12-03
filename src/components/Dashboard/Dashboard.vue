@@ -49,6 +49,7 @@
   <!--          <circle cx="50" cy="50" r="40" fill="tomato"/>-->
   <!--          <circle cx="50" cy="50" r="40" fill="transparent" stroke-width="20" stroke="grey"/>-->
   <!--          stroke-dashoffset = perimeter - perimeter * amount / 100-->
+<!--            perimeter = 2 * 3.14 * radius -->
             <circle cx="110" cy="110" r="77" fill="transparent" stroke-width="66" stroke="url(#graphGradient)" stroke-dasharray="219.8" :stroke-dashoffset="activePercentage-20"/>
             <circle cx="110" cy="110" r="77" fill="transparent" stroke-width="66" stroke="#24DBAF" stroke-dasharray="219.8" :stroke-dashoffset="activePercentage"/>
           </svg>

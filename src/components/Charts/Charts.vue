@@ -587,7 +587,7 @@
         else return "#" + (4294967296 + r * 16777216 + g * 65536 + b * 256 + (f ? m(a * 255) : 0)).toString(16).slice(1, f ? undefined : -2)
       },
       setDesktopViewport() {
-        document.querySelector('#meta-viewport').setAttribute('content', 'width=device-width,initial-scale=0,user-scalable=yes');
+        document.querySelector('#meta-viewport').setAttribute('content', 'width=1200,initial-scale=0,user-scalable=yes');
       },
       setMobileViewport() {
         document.querySelector('#meta-viewport').setAttribute('content', 'width=device-width,initial-scale=1,user-scalable=yes');
