@@ -11,6 +11,11 @@
     "contributed-capital": "Contributed capital",
     "contributed-account": "Contribution to the account"
   },
+  "my-account": {
+    "account-report-tab": "Account status report",
+    "payment-report-tab": "Payment report",
+    "forecast-tab": "Account balance forecast"
+  },
   "fund": "fund",
   "companies-title": "Portfolio Companies",
   "all-companies": "All companies",

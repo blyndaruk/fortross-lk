@@ -37,11 +37,6 @@
               }
             }],
           },
-          // hoverBorderWidth: 5,
-          // hover: {
-          //   borderWidth: 4,
-          //   borderColor: '#000000',
-          // },
           tooltips: {
             mode: 'point',
             intersect: false,
@@ -100,7 +95,6 @@
                   const span = '<span style="' + style + '"></span>';
                   const str = body[0].split(': ');
                   const title = str[0];
-                  // const value = parseFloat( str[1] ).toLocaleString();
                   innerHtml += '<tr><td>' + span + title + '</td></tr>';
                 });
                 innerHtml += '</tbody>';

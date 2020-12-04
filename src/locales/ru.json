@@ -11,6 +11,11 @@
     "contributed-capital": "Contributed capital",
     "contributed-account": "Contribution to the account"
   },
+  "my-account": {
+    "account-report-tab": "Отчет о состоянии счета",
+    "payment-report-tab": "Отчет по платежам",
+    "forecast-tab": "Прогноз состояния счета"
+  },
   "fund": "фонд",
   "companies-title": "Компании в портфеле",
   "all-companies": "Все компании",

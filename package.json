@@ -15,6 +15,7 @@
     "core-js": "^3.6.5",
     "mobile-device-detect": "^0.4.3",
     "tinycolor2": "^1.4.2",
+    "v-tooltip": "^2.0.3",
     "vue": "^2.6.12",
     "vue-chartjs": "^3.5.1",
     "vue-click-outside": "^1.1.0",

@@ -1,0 +1,64 @@
+.report-table {
+  &__title {
+    margin-bottom: 30px;
+    font-size: 30px;
+    color: $primary;
+    @include semi;
+  }
+
+  &__body {
+    background-color: #ffffff;
+  }
+
+  & + & {
+    margin-top: 40px;
+  }
+
+  &__row {
+    display: flex;
+    border-bottom: 1px solid $main-bg;
+    color: $primary;
+  }
+
+  &__date {
+    width: 140px;
+    padding: 20px 30px;
+  }
+
+  &__type {
+    display: flex;
+    align-items: center;
+    width: 256px;
+    padding: 20px 30px;
+  }
+
+  &__description {
+    width: 464px;
+    padding: 20px 30px;
+  }
+
+  &__amount {
+    width: 300px;
+    padding: 20px 30px;
+    text-align: right;
+    @include semi;
+  }
+
+  &__info-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 9px;
+    margin-bottom: 2px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: $primary;
+    cursor: pointer;
+    transition: background-color $easing-default;
+
+    &:hover {
+      background-color: $secondary;
+    }
+  }
+}
