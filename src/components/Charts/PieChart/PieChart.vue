@@ -1,5 +1,6 @@
 <script>
   import { Doughnut, mixins } from 'vue-chartjs';
+
   const { reactiveProp } = mixins;
 
   export default {
@@ -31,39 +32,11 @@
               fontColor: '#7c7c7c',
             }
           },
-          legendCallback: (chart) => {
-            const renderLabels = (chart) => {
-              const { data } = chart;
-              let sum = 0;
-              data.datasets[0].data.map(data => {
-                if (data[0]) {
-                  sum += data[0]
-                }
-              });
-              return data.datasets[0].data.map((_, i) => {
-                  const value = (data.datasets[0].data[i] * 100 / sum).toFixed(1);
-                  return `<li>
-                    <div id="legend-${i}-item" class="legend-item">
-                      <span class="legend-item__circle" style="border-color:${data.datasets[0].backgroundColor[i]}"></span>
-                      ${data.labels[i] && `<span class="label">${value}% ${data.labels[i]}</span>`}
-                    </div>
-                </li>`
-                }
-              ).join("");
-            };
-            return `
-          <ul class="chartjs-legend">
-            ${renderLabels(chart)}
-          </ul>`;
-          },
           tooltips: {
             mode: 'point',
             intersect: false,
-            // axis: 'y',
-            // position: 'nearest',
             enabled: false,
-
-            custom: function (tooltipModel) {
+            custom(tooltipModel) {
               // Tooltip Element
               let tooltipEl = document.getElementById('chartjs-tooltip');
 
@@ -105,7 +78,13 @@
                 });
                 innerHtml += '<tbody>';
 
-
+                const { _data } = this;
+                let sum = 0;
+                _data.datasets[0].data.map(data => {
+                  if (data[0]) {
+                    sum += parseFloat(data[0]);
+                  }
+                });
                 bodyLines.forEach(function (body, i) {
                   const colors = tooltipModel.labelColors[i];
                   let style = 'background:' + colors.backgroundColor;
@@ -115,7 +94,8 @@
                   const str = body[0].split(': ');
                   const title = str[0];
                   const value = parseFloat(str[1]).toLocaleString();
-                  innerHtml += '<tr><td>' + span + title + ': ' + value + '</td></tr>';
+                  const percent = (str[1] * 100 / sum).toFixed(1);
+                  innerHtml += '<tr><td>' + span + title + ': ' + value + ' (' + percent + '%) ' + '</td></tr>';
                 });
                 innerHtml += '</tbody>';
 
@@ -169,15 +149,7 @@
     },
     mounted() {
       this.renderChart(this.chartData, this.options);
-      const HTML = this.$data._chart.generateLegend();
-      this.$emit('generated-legends', HTML)
     },
-    watch: {
-      chartData() {
-        const HTML = this.$data._chart.generateLegend();
-        this.$emit('generated-legends', HTML)
-      }
-    }
   }
 </script>
 

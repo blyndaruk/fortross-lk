@@ -1,4 +1,6 @@
 <script>
+  // import { addZeroes } from '@/utils/addZeroes';
+  import { sortMinMaxTooltip } from '@/utils/sortMinMaxTooltip';
   import { Line, mixins } from 'vue-chartjs';
 
   const { reactiveProp } = mixins;
@@ -15,13 +17,17 @@
           legend: {
             display: false
           },
+          // bezierCurve: false,
           chartArea: {
             backgroundColor: '#f7f7f7'
           },
+          spanGaps: true,
+          unit: this.unit,
           scales: {
             xAxes: [{
               display: true,
-              // type: 'time',
+              // stacked: true,
+              // beginAtZero: true,
               ticks: {
                 autoSkip: true,
                 // suggestedMin: 12,
@@ -38,7 +44,6 @@
               },
               ticks: {
                 beginAtZero: true,
-                // TODO: test with percentage units
                 callback: value => this.unit === '%' ? value + this.unit : this.unit + value,
               }
             }]
@@ -46,20 +51,23 @@
           elements: {
             point: {
               radius: 3,
-              hoverRadius: 5,
+              hoverRadius: 5.4,
             },
+            // line: {
+            //   tension: 2
+            // }
           },
           hover: {
             mode: 'index',
             intersect: false,
           },
           tooltips: {
-            mode: 'index',
-            intersect: false,
+            mode: 'x',
+            intersect: true,
             position: 'nearest',
             enabled: false,
-
-            custom: function (tooltipModel) {
+            custom(tooltipModel) {
+              const unit = document.querySelector('#unit_type').value === '%' ? '%' : '';
               // Tooltip Element
               let tooltipEl = document.getElementById('chartjs-tooltip');
 
@@ -101,17 +109,20 @@
                 });
                 innerHtml += '</thead><tbody>';
 
+                const bodyValues = sortMinMaxTooltip(bodyLines, 'min', tooltipModel.labelColors);
+                const values = bodyValues.values;
+                const sortedColors = bodyValues.colors;
 
-                bodyLines.forEach(function (body, i) {
-                  const colors = tooltipModel.labelColors[i];
+                values.forEach(function (body, i) {
+                  const str = body[0].split(': ');
+                  const title = str[0];
+                  const value = parseInt(str[1]).toLocaleString();
+                  const colors = sortedColors[i];
                   let style = 'background:' + colors.backgroundColor;
                   style += '; border-color:' + colors.borderColor;
                   style += '; border-width: 2px';
                   const span = '<span style="' + style + '"></span>';
-                  const str = body[0].split(': ');
-                  const title = str[0];
-                  const value = parseFloat( str[1] ).toLocaleString();
-                  innerHtml += '<tr><td>' + span + title + ': ' + value + '</td></tr>';
+                  innerHtml += '<tr><td>' + span + title + ': ' + value + unit + '</td></tr>';
                 });
                 innerHtml += '</tbody>';
 
@@ -147,7 +158,6 @@
       }
     },
     mounted() {
-      // console.log(this.chartData);
       this.renderChart(this.chartData, this.options)
     }
   }
