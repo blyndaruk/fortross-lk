@@ -4,12 +4,25 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 30px;
+    @include r(700) {
+      padding: 0 30px;
+    }
+    @include xs {
+      flex-wrap: wrap;
+      padding: 0 20px;
+      margin-bottom: 10px;
+    }
   }
 
   &__title {
     font-size: 30px;
     color: $primary;
     @include semi;
+    @include xs {
+      width: 100%;
+      margin-bottom: 10px;
+      font-size: 26px;
+    }
   }
 
   &__body {
@@ -24,23 +37,112 @@
     display: flex;
     border-bottom: 1px solid $main-bg;
     color: $primary;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+
+    @include md {
+      flex-wrap: wrap;
+    }
+
+    &.is-open {
+      white-space: normal;
+      overflow: visible;
+
+      .report-table__trunc {
+        white-space: normal;
+        padding-right: 0;
+        overflow: visible;
+
+        .report-table__trunc-more {
+          @include md {
+            right: -10px;
+          }
+        }
+      }
+    }
   }
 
   &__date {
     width: 140px;
     padding: 20px 30px;
+    @include md {
+      width: 22%;
+      flex-shrink: 0;
+    }
+    @include xs {
+      padding: 12px 20px;
+      width: 125px;
+    }
   }
 
   &__type {
     display: flex;
-    align-items: center;
+    flex-shrink: 0;
     width: 256px;
     padding: 20px 30px;
+    @include md {
+      width: 32%;
+      flex-shrink: 1;
+    }
+    @include xs {
+      padding: 12px 20px;
+      width: calc(100% - 125px);
+    }
   }
 
   &__description {
-    width: 464px;
+    display: flex;
+    position: relative;
+    //width: 464px;
+    width: 40%;
     padding: 20px 30px;
+    @include md {
+      width: 46%;
+    }
+    @include xs {
+      padding: 0 20px;
+      width: 100%;
+    }
+  }
+
+  &__trunc {
+    position: relative;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    .report-table__trunc-more {
+      display: none;
+    }
+
+    &.is-overflow {
+
+      & ~ .report-table__trunc-more {
+        position: relative;
+        z-index: 2;
+        display: block;
+        width: 20px;
+        height: 20px;
+        margin-left: 10px;
+        flex-shrink: 0;
+        top: -4px;
+        cursor: pointer;
+
+        &:hover {
+          color: $primary;
+        }
+      }
+    }
+  }
+
+  &__trunc-more {
+    display: none;
+    color: $secondary;
+
+    svg {
+      transition: all $easing-default;
+    }
   }
 
   &__amount {
@@ -48,6 +150,12 @@
     padding: 20px 30px;
     text-align: right;
     @include semi;
+    @include md {
+      width: 100%;
+    }
+    @include xs {
+      padding: 10px 20px;
+    }
   }
 
   &__text {
@@ -59,10 +167,12 @@
 
   &__info-icon {
     display: inline-flex;
+    flex-shrink: 0;
     align-items: center;
     justify-content: center;
     margin-left: 9px;
     margin-bottom: 2px;
+    margin-top: 2px;
     width: 16px;
     height: 16px;
     border-radius: 50%;

@@ -1,0 +1,64 @@
+.field {
+  .vdp-datepicker {
+    z-index: 5;
+
+    &__calendar {
+      transform: translateX(-50%) translateY(6px);
+      left: 50%;
+      @include xs {
+        left: 0;
+        transform: translate(0, 0);
+      }
+    }
+
+    .cell {
+      font-size: 14px;
+      border-radius: 4px;
+      line-height: 39px;
+    }
+
+    .cell.selected {
+      background-color: $secondary;
+      border-color: $secondary;
+      color: #ffffff;
+
+      &:hover {
+        background-color: $secondary;
+        border-color: $secondary !important;
+      }
+    }
+  }
+
+  .day__month_btn {
+    @include semi;
+  }
+
+  .vdp-datepicker__calendar .cell:not(.blank):not(.disabled).day:hover,
+  .vdp-datepicker__calendar .cell:not(.blank):not(.disabled).month:hover,
+  .vdp-datepicker__calendar .cell:not(.blank):not(.disabled).year:hover {
+    border-color: $secondary;
+  }
+
+  .vdp-datepicker__calendar header .prev:after,
+  .vdp-datepicker__calendar header .next:after {
+    border: 5px solid transparent;
+  }
+
+  .vdp-datepicker__calendar header .next:after {
+    border-left: 8px solid $primary;
+  }
+
+  .vdp-datepicker__calendar header .prev:after {
+    border-right: 8px solid $primary;
+  }
+
+  .vdp-datepicker__calendar:not(.disabled) {
+    color: $primary;
+  }
+
+  .vdp-datepicker__calendar header .prev:not(.disabled):hover,
+  .vdp-datepicker__calendar header .next:not(.disabled):hover,
+  .vdp-datepicker__calendar header .up:not(.disabled):hover {
+    background-color: $main-bg;
+  }
+}

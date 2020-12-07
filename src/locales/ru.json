@@ -16,6 +16,10 @@
     "payment-report-tab": "Отчет по платежам",
     "forecast-tab": "Прогноз состояния счета"
   },
+  "datepicker": {
+    "from": "с",
+    "to": "по"
+  },
   "fund": "фонд",
   "companies-title": "Компании в портфеле",
   "all-companies": "Все компании",

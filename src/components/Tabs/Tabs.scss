@@ -1,4 +1,13 @@
 .tabs {
+  @include r(700) {
+    margin-left: -40px;
+    margin-right: -40px;
+  }
+  @include xs {
+    margin-left: -20px;
+    margin-right: -20px;
+    margin-top: -40px;
+  }
 
   &__list {
     position: relative;
@@ -8,6 +17,9 @@
     padding: 30px 30px 0;
     background-color: #ffffff;
     border-bottom: 1px solid $main-bg;
+    @include xs {
+      padding: 0 0 1px 20px;
+    }
   }
 
   li {
@@ -15,9 +27,27 @@
     color: $primary;
     cursor: pointer;
     border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    background-color: #ffffff;
+
+    &:first-child {
+      display: none;
+    }
+
+    &:last-child {
+      @include xs {
+        padding-right: 20px;
+      }
+    }
 
     &:not(:last-child) {
       margin-right: 30px;
+      @include xs {
+      }
+    }
+
+    @include xs {
+      padding-top: 20px;
     }
 
     &.is-active {
@@ -28,9 +58,42 @@
 
   &__item {
     padding-bottom: 30px;
+    @include xs {
+      padding-bottom: 20px;
+    }
   }
 
   &__details {
     position: relative;
+  }
+}
+
+
+.tabs::v-deep {
+  .ps-container {
+    background-color: #ffffff;
+
+    &:hover {
+      .ps__rail-x {
+        opacity: 0;
+      }
+    }
+  }
+
+  .ps--scrolling-x {
+    .ps__rail-x {
+      opacity: 1;
+    }
+  }
+
+  .ps__rail-x {
+    bottom: 0 !important;
+    z-index: 3;
+    opacity: 0;
+    height: 6px;
+  }
+
+  .ps__thumb-x {
+    height: 3px;
   }
 }

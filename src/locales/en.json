@@ -16,6 +16,10 @@
     "payment-report-tab": "Payment report",
     "forecast-tab": "Account balance forecast"
   },
+  "datepicker": {
+    "from": "from",
+    "to": "to"
+  },
   "fund": "fund",
   "companies-title": "Portfolio Companies",
   "all-companies": "All companies",

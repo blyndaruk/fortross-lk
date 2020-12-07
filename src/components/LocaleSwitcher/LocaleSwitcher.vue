@@ -33,10 +33,12 @@
         this.activeLocale = locale;
         this.$cookies.set('app_locale', locale);
         this.$i18n.locale = Vue.config.lang;
+        document.querySelector('html').setAttribute('lang', locale);
       }
     },
     mounted() {
       this.$i18n.locale = Vue.config.lang;
+      document.querySelector('html').setAttribute('lang', this.$i18n.locale);
     },
     computed: {
       languages() {

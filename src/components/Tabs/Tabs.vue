@@ -1,10 +1,12 @@
 <template>
   <div class="tabs">
-    <ul class="tabs__list">
-      <li v-for="(tab, index) in tabs" :class="{ 'is-active': tab.isActive }" :key="index">
-        <div class="tabs__item" :target="tab.href" @click="selectTab(tab)">{{ tab.name }}</div>
-      </li>
-    </ul>
+    <vue-custom-scrollbar class="scroll-area" :settings="scrollSettings">
+      <ul class="tabs__list">
+        <li v-for="(tab, index) in tabs" :class="{ 'is-active': tab.isActive }" :key="index">
+          <div class="tabs__item" :target="tab.href" @click="selectTab(tab)">{{ tab.name }}</div>
+        </li>
+      </ul>
+    </vue-custom-scrollbar>
     <div class="tabs__details">
       <slot></slot>
     </div>
@@ -12,11 +14,22 @@
 </template>
 
 <script>
+  import vueCustomScrollbar from 'vue-custom-scrollbar';
+  import 'vue-custom-scrollbar/dist/vueScrollbar.css';
+
   export default {
     name: 'Tabs',
+    components: {
+      vueCustomScrollbar,
+    },
     data() {
       return {
-        tabs: []
+        tabs: [],
+        scrollSettings: {
+          suppressScrollY: false,
+          suppressScrollX: false,
+          wheelPropagation: false
+        },
       };
     },
     created() {
