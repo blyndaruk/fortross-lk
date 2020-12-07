@@ -5,6 +5,10 @@
   padding: 10px;
   color: #ffffff;
 
+  td, th {
+    color: #ffffff;
+  }
+
   thead {
     @include semi;
     font-size: 14px;

@@ -1,6 +1,12 @@
 .report-table {
-  &__title {
+  &__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 30px;
+  }
+
+  &__title {
     font-size: 30px;
     color: $primary;
     @include semi;
@@ -44,6 +50,13 @@
     @include semi;
   }
 
+  &__text {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    padding: 20px 30px;
+  }
+
   &__info-icon {
     display: inline-flex;
     align-items: center;
@@ -53,12 +66,33 @@
     width: 16px;
     height: 16px;
     border-radius: 50%;
-    background-color: $primary;
+    background-color: $secondary;
     cursor: pointer;
     transition: background-color $easing-default;
 
     &:hover {
-      background-color: $secondary;
+      background-color: $primary;
+    }
+  }
+
+  &__head-actions {
+    display: flex;
+    align-items: center;
+
+    .sort-select {
+      margin-left: 30px;
+    }
+  }
+
+  &__download {
+    display: flex;
+    @include semi;
+    color: $secondary;
+    cursor: pointer;
+
+    svg {
+      display: block;
+      margin-right: 7px;
     }
   }
 }

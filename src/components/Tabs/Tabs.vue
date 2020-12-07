@@ -20,7 +20,6 @@
       };
     },
     created() {
-      console.log('created');
       this.tabs = this.$children;
     },
     methods: {
