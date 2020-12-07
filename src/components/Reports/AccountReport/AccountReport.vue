@@ -70,7 +70,7 @@
     <div class="account-report__data">
       <div class="report-table" v-for="(table, index) in currentReports" :key="table.period">
         <div class="report-table__head">
-          <div class="report-table__title" v-if="table.dataset.length">
+          <div class="report-table__title" v-if="table.dataset && table.dataset.length">
             {{table.period}}
           </div>
           <div class="report-table__head-actions">
@@ -88,7 +88,7 @@
                 <div class="sort-select__active" :class="{ 'is-open': openSortSelect }"
                      @click="openSortSelect = !openSortSelect"
                 >
-                  {{ currentSortType.title }}
+                  Дате
                 </div>
                 <div class="sort-select__options" :class="{ 'is-open': openSortSelect }">
                   <div
@@ -152,6 +152,8 @@
   import Datepicker from 'vuejs-datepicker';
   import { en, ru } from 'vuejs-datepicker/dist/locale';
 
+  import { DateTime } from "luxon";
+
 
   export default {
     name: 'AccountReport',
@@ -165,34 +167,21 @@
         openSortSelect: false,
         sortTypes: [
           {
-            title: 'Дате'
+            title: 'По возрастанию',
+            id: 'to-high',
           },
           {
-            title: 'Типу'
+            title: 'По убыванию',
+            id: 'to-low',
           },
         ],
         currentSortType: {
-          title: 'Дате'
+          title: 'По возрастанию',
+          id: 'to-high'
         },
         openTypeSelect: false,
-        // filterTypes: [
-        //   {
-        //     title: 'Все'
-        //   },
-        //   {
-        //     title: 'INV'
-        //   },
-        //   {
-        //     title: 'MANFEE'
-        //   },
-        // ],
         disabledStartDates: {},
         disabledEndDates: {},
-        // disabledDates: {
-        //   // from: new Date(2021, 0, 26),
-        //   from: new Date(2020, 11, 26),
-        //   to: new Date(2020, 11, 10)
-        // },
         startDate: '',
         endDate: '',
         currentFilterType: {
@@ -317,7 +306,6 @@
               dataset: [],
             });
             report.dataset.forEach((dataset) => {
-              console.log(dataset.type);
               if (dataset.type.toLowerCase() === this.currentFilterType.id) {
                 this.currentReports[index].dataset.push(dataset);
               }
@@ -334,6 +322,41 @@
         }
 
 
+        // Filter by chosen date range
+        if (this.startDate && this.endDate) {
+          const startDateFormatted = DateTime.fromJSDate(this.startDate).startOf('day');
+          const endDateFormatted = DateTime.fromJSDate(this.endDate).startOf('day');
+          this.currentReports = this.currentReports.reduce((reports, report) => {
+            const tt = report.dataset.filter((dataset) => {
+              const datasetDate = DateTime.fromFormat(dataset.date, 'd.MM.yyyy');
+              return (datasetDate >= startDateFormatted && datasetDate <= endDateFormatted);
+            });
+            if (tt.length) {
+              reports.push({
+                period: report.period,
+                dataset: tt,
+              });
+            }
+            return reports;
+          }, []);
+        }
+
+        // Sorting by dates
+        this.currentReports.sort((a, b) => {
+          const keyA = DateTime.fromFormat(a.period.toLowerCase(), 'LLLL, yyyy', { locale: this.$i18n.locale });
+          const keyB = DateTime.fromFormat(b.period.toLowerCase(), 'LLLL, yyyy', { locale: this.$i18n.locale });
+
+          // Compare the 2 dates
+          if (this.currentSortType.id === 'to-high') {
+            if (keyA > keyB) return -1;
+            if (keyA < keyB) return 1;
+          } else {
+            if (keyA < keyB) return -1;
+            if (keyA > keyB) return 1;
+          }
+          return 0;
+        });
+
         setTimeout(() => {
           this.truncate();
           this.$store.dispatch('loader/hide');
@@ -343,13 +366,15 @@
         this.startDate = time;
         this.disabledEndDates = {
           to: time,
-        }
+        };
+        if (this.startDate && this.endDate) this.updateData();
       },
       onEndDateSelect(time) {
         this.endDate = time;
         this.disabledStartDates = {
           from: time,
-        }
+        };
+        if (this.startDate && this.endDate) this.updateData();
       },
       closeSelect() {
         this.openSortSelect = false;
@@ -360,6 +385,7 @@
       sortChange(option) {
         this.currentSortType = option;
         this.openSortSelect = false;
+        this.updateData();
       },
       filterTypeChange(option) {
         this.currentFilterType = option;
@@ -405,9 +431,6 @@
       }, 1000)
     },
     computed: {
-      // types() {
-      //
-      // }
     },
     directives: {
       ClickOutside

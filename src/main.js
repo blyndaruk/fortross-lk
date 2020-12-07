@@ -28,7 +28,6 @@ Vue.use(VueMq, {
   }
 });
 
-
 Vue.filter('truncate', filter);
 
 new Vue({

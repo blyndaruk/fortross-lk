@@ -70,6 +70,59 @@
     }
   }
 
+  &__checkboxes {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    font-size: 14px;
+    color: $primary;
+    font-weight: 500;
+
+    .field__checkbox {
+      margin-right: 20px;
+    }
+
+    .field__check {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      border-radius: 4px;
+      border: 1px solid #bbbbbb;
+    }
+
+    label {
+      width: 25%;
+      margin-bottom: 10px;
+      display: inline-flex;
+      align-items: center;
+      cursor: pointer;
+      @include lg {
+        width: 50%;
+      }
+      @include xs {
+        width: 100%;
+      }
+    }
+
+    input {
+      display: none;
+
+      &:checked ~ .field__check {
+        border-color: $secondary;
+        background-color: $secondary;
+        background-image: url(~@/assets/images/check.svg);
+        background-repeat: no-repeat;
+        background-position: center center;
+      }
+    }
+
+    span {
+      margin-right: 10px;
+    }
+  }
+
+
   .vdp-datepicker {
     input {
       max-width: 101px;
