@@ -1,13 +1,97 @@
 <template>
   <div class="forecast">
     <div class="forecast__head">
-      <div class="forecast__period">
-        <div class="forecast__subtitle">Период</div>
-      </div>
-      <div class="forecast__type">
-        <div class="forecast__subtitle">Тип</div>
+
+      <div class="field field--date">
+        <div class="field__label">Период</div>
+        <div class="field__inner">
+          <div class="field__date">
+            <div class="field__placeholder-left">{{ $t('datepicker.from') }}</div>
+            <datepicker
+                format="yyyy"
+                @selected="onStartDateSelect"
+                :language="$i18n.locale === 'ru' ? ru : en"
+                minimum-view="year"
+            ></datepicker>
+            <div class="field__placeholder-right">
+              <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd"
+                      d="M3 0H5V2H3V0ZM6 0H8V2H6V0ZM5 3H3V5H5V3ZM6 3H8V5H6V3ZM2 3H0V5H2V3ZM3 6H5V8H3V6ZM2 6H0V8H2V6Z"
+                      fill="#0B204E" />
+              </svg>
+            </div>
+          </div>
+
+          <div class="field__date field__date--quoter">
+            <div class="sort-select" v-click-outside="closeFromQSelect">
+              <div class="sort-select__wrap" @blur="openFromQSelect = false">
+                <div class="sort-select__active" :class="{ 'is-open': openFromQSelect }"
+                     @click="openFromQSelect = !openFromQSelect"
+                >
+                  {{ currentFromQ || 'Квартал' }}
+                </div>
+                <div class="sort-select__options" :class="{ 'is-open': openFromQSelect }">
+                  <div
+                      class="sort-select__option"
+                      v-for="(option, i) in fromQuarters"
+                      :key="i"
+                      @click="sortFromQChange(option)"
+                  >
+                    {{ option }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="field__date">
+            <div class="field__placeholder-left">{{ $t('datepicker.to') }}</div>
+            <datepicker
+                format="yyyy"
+                @selected="onEndDateSelect"
+                :language="$i18n.locale === 'ru' ? ru : en"
+                minimum-view="year"
+            ></datepicker>
+            <div class="field__placeholder-right">
+              <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd"
+                      d="M3 0H5V2H3V0ZM6 0H8V2H6V0ZM5 3H3V5H5V3ZM6 3H8V5H6V3ZM2 3H0V5H2V3ZM3 6H5V8H3V6ZM2 6H0V8H2V6Z"
+                      fill="#0B204E" />
+              </svg>
+            </div>
+          </div>
+
+
+
+          <div class="field__date field__date--quoter">
+            <div class="sort-select" v-click-outside="closeToQSelect">
+              <div class="sort-select__wrap" @blur="openToQSelect = false">
+                <div class="sort-select__active" :class="{ 'is-open': openToQSelect }"
+                     @click="openToQSelect = !openToQSelect"
+                >
+                  {{ currentToQ || 'Квартал' }}
+                </div>
+                <div class="sort-select__options" :class="{ 'is-open': openToQSelect }">
+                  <div
+                      class="sort-select__option"
+                      v-for="(option, i) in toQuarters"
+                      :key="i"
+                      @click="sortToQChange(option)"
+                  >
+                    {{ option }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
       </div>
     </div>
+
+
 
     <div class="forecast__data">
       <div class="report-table">
@@ -26,7 +110,7 @@
         </div>
 
         <div class="report-table__body">
-          <div class="report-table__row" v-for="(row, index) in reports" :key="index">
+          <div class="report-table__row" v-for="(row, index) in currentReports" :key="index">
             <div class="report-table__text">
               <p>{{row.title}}</p>
               <div class="report-table__info-icon" v-if="row.tooltip"
@@ -56,37 +140,69 @@
 </template>
 
 <script>
+  // import { DateTime } from 'luxon';
+
+  // import httpClient from '@/utils/httpClient';
   import ClickOutside from 'vue-click-outside';
+  import Datepicker from 'vuejs-datepicker';
+  import { en, ru } from 'vuejs-datepicker/dist/locale';
+  // import { DateTime } from "luxon";
 
   export default {
     name: 'Forecast',
+    components: {
+      Datepicker,
+    },
     data() {
       return {
+        en,
+        ru,
+        quarters: [
+          'Q1',
+          'Q2',
+          'Q3',
+          'Q4',
+        ],
+        openFromQSelect: false,
+        currentFromQ: '',
+        fromQuarters: [],
+        openToQSelect: false,
+        currentToQ: '',
+        toQuarters: [],
+        currentReports: [],
         reports: [
           {
             title: 'Upcoming Investments (estimate)',
             amount: '-45 000.00 USD',
+            quarter: 'Q4',
+            date: '20-10-2020',
           },
           {
             title: 'Upcoming Investments (estimate)',
             amount: '-45 000.00 USD',
+            quarter: 'Q1',
           },
           {
             title: 'Upcoming Investments (estimate)',
             amount: '-45 000.00 USD',
             tooltip: 'Upcoming Investments',
+            quarter: 'Q1',
+            date: '22-01-2020',
           },
           {
             title: 'Upcoming Investments (estimate)',
             amount: '-45 000.00 USD',
+            quarter: 'Q2',
           },
           {
             title: 'Upcoming Investments (estimate)',
             amount: '-45 000.00 USD',
+            quarter: 'Q4',
           },
           {
             title: 'Upcoming Investments (estimate)',
             amount: '-45 000.00 USD',
+            quarter: 'Q3',
           },
           {
             title: 'Upcoming Investments (estimate)',
@@ -95,7 +211,113 @@
         ],
       }
     },
-    methods: {},
+    mounted() {
+      this.updateData();
+      // console.log(DateTime);
+      // httpClient
+        // .get('/api/projected_balance_ex.php')
+        // .then((response) => {
+          // console.log(response);
+          // response.Инвестор.Периоды.forEach((report) => {
+          //   // console.log(report);
+          //   report.Таблица.Строка.forEach((dataset) => {
+          //     console.log(dataset);
+          //   });
+          // });
+        // });
+    },
+    methods: {
+      onStartDateSelect() {
+
+      },
+      onEndDateSelect() {
+
+      },
+      closeFromQSelect() {
+        this.openFromQSelect = false;
+      },
+      sortFromQChange(option) {
+        this.currentFromQ = option;
+        this.openFromQSelect = false;
+        // this.updateData();
+      },
+      closeToQSelect() {
+        this.openToQSelect = false;
+      },
+      sortToQChange(option) {
+        this.currentToQ = option;
+        this.openToQSelect = false;
+        // this.updateData();
+      },
+      updateData() {
+        this.$store.dispatch('loader/show');
+
+        this.currentReports = [];
+        const mapFromQuarters = new Map();
+        // const mapToQuaters = new Map();
+        this.reports.forEach((report) => {
+          // this.currentReports.push({
+          //   period: report.period,
+          //   dataset: [],
+          // });
+          // console.log(report.quarter, index);
+          // report.forEach((dataset) => {
+          //   if (dataset.type.toLowerCase() === this.currentFilterType.id) {
+          //     this.currentReports[index].dataset.push(dataset);
+          //   }
+          //   // console.log(index);
+          if (report.quarter) {
+            if (!mapFromQuarters.has(report.quarter)) {
+              mapFromQuarters.set(report.quarter, true);
+              this.fromQuarters.push(report.quarter);
+              this.toQuarters.push(report.quarter);
+            }
+          }
+          this.currentReports.push(report);
+        });
+
+
+        // Filter by chosen date range
+        // if (this.startDate && this.endDate) {
+        //   const startDateFormatted = DateTime.fromJSDate(this.startDate).startOf('day');
+        //   const endDateFormatted = DateTime.fromJSDate(this.endDate).startOf('day');
+        //   this.currentReports = this.currentReports.reduce((reports, report) => {
+        //     const tt = report.dataset.filter((dataset) => {
+        //       const datasetDate = DateTime.fromFormat(dataset.date, 'd.MM.yyyy');
+        //       return (datasetDate >= startDateFormatted && datasetDate <= endDateFormatted);
+        //     });
+        //     if (tt.length) {
+        //       reports.push({
+        //         period: report.period,
+        //         dataset: tt,
+        //       });
+        //     }
+        //     return reports;
+        //   }, []);
+        // }
+
+        // Sorting by dates
+        // this.currentReports.sort((a, b) => {
+        //   const keyA = DateTime.fromFormat(a.period.toLowerCase(), 'LLLL, yyyy', { locale: this.$i18n.locale });
+        //   const keyB = DateTime.fromFormat(b.period.toLowerCase(), 'LLLL, yyyy', { locale: this.$i18n.locale });
+        //
+        //   // Compare the 2 dates
+        //   if (this.currentSortType.id === 'to-high') {
+        //     if (keyA > keyB) return -1;
+        //     if (keyA < keyB) return 1;
+        //   } else {
+        //     if (keyA < keyB) return -1;
+        //     if (keyA > keyB) return 1;
+        //   }
+        //   return 0;
+        // });
+
+        setTimeout(() => {
+          // this.truncate();
+          this.$store.dispatch('loader/hide');
+        }, 400);
+      },
+    },
     directives: {
       ClickOutside
     },

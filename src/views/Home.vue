@@ -8,7 +8,7 @@
 
 <script>
   import Dashboard from '@/components/Dashboard/Dashboard';
-  import httpClient from '@/utils/httpClient';
+  // import httpClient from '@/utils/httpClient';
 
   export default {
     name: 'Home',
@@ -21,9 +21,12 @@
       };
     },
     mounted() {
-      httpClient
-        .get('/lk/portfolio_component.php')
-        .then((response) => this.data = response);
+      // httpClient
+      //   .get('/api/cash_flow.php')
+      //   .then((response) => {
+      //     console.log(response.Инвестор);
+      //     this.data = response
+      //   });
     }
   }
 </script>

@@ -48,6 +48,7 @@
                      :name="'payments_income'"
                      :id="'payments_income'"
                      v-model="paymentsIncome"
+                     @change="onPaymentTypeChange"
               >
               <span class="field__check"></span>
               <span>Поступления</span>
@@ -59,6 +60,7 @@
                      :name="'payments_outcome'"
                      :id="'payments_outcome'"
                      v-model="paymentsOutcome"
+                     @change="onPaymentTypeChange"
               >
               <span class="field__check"></span>
               <span>Расходы</span>
@@ -112,14 +114,6 @@
               <p class="report-table__trunc" ref="truncate">
                 {{row.type}}
               </p>
-              <div class="report-table__info-icon" v-if="row.tooltip"
-                   v-tooltip.top-start="{ content: row.tooltip, classes: 'report-tooltip' } ">
-                <svg width="2" height="8" viewBox="0 0 2 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path fill-rule="evenodd" clip-rule="evenodd"
-                        d="M1.00098 2C1.55326 2 2.00098 1.55228 2.00098 1C2.00098 0.447715 1.55326 0 1.00098 0C0.448692 0 0.000976562 0.447715 0.000976562 1C0.000976562 1.55228 0.448692 2 1.00098 2ZM2.00098 4C2.00098 3.44772 1.55326 3 1.00098 3C0.448692 3 0.000976562 3.44772 0.000976562 4V7C0.000976562 7.55228 0.448692 8 1.00098 8C1.55326 8 2.00098 7.55228 2.00098 7L2.00098 4Z"
-                        fill="white" />
-                </svg>
-              </div>
               <div class="report-table__trunc-more" @click="toggleMore">
                 <svg width="20" height="4" viewBox="0 0 20 4" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path fill-rule="evenodd" clip-rule="evenodd"
@@ -132,6 +126,14 @@
               <p class="report-table__trunc" ref="truncate">
                 {{ row.description }}
               </p>
+              <div class="report-table__info-icon" v-if="row.tooltip"
+                   v-tooltip.top-start="{ content: row.tooltip, classes: 'report-tooltip' } ">
+                <svg width="2" height="8" viewBox="0 0 2 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd"
+                        d="M1.00098 2C1.55326 2 2.00098 1.55228 2.00098 1C2.00098 0.447715 1.55326 0 1.00098 0C0.448692 0 0.000976562 0.447715 0.000976562 1C0.000976562 1.55228 0.448692 2 1.00098 2ZM2.00098 4C2.00098 3.44772 1.55326 3 1.00098 3C0.448692 3 0.000976562 3.44772 0.000976562 4V7C0.000976562 7.55228 0.448692 8 1.00098 8C1.55326 8 2.00098 7.55228 2.00098 7L2.00098 4Z"
+                        fill="white" />
+                </svg>
+              </div>
               <div class="report-table__trunc-more" @click="toggleMore">
                 <svg width="20" height="4" viewBox="0 0 20 4" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path fill-rule="evenodd" clip-rule="evenodd"
@@ -166,7 +168,7 @@
         en,
         ru,
         openSortSelect: false,
-        paymentsIncome: false,
+        paymentsIncome: true,
         paymentsOutcome: false,
         sortTypes: [
           {
@@ -187,16 +189,6 @@
         disabledEndDates: {},
         startDate: '',
         endDate: '',
-        currentFilterType: {
-          id: 'all',
-          title: 'Все'
-        },
-        types: [
-          {
-            id: 'all',
-            title: 'Все',
-          }
-        ],
         currentReports: [],
         reports: [
           {
@@ -206,45 +198,52 @@
                 date: '27.03.2020',
                 type: 'INV',
                 description: 'MindBody Tech',
-                amount: '-5 484.84 USD'
+                amount: '-5 484.84 USD',
+                payType: 'Income payment'
               },
               {
                 date: '23.03.2020',
                 type: 'INV',
                 description: 'Boston Techno',
-                amount: '-685.56 USD'
+                amount: '-685.56 USD',
+                payType: 'Outcome payment'
               },
               {
                 date: '23.03.2020',
                 type: 'MANFEE',
                 tooltip: 'Daily Markets: Lofty Valuations and Upcoming Election Contribute to Rising Market Volatility',
                 description: 'Man Fee Q1 \'020',
-                amount: '-579.57 USD'
+                amount: '-579.57 USD',
+                payType: 'Income payment'
               },
               {
                 date: '12.03.2020',
                 type: 'JDSPIOHPWPI JDSPIOHPWPI',
                 description: 'Boston Techno Astra Zeneca Sandvinotoric Boston Techno Astra Zeneca Sandvinotoric',
-                amount: '-1 230.78 USD'
+                amount: '-1 230.78 USD',
+                payType: 'Outcome payment'
               },
               {
                 date: '12.03.2020',
                 type: 'OMX STOCkH OMX STOCkH',
                 tooltip: 'Daily Markets: Lofty Valuations and Upcoming Election Contribute to Rising Market Volatility',
                 description: '17-th Catch Up',
-                amount: '+36.14 USD'
+                amount: '+36.14 USD',
+                payType: 'Outcome payment'
               },
               {
                 date: '12.03.2020',
                 type: 'CONT',
                 description: '17-th Additional Hennes & Ma',
-                amount: '+5 999 999.71 USD'
+                amount: '+5 999 999.71 USD',
+                payType: 'Income payment'
               },
               {
                 date: '06.03.2020',
                 type: 'CONT',
                 description: 'MindBody Capital Call',
-                amount: '-1 023 293.91 USD'
+                amount: '-1 023 293.91 USD',
+                payType: 'Outcome payment'
               },
             ]
           },
@@ -268,7 +267,8 @@
                 date: '08.02.2020',
                 type: 'CONT',
                 description: 'Boston Techno Astra Zeneca Sandvicsalomin',
-                amount: '+468.13 USD'
+                amount: '+468.13 USD',
+                payType: 'Income payment'
               },
               {
                 date: '06.02.2020',
@@ -280,7 +280,8 @@
                 date: '01.02.2020',
                 type: '',
                 description: 'Additional amount paid',
-                amount: '-3 202.12 USD'
+                amount: '-3 202.12 USD',
+                payType: 'Income payment'
               },
               {
                 date: '01.02.2020',
@@ -297,33 +298,20 @@
       updateData() {
         this.$store.dispatch('loader/show');
 
-
-        if (this.currentFilterType.id === 'all') {
-          this.currentReports = this.reports;
-        } else {
-          this.currentReports = [];
-          // const map = new Map();
-          this.reports.forEach((report, index) => {
-            this.currentReports.push({
-              period: report.period,
-              dataset: [],
-            });
-            report.dataset.forEach((dataset) => {
-              if (dataset.type.toLowerCase() === this.currentFilterType.id) {
+        this.currentReports = [];
+        this.reports.forEach((report, index) => {
+          this.currentReports.push({
+            period: report.period,
+            dataset: [],
+          });
+          report.dataset.forEach((dataset) => {
+            if (dataset.payType) {
+              if ((dataset.payType.includes('Income') && this.paymentsIncome) || (dataset.payType.includes('Outcome') && this.paymentsOutcome)) {
                 this.currentReports[index].dataset.push(dataset);
               }
-              // console.log(index);
-              // if (!map.has(dataset.type)) {
-              //   map.set(dataset.type, true);
-              //   this.types.push({
-              //     id: dataset.type.toLowerCase(),
-              //     title: dataset.type,
-              //   });
-              // }
-            });
+            }
           });
-        }
-
+        });
 
         // Filter by chosen date range
         if (this.startDate && this.endDate) {
@@ -390,9 +378,7 @@
         this.openSortSelect = false;
         this.updateData();
       },
-      filterTypeChange(option) {
-        this.currentFilterType = option;
-        this.openTypeSelect = false;
+      onPaymentTypeChange() {
         this.updateData();
       },
       toggleMore(e) {
@@ -413,18 +399,18 @@
       //   this.truncate();
       // });
       // this.truncate();
-      const map = new Map();
-      this.reports.forEach((report) => {
-        report.dataset.forEach((dataset) => {
-          if (!map.has(dataset.type)) {
-            map.set(dataset.type, true);
-            this.types.push({
-              id: dataset.type.toLowerCase(),
-              title: dataset.type,
-            });
-          }
-        });
-      });
+      // const map = new Map();
+      // this.reports.forEach((report) => {
+      //   report.dataset.forEach((dataset) => {
+      //     if (!map.has(dataset.type)) {
+      //       map.set(dataset.type, true);
+      //       this.types.push({
+      //         id: dataset.type.toLowerCase(),
+      //         title: dataset.type,
+      //       });
+      //     }
+      //   });
+      // });
 
       this.updateData();
 
@@ -433,8 +419,7 @@
         this.truncate();
       }, 1000)
     },
-    computed: {
-    },
+    computed: {},
     directives: {
       ClickOutside
     },
