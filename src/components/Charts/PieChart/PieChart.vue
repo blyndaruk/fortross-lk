@@ -12,6 +12,7 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          unit: this.unit,
           layout: {
             padding: {
               left: 0,
@@ -93,7 +94,7 @@
                   const span = '<span style="' + style + '"></span>';
                   const str = body[0].split(': ');
                   const title = str[0];
-                  const value = parseFloat(str[1]).toLocaleString();
+                  const value = parseInt(str[1]).toLocaleString();
                   const percent = (str[1] * 100 / sum).toFixed(1);
                   innerHtml += '<tr><td>' + span + title + ': ' + value + ' (' + percent + '%) ' + '</td></tr>';
                 });

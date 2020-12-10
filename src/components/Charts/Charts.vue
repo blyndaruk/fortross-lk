@@ -196,6 +196,7 @@
         openTimeSelect: false,
         openDateSelect: false,
         openSortSelect: false,
+        companiesSet: [],
         sorting: 'to-low',
         timelineType: [
           {
@@ -247,6 +248,7 @@
             .get('/api/company_info_iblock.php')
             .then((response) => {
               const companies = response;
+              this.companiesSet = response;
               const map = new Map();
               const metricsMap = new Map();
 
@@ -263,9 +265,16 @@
                 // set all available companies
                 if (!map.has(el.company_id)) {
                   map.set(el.company_id, true);
+                  const matchingCompany = companies.find(x => {
+                    // if (x.company_id === el.company_id) {
+                    //   console.log(x.company_id);
+                    //   console.log(el.company_id);
+                    // }
+                    return x.company_id === el.company_id
+                  });
                   this.companies.push({
                     id: el.company_id,
-                    color: companies.find(x => x.company_id === el.company_id).color
+                    color: matchingCompany ? matchingCompany.color : '#000000',
                   });
                 }
               });
@@ -312,6 +321,14 @@
         // this.data.sort(this.sortByQuoter);
 
         this.data.forEach((obj) => {
+          // filter no company in portfolio
+          // const matchingCompany = this.companiesSet.find(x => {
+          //   if (x.company_id === obj.company_id) {
+          //   }
+          //   return x.company_id === obj.company_id
+          // });
+
+
           this.companiesSelected.some((company) => {
             if (obj.company_id === company.id && this.metrics[this.currentMetricIndex].id === obj.metric_name) {
               obj.color = company.color;

@@ -111,6 +111,14 @@
               <p class="report-table__trunc" ref="truncate">
                 {{row.type}}
               </p>
+              <div class="report-table__info-icon" v-if="row.typeTooltip"
+                   v-tooltip.top-start="{ content: row.typeTooltip, classes: 'report-tooltip' } ">
+                <svg width="2" height="8" viewBox="0 0 2 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd"
+                        d="M1.00098 2C1.55326 2 2.00098 1.55228 2.00098 1C2.00098 0.447715 1.55326 0 1.00098 0C0.448692 0 0.000976562 0.447715 0.000976562 1C0.000976562 1.55228 0.448692 2 1.00098 2ZM2.00098 4C2.00098 3.44772 1.55326 3 1.00098 3C0.448692 3 0.000976562 3.44772 0.000976562 4V7C0.000976562 7.55228 0.448692 8 1.00098 8C1.55326 8 2.00098 7.55228 2.00098 7L2.00098 4Z"
+                        fill="white" />
+                </svg>
+              </div>
               <div class="report-table__trunc-more" @click="toggleMore">
                 <svg width="20" height="4" viewBox="0 0 20 4" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path fill-rule="evenodd" clip-rule="evenodd"
@@ -216,6 +224,7 @@
                 date: '23.03.2020',
                 type: 'MANFEE',
                 tooltip: 'Daily Markets: Lofty Valuations and Upcoming Election Contribute to Rising Market Volatility',
+                typeTooltip: 'Daily Markets: Lofty Valuations and Upcoming Election Contribute to Rising Market Volatility',
                 description: 'Man Fee Q1 \'020',
                 amount: '-579.57 USD'
               },
@@ -223,6 +232,7 @@
                 date: '12.03.2020',
                 type: 'JDSPIOHPWPI JDSPIOHPWPI',
                 description: 'Boston Techno Astra Zeneca Sandvinotoric Boston Techno Astra Zeneca Sandvinotoric',
+                typeTooltip: 'Daily Markets: Lofty Valuations and Upcoming Election Contribute to Rising Market Volatility',
                 amount: '-1 230.78 USD'
               },
               {

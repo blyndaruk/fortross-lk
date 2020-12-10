@@ -1,4 +1,6 @@
 .report-table {
+  $this: &;
+
   &__head {
     display: flex;
     justify-content: space-between;
@@ -150,6 +152,7 @@
     padding: 20px 30px;
     text-align: right;
     @include semi;
+    margin-left: auto;
     @include md {
       width: 100%;
     }
@@ -204,6 +207,30 @@
     svg {
       display: block;
       margin-right: 7px;
+    }
+  }
+
+  &--sm {
+    #{$this}__date {
+      width: 200px;
+      @include md {
+        width: 22%;
+        flex-shrink: 0;
+      }
+      @include xs {
+        padding: 12px 20px;
+        width: 125px;
+      }
+    }
+    #{$this}__description {
+      width: 55%;
+      @include md {
+        width: 65%;
+      }
+      @include xs {
+        padding: 0 20px;
+        width: 100%;
+      }
     }
   }
 }

@@ -33,7 +33,7 @@
                 <div class="sort-select__options" :class="{ 'is-open': openFromQSelect }">
                   <div
                       class="sort-select__option"
-                      v-for="(option, i) in fromQuarters"
+                      v-for="(option, i) in quarters"
                       :key="i"
                       @click="sortFromQChange(option)"
                   >
@@ -75,7 +75,7 @@
                 <div class="sort-select__options" :class="{ 'is-open': openToQSelect }">
                   <div
                       class="sort-select__option"
-                      v-for="(option, i) in toQuarters"
+                      v-for="(option, i) in quarters"
                       :key="i"
                       @click="sortToQChange(option)"
                   >

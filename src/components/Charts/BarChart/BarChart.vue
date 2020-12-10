@@ -13,6 +13,7 @@
           plugins: false,
           responsive: true,
           maintainAspectRatio: false,
+          unit: this.unit,
           legend: {
             display: false
           },
@@ -44,7 +45,7 @@
             // position: 'nearest',
             enabled: false,
 
-            custom: function (tooltipModel) {
+            custom(tooltipModel) {
               // Tooltip Element
               let tooltipEl = document.getElementById('chartjs-tooltip');
 
@@ -87,14 +88,14 @@
                 innerHtml += '</thead><tbody>';
 
 
-                bodyLines.forEach(function (body, i) {
+                bodyLines.forEach((body, i) => {
                   const colors = tooltipModel.labelColors[i];
                   let style = 'background:' + colors.backgroundColor;
                   style += '; border-color:' + colors.borderColor;
                   style += '; border-width: 2px';
                   const span = '<span style="' + style + '"></span>';
                   const str = body[0].split(': ');
-                  const title = str[0];
+                  const title = this._chart.options.unit === '$' ? parseInt(str[0]) : str[0] + '%';
                   innerHtml += '<tr><td>' + span + title + '</td></tr>';
                 });
                 innerHtml += '</tbody>';
