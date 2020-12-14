@@ -63,6 +63,17 @@
     &:last-child {
       border-top-right-radius: 4px;
       border-bottom-right-radius: 4px;
+
+      .vdp-datepicker__calendar {
+        @include r(700) {
+          right: 0;
+          left: auto;
+          transform: translate(20px, 0);
+        }
+        @include xxs {
+          transform: translate(34px, 0);
+        }
+      }
     }
 
     &:not(:last-child) {
@@ -132,8 +143,10 @@
       color: $primary;
       font-weight: 500;
       height: 40px;
-
       font-family: $ff-default;
+      @include r(700) {
+        max-width: none;
+      }
     }
   }
 

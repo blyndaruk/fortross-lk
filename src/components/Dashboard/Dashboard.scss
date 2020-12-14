@@ -23,6 +23,12 @@
     margin-right: -20px;
   }
 
+  &.is-default {
+    @include xs {
+      margin-bottom: 0;
+    }
+  }
+
   &__main {
     padding: 25px 64px 25px 30px;
     @include sm {

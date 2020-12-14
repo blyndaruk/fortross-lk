@@ -8,7 +8,7 @@
     </div>
   </div>
 
-  <div v-else-if="isMedium" class="dashboard">
+  <div v-else-if="isMedium" class="dashboard is-default">
     <div class="dashboard__main">
       <div class="dashboard__main-amount">{{ mainAmount }}</div>
       <div class="dashboard__main-note">{{ $t('dashboard.state') }}</div>

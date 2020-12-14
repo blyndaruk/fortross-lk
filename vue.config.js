@@ -9,6 +9,7 @@ module.exports = {
       }
     }
   },
+  transpileDependencies: ['vue-clamp', 'resize-detector'],
   pluginOptions: {
     i18n: {
       locale: 'en',

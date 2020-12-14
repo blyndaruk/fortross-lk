@@ -1,4 +1,6 @@
 .tabs {
+  $this: &;
+
   @include r(700) {
     margin-left: -40px;
     margin-right: -40px;
@@ -6,7 +8,6 @@
   @include xs {
     margin-left: -20px;
     margin-right: -20px;
-    margin-top: -40px;
   }
 
   &__list {
@@ -65,6 +66,30 @@
 
   &__details {
     position: relative;
+  }
+
+  &.no-scroll {
+    li {
+      &:first-child {
+        display: block;
+      }
+    }
+  }
+
+  &.is-simple {
+    #{$this}__list {
+      padding-left: 0;
+      margin-bottom: 30px;
+      background-color: transparent;
+    }
+
+    #{$this}__item {
+      padding-bottom: 10px;
+    }
+
+    li {
+      background-color: transparent;
+    }
   }
 }
 

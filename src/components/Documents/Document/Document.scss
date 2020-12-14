@@ -1,0 +1,77 @@
+.document {
+  $this: &;
+
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  width: calc(25% - 30px);
+  padding: 30px;
+  margin-bottom: 40px;
+  margin-right: 40px;
+  min-height: 260px;
+  background-color: #ffffff;
+  transition: all $easing-default;
+
+  @include md {
+    width: calc(50% - 20px);
+  }
+
+  @include r(700) {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 10px;
+    min-height: 190px;
+  }
+
+  &:nth-child(4n) {
+    margin-right: 0;
+    @include md {
+      margin-right: 40px;
+    }
+    @include r(700) {
+      margin-right: 0;
+    }
+  }
+
+  &:nth-child(2n) {
+    @include md {
+      margin-right: 0;
+    }
+  }
+
+  &:hover {
+    background-color: $primary;
+
+    #{$this}__date,
+    #{$this}__content {
+      color: #ffffff;
+    }
+  }
+
+  &__date {
+    margin-bottom: 12px;
+    color: $dark-gray;
+    font-size: 12px;
+    transition: color $easing-default;
+  }
+
+  &__content {
+    margin-bottom: 16px;
+    font-size: 14px;
+    color: $primary;
+    line-height: 1.43;
+    transition: color $easing-default;
+  }
+
+  &__download {
+    margin-top: auto;
+  }
+
+  &__toggle {
+    position: relative;
+    top: -2px;
+    margin-left: 8px;
+    background-color: transparent;
+    color: $secondary;
+  }
+}

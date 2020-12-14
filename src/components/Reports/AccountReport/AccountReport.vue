@@ -173,6 +173,7 @@
       return {
         en,
         ru,
+        data: [],
         openSortSelect: false,
         sortTypes: [
           {
@@ -424,13 +425,38 @@
       httpClient
         .get('/api/cash_flow_ex.php')
         .then(() => {
-          // response.Инвестор.Периоды.forEach((report) => {
-          //   // console.log(report);
-          //   report.Таблица.Строка.forEach((dataset) => {
-          //     console.log(dataset);
-          //   });
+          // console.log(response.Период);
+
+          // response.Период.forEach((report) => {
+          //   console.log(report);
+          // });
+          // response.Инвестор.forEach((report) => {
+          //   if (report.Периоды) {
+          //     console.log(report.Периоды);
+          //     if (report.Периоды instanceof Array) {
+          //       this.data = this.data.concat(report.Периоды);
+          //     } else {
+          //       this.data.push(report.Периоды)
+          //     }
+          //   }
+          // });
+
+          // this.data.forEach((obj) => {
+          //   console.log(obj.Период);
+          // });
+
+          // eslint-disable-next-line no-unused-vars
+          // const dateSorted = this.data.sort(function(a, b) {
+          //   // console.log(DateTime.fromFormat(a.Период, 'MM-yyyy'), a.Период);
+          //   return DateTime.fromFormat(a.Период, 'MM-yyyy') - DateTime.fromFormat(b.Период, 'MM-yyyy');
+          // });
+
+          // let period = dateSorted[0];
+          // dateSorted.forEach((obj) => {
+          //   console.log(obj);
           // });
         });
+
 
       const map = new Map();
       this.reports.forEach((report) => {

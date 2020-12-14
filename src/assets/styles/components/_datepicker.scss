@@ -1,13 +1,18 @@
 .field {
   .vdp-datepicker {
     z-index: 5;
+    width: 100%;
+
+    input {
+      width: 100%;
+    }
 
     &__calendar {
       transform: translateX(-50%) translateY(6px);
       left: 50%;
-      @include xs {
+      @include r(700) {
         left: 0;
-        transform: translate(0, 0);
+        transform: translate(-24px, 0);
       }
     }
 

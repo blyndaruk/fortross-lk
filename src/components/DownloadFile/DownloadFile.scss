@@ -1,0 +1,18 @@
+.download-file {
+  display: inline-flex;
+  align-items: baseline;
+  @include semi;
+  color: $secondary;
+  cursor: pointer;
+
+  svg {
+    position: relative;
+    top: 2px;
+    display: block;
+    margin-right: 7px;
+  }
+
+  span {
+    line-height: 1;
+  }
+}

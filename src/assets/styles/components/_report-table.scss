@@ -233,4 +233,22 @@
       }
     }
   }
+
+  .sort-select {
+    &__options {
+      @include r(700) {
+        left: auto;
+        right: -14px;
+        transform: translateX(0) translateY(-10px);
+      }
+
+      @include xs {
+        white-space: nowrap;
+      }
+
+      &.is-open {
+        transform: translateX(0) translateY(0);
+      }
+    }
+  }
 }

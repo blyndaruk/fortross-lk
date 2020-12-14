@@ -1,6 +1,13 @@
 <template>
-  <div class="tabs">
-    <vue-custom-scrollbar class="scroll-area" :settings="scrollSettings">
+  <div class="tabs" :class="{ 'no-scroll': !scroll, 'is-simple': isSimple }">
+    <div v-if="!scroll">
+      <ul class="tabs__list">
+        <li v-for="(tab, index) in tabs" :class="{ 'is-active': tab.isActive }" :key="index">
+          <div class="tabs__item" :target="tab.href" @click="selectTab(tab)">{{ tab.name }}</div>
+        </li>
+      </ul>
+    </div>
+    <vue-custom-scrollbar v-else class="scroll-area" :settings="scrollSettings">
       <ul class="tabs__list">
         <li v-for="(tab, index) in tabs" :class="{ 'is-active': tab.isActive }" :key="index">
           <div class="tabs__item" :target="tab.href" @click="selectTab(tab)">{{ tab.name }}</div>
@@ -21,6 +28,16 @@
     name: 'Tabs',
     components: {
       vueCustomScrollbar,
+    },
+    props: {
+      scroll: {
+        type: Boolean,
+        default: true,
+      },
+      isSimple: {
+        type: Boolean,
+        default: false,
+      }
     },
     data() {
       return {
