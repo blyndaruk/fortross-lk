@@ -140,6 +140,7 @@
 </template>
 
 <script>
+  // import httpClient from '@/utils/httpClient';
   import ClickOutside from 'vue-click-outside';
   import Datepicker from 'vuejs-datepicker';
   import { en, ru } from 'vuejs-datepicker/dist/locale';
@@ -179,6 +180,7 @@
         startDate: '',
         endDate: '',
         currentReports: [],
+        reportsNew: [],
         reports: [
           {
             period: 'Март, 2020',
@@ -384,6 +386,24 @@
       },
     },
     mounted() {
+      // const url = '/api/contributed_capital_ex.php';
+      // httpClient
+      //   .get(url)
+      //   .then((response) => {
+      //     response.Таблица.Периоды.forEach((period, i) => {
+      //       this.reportsNew.push({
+      //         period: period.Период,
+      //         dataset: [],
+      //       });
+      //       if (period.Строка instanceof Array) {
+      //         this.reportsNew[i].dataset.push(...period.Строка);
+      //       } else {
+      //         this.reportsNew[i].dataset.push(period.Строка);
+      //       }
+      //     })
+      //   });
+
+      // console.log(this.reportsNew, 'new');
       // document.addEventListener('DOMContentLoaded', () => {
       //   this.truncate();
       // });
@@ -400,6 +420,11 @@
       //     }
       //   });
       // });
+      // httpClient
+      //   .get('api/projected_balance_ex.php')
+      //   .then((response) => {
+      //     console.log(response, 'test');
+      //   });
 
       this.updateData();
 

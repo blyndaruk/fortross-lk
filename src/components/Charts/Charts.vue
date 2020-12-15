@@ -317,8 +317,8 @@
         const periodMap = new Map();
 
         // test with more data
-        // this.data.sort(this.sortByTime);
-        // this.data.sort(this.sortByQuoter);
+        this.data.sort(this.sortByTime);
+        this.data.sort(this.sortByQuoter);
 
         this.data.forEach((obj) => {
           // filter no company in portfolio

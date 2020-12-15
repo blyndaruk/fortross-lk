@@ -1,0 +1,118 @@
+.docs-preview-table {
+  margin-bottom: 40px;
+  @include xs {
+    margin-bottom: 30px;
+  }
+
+  &__title {
+    font-size: 30px;
+    @include semi;
+    color: $primary;
+    @include xs {
+      font-size: 26px;
+    }
+  }
+
+  &__list {
+    margin-top: 30px;
+    @include xs {
+      margin-left: -20px;
+      margin-right: -20px;
+      margin-top: 20px;
+    }
+  }
+
+  &__row {
+    display: flex;
+    background-color: #ffffff;
+    flex-wrap: wrap;
+
+    &:not(:last-child) {
+      border-bottom: 1px solid $main-bg;
+    }
+  }
+
+  &__link {
+    width: 120px;
+    flex-shrink: 0;
+    padding: 20px 30px;
+    @include sm {
+      order: 1;
+    }
+    @include xs {
+      padding: 16px 20px 13px;
+      width: 90px;
+    }
+  }
+
+  &__text {
+    flex-grow: 1;
+    padding: 20px 30px;
+    color: $primary;
+    @include sm {
+      order: 3;
+      width: 100%;
+    }
+    @include xs {
+      padding: 5px 20px 13px;
+    }
+  }
+
+  &__date {
+    width: 200px;
+    flex-shrink: 0;
+    padding: 20px 30px;
+    color: $gray;
+    @include md {
+      width: 144px;
+    }
+    @include sm {
+      order: 2;
+    }
+    @include xs {
+      padding: 16px 20px 15px;
+    }
+  }
+
+  &__note {
+    position: relative;
+    padding-left: 32px;
+    margin-top: 30px;
+    @include semi;
+    color: $primary;
+
+    @include xs {
+      padding-left: 0;
+      padding-top: 31px;
+      margin-top: 12px;
+    }
+
+    a {
+      color: $secondary;
+      text-decoration: none;
+      transition: color $easing-default;
+
+      &:hover {
+        color: $primary;
+      }
+    }
+
+    &:before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 20px;
+      height: 20px;
+
+      background-image: url(~@/assets/icons/info.svg);
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-size: contain;
+
+      //@include xs {
+      //  top: -11px;
+      //}
+    }
+  }
+}

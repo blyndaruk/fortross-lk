@@ -15,7 +15,7 @@
       </Tab>
       <Tab :name="'Документы'">
         <Search />
-        Документы
+        <DocReporting />
       </Tab>
     </Tabs>
   </div>

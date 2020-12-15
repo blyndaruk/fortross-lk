@@ -23,12 +23,6 @@
     margin-right: -20px;
   }
 
-  &.is-default {
-    @include xs {
-      margin-bottom: 0;
-    }
-  }
-
   &__main {
     padding: 25px 64px 25px 30px;
     @include sm {
@@ -264,10 +258,31 @@
     }
   }
 
+  &__bottom {
+    display: flex;
+    width: calc(100% + 60px);
+    margin-right: -60px;
+    background-color: $primary;
+    border-top: 1px solid $main-bg;
+    @include lg {
+      width: 100%;
+      margin-right: 0;
+      flex-wrap: wrap;
+    }
+  }
+
 
   // Simple type dashboard
-  &--simple {
+  &.is-simple {
     padding: 0;
+    @include xs {
+      margin-bottom: 0;
+    }
+  }
+
+  &.is-default {
+    flex-wrap: wrap;
+
     @include xs {
       margin-bottom: 0;
     }
@@ -316,6 +331,7 @@
   circle {
     //stroke-dashoffset: 0;
     transition: all .8s ease;
+
     &:first-of-type {
       transition: all .8s ease 0.3s;
     }

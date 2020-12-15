@@ -425,6 +425,7 @@
       httpClient
         .get('/api/cash_flow_ex.php')
         .then(() => {
+          // console.log(response);
           // console.log(response.Период);
 
           // response.Период.forEach((report) => {
@@ -478,8 +479,7 @@
         this.truncate();
       }, 1000)
     },
-    computed: {
-    },
+    computed: {},
     directives: {
       ClickOutside
     },

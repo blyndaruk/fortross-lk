@@ -2,6 +2,9 @@
   padding: 30px;
   margin-bottom: 40px;
   background-color: #ffffff;
+  @include xs {
+    padding: 20px;
+  }
 
   &__label {
     position: relative;
