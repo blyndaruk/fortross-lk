@@ -49,6 +49,7 @@
     flex-grow: 1;
     padding: 20px 30px;
     color: $primary;
+    max-width: calc(100% - 320px);
     @include sm {
       order: 3;
       width: 100%;

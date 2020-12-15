@@ -4,7 +4,9 @@
       <div class="report-table__head is-tablet-wrap">
         <div class="report-table__title">Недавние транзакции</div>
         <div class="report-table__head-actions">
-          <div class="report-table__show">Все транзакции</div>
+          <div class="report-table__show">
+            <router-link to="/my-account">Все транзакции</router-link>
+          </div>
           <!--          <div class="sort-select" v-if="index === 0" v-click-outside="closeSelect">-->
           <!--            <div class="sort-select__label">Сортировка по:</div>-->
           <!--            <div class="sort-select__wrap" @blur="openSortSelect = false">-->
