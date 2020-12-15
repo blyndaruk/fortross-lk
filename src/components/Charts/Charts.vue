@@ -136,7 +136,7 @@
       </div>
     </mq-layout>
 
-    <div class="companies">
+    <div class="companies" :class="{ 'is-open': allCompaniesShown }">
       <label :for="'company_name_'+index"
              v-for="(company, index) in companies"
              :key="index"
@@ -154,18 +154,25 @@
       </label>
     </div>
 
-    <div class="check-all-companies">
-      <label for="all_companies">
-        <input type="checkbox"
-               name="all_companies"
-               id="all_companies"
-               @change="onCompanyUpdate('all')"
-               v-model="selectAll"
-        />
-        <span>Выделить все компании</span>
-        <span class="companies__check"></span>
-      </label>
+    <div class="graphic-companies-actions">
+      <div class="toggle-all-companies" @click="toggleAllCompanies" :class="{ 'is-open': allCompaniesShown }">
+        Все компании
+      </div>
+
+      <div class="check-all-companies">
+        <label for="all_companies">
+          <input type="checkbox"
+                 name="all_companies"
+                 id="all_companies"
+                 @change="onCompanyUpdate('all')"
+                 v-model="selectAll"
+          />
+          <span>Выделить все компании</span>
+          <span class="companies__check"></span>
+        </label>
+      </div>
     </div>
+
   </div>
 </template>
 
@@ -196,6 +203,7 @@
         openTimeSelect: false,
         openDateSelect: false,
         openSortSelect: false,
+        allCompaniesShown: false,
         companiesSet: [],
         sorting: 'to-low',
         timelineType: [
@@ -538,6 +546,9 @@
           ]
         };
       },
+      toggleAllCompanies() {
+        this.allCompaniesShown = !this.allCompaniesShown;
+      },
       timeLineChange(option) {
         this.currentTimeline = option;
         this.openTimeSelect = false;
@@ -605,6 +616,7 @@
               selected.push(company);
             });
           }
+          this.allCompaniesShown = selected.length;
           this.companiesSelected = selected;
         }
       },

@@ -154,7 +154,6 @@
       }, 500);
 
       setTimeout(() => {
-        console.log(accountContributionPercentage + capitalPercentage);
         this.activeAccountContributionPercentage = this.fullStroke - this.fullStroke * (accountContributionPercentage + capitalPercentage) / 100;
       }, 500);
     },
