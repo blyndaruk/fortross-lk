@@ -1,6 +1,6 @@
 .field {
   .vdp-datepicker {
-    z-index: 5;
+    //z-index: 5;
     width: 100%;
 
     input {
@@ -10,6 +10,7 @@
     &__calendar {
       transform: translateX(-50%) translateY(6px);
       left: 50%;
+      z-index: 5;
       @include r(700) {
         left: 0;
         transform: translate(-24px, 0);
@@ -59,6 +60,7 @@
 
   .vdp-datepicker__calendar:not(.disabled) {
     color: $primary;
+    overflow: hidden;
   }
 
   .vdp-datepicker__calendar header .prev:not(.disabled):hover,

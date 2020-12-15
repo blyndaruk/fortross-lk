@@ -7,10 +7,12 @@
         <div class="field__inner">
           <div class="field__date">
             <div class="field__placeholder-left">{{ $t('datepicker.from') }}</div>
-            <datepicker :disabled-dates="disabledStartDates"
-                        format="d.MM.yyyy"
-                        @selected="onStartDateSelect"
-                        :language="$i18n.locale === 'ru' ? ru : en"
+            <datepicker
+                format="d.MM.yyyy"
+                :disabled-dates="disabledStartDates"
+                :typeable="true"
+                :language="$i18n.locale === 'ru' ? ru : en"
+                @selected="onStartDateSelect"
             ></datepicker>
             <div class="field__placeholder-right">
               <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -23,10 +25,11 @@
           <div class="field__date">
             <div class="field__placeholder-left">{{ $t('datepicker.to') }}</div>
             <datepicker
-                :disabled-dates="disabledEndDates"
                 format="d.MM.yyyy"
-                @selected="onEndDateSelect"
+                :disabled-dates="disabledEndDates"
+                :typeable="true"
                 :language="$i18n.locale === 'ru' ? ru : en"
+                @selected="onEndDateSelect"
             ></datepicker>
             <div class="field__placeholder-right">
               <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -158,8 +161,8 @@
 <script>
   import httpClient from '@/utils/httpClient';
   import ClickOutside from 'vue-click-outside';
-  import Datepicker from 'vuejs-datepicker';
-  import { en, ru } from 'vuejs-datepicker/dist/locale';
+  import Datepicker from '@sum.cumo/vue-datepicker';
+  import { en, ru } from '@sum.cumo/vue-datepicker/dist/locale';
 
   import { DateTime } from "luxon";
 

@@ -8,7 +8,8 @@
           <div class="field__date">
             <div class="field__placeholder-left">{{ $t('datepicker.from') }}</div>
             <datepicker :disabled-dates="disabledStartDates"
-                        format="d.MM.yyyy"
+                        format="dd.MM.yyyy"
+                        :typeable="true"
                         @selected="onStartDateSelect"
                         :language="$i18n.locale === 'ru' ? ru : en"
             ></datepicker>
@@ -26,6 +27,7 @@
                 :disabled-dates="disabledEndDates"
                 format="d.MM.yyyy"
                 @selected="onEndDateSelect"
+                :typeable="true"
                 :language="$i18n.locale === 'ru' ? ru : en"
             ></datepicker>
             <div class="field__placeholder-right">
@@ -142,8 +144,8 @@
 <script>
   // import httpClient from '@/utils/httpClient';
   import ClickOutside from 'vue-click-outside';
-  import Datepicker from 'vuejs-datepicker';
-  import { en, ru } from 'vuejs-datepicker/dist/locale';
+  import Datepicker from '@sum.cumo/vue-datepicker';
+  import { en, ru } from '@sum.cumo/vue-datepicker/dist/locale';
 
   import { DateTime } from "luxon";
 

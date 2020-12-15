@@ -10,6 +10,7 @@
             <datepicker
                 format="yyyy"
                 @selected="onStartDateSelect"
+                :typeable="true"
                 :language="$i18n.locale === 'ru' ? ru : en"
                 minimum-view="year"
             ></datepicker>
@@ -50,6 +51,7 @@
             <datepicker
                 format="yyyy"
                 @selected="onEndDateSelect"
+                :typeable="true"
                 :language="$i18n.locale === 'ru' ? ru : en"
                 minimum-view="year"
             ></datepicker>
@@ -144,8 +146,8 @@
 
   // import httpClient from '@/utils/httpClient';
   import ClickOutside from 'vue-click-outside';
-  import Datepicker from 'vuejs-datepicker';
-  import { en, ru } from 'vuejs-datepicker/dist/locale';
+  import Datepicker from '@sum.cumo/vue-datepicker';
+  import { en, ru } from '@sum.cumo/vue-datepicker/dist/locale';
   // import { DateTime } from "luxon";
 
   export default {

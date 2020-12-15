@@ -26,6 +26,7 @@
   import TheHeader from '@/components/TheHeader/TheHeader';
   import Loader from './components/Loader/Loader';
 
+  import '@sum.cumo/vue-datepicker/dist/vuejs-datepicker.css';
   import '@/assets/styles/base/__base-dir.scss';
   import '@/assets/styles/components/__components-dir.scss';
 
