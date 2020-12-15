@@ -14,6 +14,26 @@
       padding: 0 20px;
       margin-bottom: 10px;
     }
+
+    &.is-tablet-wrap {
+      @include md {
+        flex-wrap: wrap;
+      }
+      @include r(700) {
+        padding: 0;
+      }
+
+      .report-table__head-actions {
+        @include md {
+          width: 100%;
+          margin-top: 20px;
+        }
+        @include xs {
+          margin-top: 0;
+          margin-bottom: 10px;
+        }
+      }
+    }
   }
 
   &__title {
@@ -210,6 +230,12 @@
     }
   }
 
+  &__show {
+    font-size: 14px;
+    @include semi;
+    color: $primary;
+  }
+
   &--sm {
     #{$this}__date {
       width: 200px;
@@ -222,6 +248,7 @@
         width: 125px;
       }
     }
+
     #{$this}__description {
       width: 55%;
       @include md {
