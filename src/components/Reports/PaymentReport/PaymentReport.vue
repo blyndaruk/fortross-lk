@@ -142,7 +142,7 @@
 </template>
 
 <script>
-  // import httpClient from '@/utils/httpClient';
+  import httpClient from '@/utils/httpClient';
   import ClickOutside from 'vue-click-outside';
   import Datepicker from '@sum.cumo/vue-datepicker';
   import { en, ru } from '@sum.cumo/vue-datepicker/dist/locale';
@@ -388,6 +388,12 @@
       },
     },
     mounted() {
+
+      httpClient
+        .get('/api/cash_flow_base.php?investor=009447')
+        .then((response) => {
+          console.log(response, 'response');
+        });
       // const url = '/api/contributed_capital_ex.php';
       // httpClient
       //   .get(url)

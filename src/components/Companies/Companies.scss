@@ -136,9 +136,17 @@
 .companies::v-deep {
   .ps__rail-x {
     bottom: 12px !important;
+    height: 0;
+    @include sm {
+      pointer-events: none;
+    }
   }
 
   .ps__thumb-x {
-    height: 4px;
+    height: 5px;
+    cursor: pointer;
+    @include sm {
+      pointer-events: none;
+    }
   }
 }

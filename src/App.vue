@@ -41,6 +41,9 @@
     computed: {
       ...mapState('loader', ['loading'])
     },
+    mounted() {
+      document.title = this.$i18n.messages[this.$i18n.locale].title;
+    }
   }
 </script>
 

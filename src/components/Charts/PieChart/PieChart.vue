@@ -13,6 +13,12 @@
           responsive: true,
           maintainAspectRatio: false,
           unit: this.unit,
+          segmentShowStroke: false,
+          elements: {
+            arc: {
+              borderWidth: 0
+            }
+          },
           layout: {
             padding: {
               left: 0,
