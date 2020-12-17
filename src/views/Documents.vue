@@ -15,7 +15,7 @@
       </Tab>
       <Tab :name="'Документы'">
         <Search />
-        <DocReporting />
+        <DocsInner />
       </Tab>
     </Tabs>
   </div>
@@ -24,6 +24,7 @@
 <script>
   import CapitalCalls from '@/components/Documents/CapitalCalls/CapitalCalls';
   import DocReporting from '@/components/Documents/DocReporting/DocReporting';
+  import DocsInner from '@/components/Documents/DocsInner/DocsInner';
   import Investors from '@/components/Documents/Investors/Investors';
   import Search from '@/components/Search/Search';
   import Tab from '@/components/Tabs/Tab';
@@ -32,6 +33,7 @@
   export default {
     name: 'Documents',
     components: {
+      DocsInner,
       DocReporting,
       Investors,
       CapitalCalls,

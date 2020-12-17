@@ -20,7 +20,7 @@
             <mq-layout mq="laptop+">
               <div class="header__fund">
                 {{ $t('fund') }}
-                <span>FRV LATE STAGE FUND</span>
+                <span>SBT Fund 2</span>
               </div>
             </mq-layout>
             <mq-layout :mq="['lg', 'md', 'tablet', 'mobile']">
@@ -34,7 +34,7 @@
             <div class="header__id">ID 2345098-781-23</div>
             <div class="header__fund">
               {{ $t('fund') }}
-              <span>FRV LATE STAGE FUND</span>
+              <span>SBT Fund 2</span>
             </div>
           </div>
         </mq-layout>
@@ -45,7 +45,7 @@
               <div class="header__id">ID 2345098-781-23</div>
               <div class="header__fund">
                 {{ $t('fund') }}
-                <span>FRV LATE STAGE FUND</span>
+                <span>SBT Fund 2</span>
               </div>
             </div>
             <div class="header__mob-nav">
