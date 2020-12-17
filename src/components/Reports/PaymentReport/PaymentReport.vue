@@ -8,7 +8,7 @@
           <div class="field__date">
             <div class="field__placeholder-left">{{ $t('datepicker.from') }}</div>
             <datepicker :disabled-dates="disabledStartDates"
-                        format="dd.MM.yyyy"
+                        format="d.MM.yyyy"
                         :typeable="true"
                         @selected="onStartDateSelect"
                         :language="$i18n.locale === 'ru' ? ru : en"
@@ -76,7 +76,7 @@
       <div class="report-table report-table--sm" v-for="(table, index) in currentReports" :key="table.period">
         <div class="report-table__head">
           <div class="report-table__title" v-if="table.dataset && table.dataset.length">
-            {{table.period}}
+            {{table.periodMonth + ', ' + table.periodYear}}
           </div>
           <div class="report-table__head-actions">
             <div class="report-table__download" v-if="index === 0">
@@ -115,7 +115,7 @@
 
             <div class="report-table__description">
               <p class="report-table__trunc" ref="truncate">
-                {{ row.description }}
+                {{ row.type }}
               </p>
               <div class="report-table__info-icon" v-if="row.tooltip"
                    v-tooltip.top-start="{ content: row.tooltip, classes: 'report-tooltip' } ">
@@ -133,7 +133,7 @@
                 </svg>
               </div>
             </div>
-            <div class="report-table__amount">{{row.amount}}</div>
+            <div class="report-table__amount">{{row.summ}}</div>
           </div>
         </div>
       </div>
@@ -183,108 +183,113 @@
         endDate: '',
         currentReports: [],
         reportsNew: [],
-        reports: [
-          {
-            period: 'Март, 2020',
-            dataset: [
-              {
-                date: '27.03.2020',
-                type: 'INV',
-                description: 'MindBody Tech',
-                amount: '-5 484.84 USD',
-                payType: 'Income payment'
-              },
-              {
-                date: '23.03.2020',
-                type: 'INV',
-                description: 'Boston Techno',
-                amount: '-685.56 USD',
-                payType: 'Outcome payment'
-              },
-              {
-                date: '23.03.2020',
-                type: 'MANFEE',
-                tooltip: 'Daily Markets: Lofty Valuations and Upcoming Election Contribute to Rising Market Volatility',
-                description: 'Man Fee Q1 \'020',
-                amount: '-579.57 USD',
-                payType: 'Income payment'
-              },
-              {
-                date: '12.03.2020',
-                type: 'JDSPIOHPWPI JDSPIOHPWPI',
-                description: 'Boston Techno Astra Zeneca Sandvinotoric Boston Techno Astra Zeneca Sandvinotoric',
-                amount: '-1 230.78 USD',
-                payType: 'Outcome payment'
-              },
-              {
-                date: '12.03.2020',
-                type: 'OMX STOCkH OMX STOCkH',
-                tooltip: 'Daily Markets: Lofty Valuations and Upcoming Election Contribute to Rising Market Volatility',
-                description: '17-th Catch Up',
-                amount: '+36.14 USD',
-                payType: 'Outcome payment'
-              },
-              {
-                date: '12.03.2020',
-                type: 'CONT',
-                description: '17-th Additional Hennes & Ma',
-                amount: '+5 999 999.71 USD',
-                payType: 'Income payment'
-              },
-              {
-                date: '06.03.2020',
-                type: 'CONT',
-                description: 'MindBody Capital Call',
-                amount: '-1 023 293.91 USD',
-                payType: 'Outcome payment'
-              },
-            ]
-          },
-          {
-            period: 'Февраль, 2020',
-            dataset: [
-              {
-                date: '08.02.2020',
-                type: 'CATCH',
-                description: '15-th Catch Up',
-                amount: '+17 848.07 USD'
-              },
-              {
-                date: '08.02.2020',
-                type: 'MANFEE',
-                tooltip: 'Daily Markets: Lofty Valuations and Upcoming Election Contribute to Rising Market Volatility',
-                description: 'Man Fee Q3 \'20',
-                amount: '-788.52 USD'
-              },
-              {
-                date: '08.02.2020',
-                type: 'CONT',
-                description: 'Boston Techno Astra Zeneca Sandvicsalomin',
-                amount: '+468.13 USD',
-                payType: 'Income payment'
-              },
-              {
-                date: '06.02.2020',
-                type: 'JDSPIOHPWPI HFT UTYDE KJ TYVV 256',
-                description: '17-th Additional Hennes & Svenska Terranova Handelsbanken Swedish Match TeliaSonera',
-                amount: '+40 027.45 USD'
-              },
-              {
-                date: '01.02.2020',
-                type: '',
-                description: 'Additional amount paid',
-                amount: '-3 202.12 USD',
-                payType: 'Income payment'
-              },
-              {
-                date: '01.02.2020',
-                type: '',
-                description: 'Initial Investment',
-                amount: '+45 051.50 USD'
-              },
-            ]
-          }
-        ]
+        reports: [],
+        // reports: [
+        //   {
+        //     period: 'Март, 2020',
+        //     dataset: [
+        //       {
+        //         date: '27.03.2020',
+        //         type: 'INV',
+        //         description: 'MindBody Tech',
+        //         amount: '-5 484.84 USD',
+        //         payType: 'Income payment'
+        //       },
+        //       {
+        //         date: '23.03.2020',
+        //         type: 'INV',
+        //         description: 'Boston Techno',
+        //         amount: '-685.56 USD',
+        //         payType: 'Outcome payment'
+        //       },
+        //       {
+        //         date: '23.03.2020',
+        //         type: 'MANFEE',
+        //         description: 'Man Fee Q1 \'020',
+        //         amount: '-579.57 USD',
+        //         payType: 'Income payment'
+        //       },
+        //       {
+        //         date: '12.03.2020',
+        //         type: 'JDSPIOHPWPI JDSPIOHPWPI',
+        //         description: 'Boston Techno Astra Zeneca Sandvinotoric Boston Techno Astra Zeneca Sandvinotoric',
+        //         amount: '-1 230.78 USD',
+        //         payType: 'Outcome payment'
+        //       },
+        //       {
+        //         date: '12.03.2020',
+        //         type: 'OMX STOCkH OMX STOCkH',
+        //         tooltip: 'Daily Markets: Lofty Valuations and Upcoming Election Contribute to Rising Market Volatility',
+        //         description: '17-th Catch Up',
+        //         amount: '+36.14 USD',
+        //         payType: 'Outcome payment'
+        //       },
+        //       {
+        //         date: '12.03.2020',
+        //         type: 'CONT',
+        //         description: '17-th Additional Hennes & Ma',
+        //         amount: '+5 999 999.71 USD',
+        //         payType: 'Income payment'
+        //       },
+        //       {
+        //         date: '06.03.2020',
+        //         type: 'CONT',
+        //         description: 'MindBody Capital Call',
+        //         amount: '-1 023 293.91 USD',
+        //         payType: 'Outcome payment'
+        //       },
+        //     ]
+        //   },
+        //   {
+        //     period: 'Февраль, 2020',
+        //     dataset: [
+        //       {
+        //         date: '08.02.2020',
+        //         type: 'CATCH',
+        //         description: '15-th Catch Up',
+        //         amount: '+17 848.07 USD'
+        //       },
+        //       {
+        //         date: '08.02.2020',
+        //         type: 'MANFEE',
+        //         tooltip: 'Daily Markets: Lofty Valuations and Upcoming Election Contribute to Rising Market Volatility',
+        //         description: 'Man Fee Q3 \'20',
+        //         amount: '-788.52 USD'
+        //       },
+        //       {
+        //         date: '08.02.2020',
+        //         type: 'CONT',
+        //         description: 'Boston Techno Astra Zeneca Sandvicsalomin',
+        //         amount: '+468.13 USD',
+        //         payType: 'Income payment'
+        //       },
+        //       {
+        //         date: '06.02.2020',
+        //         type: 'JDSPIOHPWPI HFT UTYDE KJ TYVV 256',
+        //         description: '17-th Additional Hennes & Svenska Terranova Handelsbanken Swedish Match TeliaSonera',
+        //         amount: '+40 027.45 USD'
+        //       },
+        //       {
+        //         date: '01.02.2020',
+        //         type: '',
+        //         description: 'Additional amount paid',
+        //         amount: '-3 202.12 USD',
+        //         payType: 'Income payment'
+        //       },
+        //       {
+        //         date: '01.02.2020',
+        //         type: '',
+        //         description: 'Initial Investment',
+        //         amount: '+45 051.50 USD'
+        //       },
+        //     ]
+        //   }
+        // ]
+      }
+    },
+    watch: {
+      '$i18n.locale': function () {
+        if (Object.keys(this.reports).length) this.updateData();
       }
     },
     methods: {
@@ -292,14 +297,21 @@
         this.$store.dispatch('loader/show');
 
         this.currentReports = [];
-        this.reports.forEach((report, index) => {
+        this.reports.periods.forEach((report, index) => {
+          const formatted = DateTime.fromFormat(report.period, 'LL-yyyy', { locale: this.$i18n.locale });
+          const month = formatted.monthLong;
+          const year = formatted.year;
+
           this.currentReports.push({
             period: report.period,
+            periodMonth: month,
+            periodYear: year,
+            periodFormatted: month + ', ' + year,
             dataset: [],
           });
-          report.dataset.forEach((dataset) => {
-            if (dataset.payType) {
-              if ((dataset.payType.includes('Income') && this.paymentsIncome) || (dataset.payType.includes('Outcome') && this.paymentsOutcome)) {
+          report.strings.forEach((dataset) => {
+            if (dataset.type) {
+              if ((dataset.type.includes('Ingoing') && this.paymentsIncome) || (dataset.type.includes('Outgoing') && this.paymentsOutcome)) {
                 this.currentReports[index].dataset.push(dataset);
               }
             }
@@ -312,13 +324,19 @@
           const endDateFormatted = DateTime.fromJSDate(this.endDate).startOf('day');
           this.currentReports = this.currentReports.reduce((reports, report) => {
             const tt = report.dataset.filter((dataset) => {
-              const datasetDate = DateTime.fromFormat(dataset.date, 'd.MM.yyyy');
+              const datasetDate = DateTime.fromFormat(dataset.date, 'dd-MM-yyyy');
               return (datasetDate >= startDateFormatted && datasetDate <= endDateFormatted);
             });
             if (tt.length) {
+              const formatted = DateTime.fromFormat(report.period, 'LL-yyyy', { locale: this.$i18n.locale });
+              const month = formatted.monthLong;
+              const year = formatted.year;
               reports.push({
                 period: report.period,
                 dataset: tt,
+                periodMonth: month,
+                periodYear: year,
+                periodFormatted: month + ', ' + year,
               });
             }
             return reports;
@@ -327,8 +345,8 @@
 
         // Sorting by dates
         this.currentReports.sort((a, b) => {
-          const keyA = DateTime.fromFormat(a.period.toLowerCase(), 'LLLL, yyyy', { locale: this.$i18n.locale });
-          const keyB = DateTime.fromFormat(b.period.toLowerCase(), 'LLLL, yyyy', { locale: this.$i18n.locale });
+          const keyA = DateTime.fromFormat(a.period.toLowerCase(), 'LL-yyyy', { locale: this.$i18n.locale });
+          const keyB = DateTime.fromFormat(b.period.toLowerCase(), 'LL-yyyy', { locale: this.$i18n.locale });
 
           // Compare the 2 dates
           if (this.currentSortType.id === 'to-high') {
@@ -378,65 +396,30 @@
         e.currentTarget.closest('.js-row').classList.toggle('is-open');
       },
       truncate() {
-        this.$refs.truncate.forEach((el) => {
-          if (el.offsetWidth < el.scrollWidth) {
-            el.classList.add('is-overflow');
-          } else {
-            el.classList.remove('is-overflow');
-          }
-        });
+        if (this.$refs.truncate) {
+          this.$refs.truncate.forEach((el) => {
+            if (el.offsetWidth < el.scrollWidth) {
+              el.classList.add('is-overflow');
+            } else {
+              el.classList.remove('is-overflow');
+            }
+          });
+        }
       },
     },
     mounted() {
+      const investor = document.querySelector('.investor').value;
 
       httpClient
-        .get('/api/cash_flow_base.php?investor=009447')
+        .get('/api/cash_flow_base.php', {
+          params: {
+            investor,
+          },
+        })
         .then((response) => {
-          console.log(response, 'response');
+          this.reports = response;
+          this.updateData();
         });
-      // const url = '/api/contributed_capital_ex.php';
-      // httpClient
-      //   .get(url)
-      //   .then((response) => {
-      //     response.Таблица.Периоды.forEach((period, i) => {
-      //       this.reportsNew.push({
-      //         period: period.Период,
-      //         dataset: [],
-      //       });
-      //       if (period.Строка instanceof Array) {
-      //         this.reportsNew[i].dataset.push(...period.Строка);
-      //       } else {
-      //         this.reportsNew[i].dataset.push(period.Строка);
-      //       }
-      //     })
-      //   });
-
-      // console.log(this.reportsNew, 'new');
-      // document.addEventListener('DOMContentLoaded', () => {
-      //   this.truncate();
-      // });
-      // this.truncate();
-      // const map = new Map();
-      // this.reports.forEach((report) => {
-      //   report.dataset.forEach((dataset) => {
-      //     if (!map.has(dataset.type)) {
-      //       map.set(dataset.type, true);
-      //       this.types.push({
-      //         id: dataset.type.toLowerCase(),
-      //         title: dataset.type,
-      //       });
-      //     }
-      //   });
-      // });
-      // httpClient
-      //   .get('api/projected_balance_ex.php')
-      //   .then((response) => {
-      //     console.log(response, 'test');
-      //   });
-
-      this.updateData();
-
-
       setTimeout(() => {
         this.truncate();
       }, 1000)

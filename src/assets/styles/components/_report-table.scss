@@ -40,6 +40,7 @@
     font-size: 30px;
     color: $primary;
     @include semi;
+    text-transform: capitalize;
     @include xs {
       width: 100%;
       margin-bottom: 10px;
