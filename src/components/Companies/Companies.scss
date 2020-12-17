@@ -9,12 +9,18 @@
     align-items: center;
     justify-content: space-between;
     margin-bottom: 30px;
+    @include sm {
+      display: block;
+    }
   }
 
   &__title {
     font-size: 30px;
     @include semi;
     color: $primary;
+    @include sm {
+      margin-bottom: 20px;
+    }
     @include xs {
       font-size: 26px;
     }
@@ -102,9 +108,27 @@
       }
     }
   }
+
   .ps-container {
     @include xs {
       margin-right: -20px;
+    }
+  }
+
+  &::v-deep .sort-select {
+    &__wrap {
+      @include md {
+        max-width: 50%;
+      }
+    }
+
+    &__active {
+      @include md {
+        white-space: nowrap;
+        max-width: 100%;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
     }
   }
 }

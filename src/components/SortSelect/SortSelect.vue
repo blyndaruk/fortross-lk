@@ -12,6 +12,7 @@
              v-for="(option, i) in options"
              :key="i"
              @click="sortChange(option)"
+             :title="option.title"
         >
           {{ option.title }}
         </div>
@@ -39,6 +40,7 @@
     methods: {
       sortChange(option) {
         this.optionActive = option;
+        this.$emit('selected-option', option);
         this.openSelect = false;
       },
       closeSelect() {

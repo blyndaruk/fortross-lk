@@ -142,7 +142,7 @@
   }
 
   &__col-inner {
-    padding: 20px 30px;
+    padding: 20px 30px 28px;
     height: 100%;
     background-color: $primary;
     @include r(650) {
@@ -157,7 +157,7 @@
   }
 
   &__note {
-    margin-top: 6px;
+    margin-top: 1px;
     font-size: 14px;
     @include semi;
   }

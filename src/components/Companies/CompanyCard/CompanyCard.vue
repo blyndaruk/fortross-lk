@@ -5,11 +5,11 @@
     <a :href="protocolFix(company.website)" class="company-card__inner" target="_blank">
       <div class="company-card__image"></div>
       <div v-if="company.company_valuation" class="company-card__row">
-        ${{parseInt(company.company_valuation, 10)}} USD
+        ${{ shortenLargeNumber( parseInt(company.company_valuation, 10) ) }} USD
         <span>{{$t('company-card.valuation')}}</span>
       </div>
       <div v-if="company.total_invested" class="company-card__row">
-        ${{parseInt(company.total_invested, 10)}} USD
+        ${{ shortenLargeNumber( parseInt(company.total_invested, 10) ) }} USD
         <span>{{$t('company-card.investments')}}</span>
       </div>
       <div v-if="company.fund_share" class="company-card__row">
@@ -37,6 +37,20 @@
       protocolFix(url) {
         return url.indexOf('http') === -1 || url.indexOf('https') === -1 ? '//' + url : url;
       },
+      shortenLargeNumber(num) {
+        const units = ['K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
+        let decimal;
+
+        for (let i = units.length - 1; i >= 0; i--) {
+          decimal = Math.pow(1000, i + 1);
+
+          if (num <= -decimal || num >= decimal) {
+            return +(num / decimal).toFixed(0) + units[i];
+          }
+        }
+
+        return num;
+      }
     },
   }
 </script>

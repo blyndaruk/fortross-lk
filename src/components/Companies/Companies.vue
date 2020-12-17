@@ -3,6 +3,7 @@
     <div class="companies__tabs-wrap" ref="companiesTabs">
       <div class="companies__head">
         <div class="companies__title">{{ $t('companies-title') }}</div>
+        <SortSelect :options="sortTypes" @selected-option="updateOption" />
       </div>
       <vue-custom-scrollbar class="scroll-area" :settings="scrollSettings">
         <div class="companies__tabs">
@@ -32,6 +33,7 @@
 
 <script>
   import CompanyCard from '@/components/Companies/CompanyCard/CompanyCard';
+  import SortSelect from '@/components/SortSelect/SortSelect';
   import httpClient from '@/utils/httpClient';
 
   import vueCustomScrollbar from 'vue-custom-scrollbar';
@@ -40,11 +42,27 @@
   export default {
     name: 'Companies',
     components: {
+      SortSelect,
       CompanyCard,
       vueCustomScrollbar,
     },
     data() {
       return {
+        sortTypes: [
+          {
+            title: 'Стоимости компании',
+            type: 'company_valuation'
+          },
+          {
+            title: 'По размеру инвестиции',
+            type: 'total_invested'
+          },
+          {
+            title: 'По доли фонда',
+            type: 'fund_share'
+          },
+        ],
+        sortOption: 'company_valuation',
         currentIndex: 0,
         currentTab: 'all',
         companies: [],
@@ -92,13 +110,22 @@
         const index = this.companies.map((e) => e.id).indexOf(id);
         this.filterCompanies(id, index);
       },
+      updateOption(option) {
+        this.sortOption = option.type;
+      },
     },
     computed: {
       filteredCompanies() {
+        const companies = this.companies;
+
+        companies.sort((a, b) => {
+          return parseFloat(b[this.sortOption]) - parseFloat(a[this.sortOption]);
+        });
+
         if (this.currentTab === 'all') {
-          return this.companies;
+          return companies;
         } else {
-          return this.companies.filter((company) => {
+          return companies.filter((company) => {
             return company.industry === this.currentTab;
           })
         }

@@ -39,7 +39,7 @@
     <div class="chart-head">
       <div class="chart-head__selects">
         <div class="chart-timeline" v-click-outside="closeSelect">
-          <div class="chart-timeline__label">Срез</div>
+          <div class="chart-timeline__label">Срез:</div>
           <div class="chart-timeline__wrap" @blur="openTimeSelect = false">
             <div class="chart-timeline__active" :class="{ 'is-open': openTimeSelect }"
                  @click="openTimeSelect = !openTimeSelect"
