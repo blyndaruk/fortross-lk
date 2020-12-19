@@ -142,6 +142,7 @@
       },
       filteredIndustries() {
         return this.industries.map(category => {
+          // console.log(category.id, this.companiesCount, this.companiesCount[category.id]);
           const amount = category.id === 'all' ? this.companies.length : this.companiesCount[category.id];
           return { ...category, amount };
         });

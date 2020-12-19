@@ -73,23 +73,35 @@
 
     @include r(1240) {
       position: relative;
-      width: calc(100% / 3 - 40px);
+      width: calc(100% / 3 - 27px);
       height: auto;
     }
+
     @include md {
       width: calc(100% / 2 - 20px);
-      max-width: 320px;
+      //max-width: 320px;
     }
+
     @include r(600) {
       width: 100%;
       max-width: none;
       margin-bottom: 10px;
     }
 
+
     &:not(:nth-child(4n)) {
       margin-right: 40px;
+      @include r(1240) {
+        margin-right: 0;
+      }
       @include md {
         margin-right: 0;
+      }
+    }
+
+    &:not(:nth-child(3n)) {
+      @include r(1240) {
+        margin-right: 40px;
       }
     }
 

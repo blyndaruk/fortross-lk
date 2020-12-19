@@ -258,6 +258,11 @@
     margin-left: 43px;
   }
 
+  &.is-disabled {
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
   &__active {
     @include semi;
     color: $primary;
@@ -365,12 +370,17 @@
     @include xs {
       width: 100%;
     }
+
+    &.is-disabled {
+      opacity: .3;
+      pointer-events: none;
+    }
   }
 
   input {
     display: none;
 
-    &:checked ~ .companies__check {
+    &:checked:not(:disabled) ~ .companies__check {
       border-color: $secondary;
       background-color: $secondary;
       background-image: url(~@/assets/images/check.svg);
@@ -386,6 +396,7 @@
 
 .check-all-companies {
   flex-direction: row-reverse;
+  margin-left: auto;
   margin-top: 0;
 
   @include sm {

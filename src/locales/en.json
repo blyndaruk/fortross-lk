@@ -28,5 +28,9 @@
     "valuation": "company valuation",
     "investments": "fund investments",
     "share": "fund share"
+  },
+  "documents": {
+    "payment-title": "Documents for payment",
+    "paid-title": "Paid documents"
   }
 }

@@ -54,7 +54,7 @@
               hoverRadius: 5.4,
             },
             // line: {
-            //   tension: 2
+            //   tension: 0.2
             // }
           },
           hover: {
@@ -116,7 +116,7 @@
                 values.forEach(function (body, i) {
                   const str = body[0].split(': ');
                   const title = str[0];
-                  const value = parseInt(str[1]).toLocaleString();
+                  const value = Math.round(parseFloat(str[1])).toLocaleString();
                   const colors = sortedColors[i];
                   let style = 'background:' + colors.backgroundColor;
                   style += '; border-color:' + colors.borderColor;

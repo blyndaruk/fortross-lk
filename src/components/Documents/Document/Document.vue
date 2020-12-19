@@ -1,9 +1,9 @@
 <template>
   <div class="document">
     <div class="document__inner">
-      <div class="document__date">{{ document.date }}</div>
+      <div class="document__date">{{ document.file_date_small || document.date }}</div>
       <v-clamp class="document__content" autoresize :max-lines="maxLines">
-        {{ document.text }}
+        {{ document.file_name || document.text }}
         <template #after="{ toggle, expanded, clamped }">
           <button
               v-if="expanded || clamped"
@@ -21,7 +21,7 @@
     </div>
 
     <div class="document__download">
-      <DownloadFile />
+      <DownloadFile :fileType="document.file_type" />
     </div>
   </div>
 </template>

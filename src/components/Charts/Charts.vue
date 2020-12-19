@@ -38,7 +38,7 @@
 
     <div class="chart-head">
       <div class="chart-head__selects">
-        <div class="chart-timeline" v-click-outside="closeSelect">
+        <div class="chart-timeline" :class="{ 'is-disabled': !companiesSelected.length }" v-click-outside="closeSelect">
           <div class="chart-timeline__label">Срез:</div>
           <div class="chart-timeline__wrap" @blur="openTimeSelect = false">
             <div class="chart-timeline__active" :class="{ 'is-open': openTimeSelect }"
@@ -140,12 +140,14 @@
       <label :for="'company_name_'+index"
              v-for="(company, index) in companies"
              :key="index"
+             :class="{ 'is-disabled': company.len <= 0 }"
       >
         <input type="checkbox"
                :name="'company_name_'+index"
                :id="'company_name_'+index"
                v-model="companiesSelected"
                :value="company"
+               :disabled="!company.len"
                @change="onCompanyUpdate"
         >
         <span class="companies__check"></span>
@@ -155,7 +157,8 @@
     </div>
 
     <div class="graphic-companies-actions">
-      <div class="toggle-all-companies" @click="toggleAllCompanies" :class="{ 'is-open': allCompaniesShown }">
+      <div class="toggle-all-companies" v-if="companies.length > 8" @click="toggleAllCompanies"
+           :class="{ 'is-open': allCompaniesShown }">
         Все компании
       </div>
 
@@ -205,6 +208,7 @@
         openSortSelect: false,
         allCompaniesShown: false,
         companiesSet: [],
+        companiesData: [],
         sorting: 'to-low',
         timelineType: [
           {
@@ -274,22 +278,18 @@
                 if (!map.has(el.company_id)) {
                   map.set(el.company_id, true);
                   const matchingCompany = companies.find(x => {
-                    // if (x.company_id === el.company_id) {
-                    //   console.log(x.company_id);
-                    //   console.log(el.company_id);
-                    // }
                     return x.company_id === el.company_id
                   });
                   this.companies.push({
                     id: el.company_id,
                     color: matchingCompany ? matchingCompany.color : '#000000',
+                    len: 0
                   });
                 }
               });
 
               // set first company as default (for first load)
               this.companiesSelected.push(this.companies[0]);
-
               this.fillData();
             });
         });
@@ -320,6 +320,7 @@
         this.datasets = [];
         this.labels = [];
         this.currentData = [];
+        this.companiesData = [];
 
         const map = new Map();
         const periodMap = new Map();
@@ -328,47 +329,68 @@
         this.data.sort(this.sortByTime);
         this.data.sort(this.sortByQuoter);
 
+        this.companies.forEach((company) => {
+          company.len = 0;
+        });
+
         this.data.forEach((obj) => {
-          // filter no company in portfolio
-          // const matchingCompany = this.companiesSet.find(x => {
-          //   if (x.company_id === obj.company_id) {
-          //   }
-          //   return x.company_id === obj.company_id
-          // });
 
+          if (this.metrics[this.currentMetricIndex].id === obj.metric_name) {
+            this.companies.some((company) => {
+              if (company.id === obj.company_id) {
+                if (obj.metric_value && (obj.metric_value !== 'NA' && obj.metric_value !== '')) {
 
-          this.companiesSelected.some((company) => {
-            if (obj.company_id === company.id && this.metrics[this.currentMetricIndex].id === obj.metric_name) {
-              obj.color = company.color;
-              if (!map.has(obj.company_id)) {
-                map.set(obj.company_id, true);
-                this.datasets.push({
-                  label: obj.company_id,
-                  id: obj.company_id,
-                  backgroundColor: obj.color,
-                  borderColor: obj.color,
-                  fill: false,
-                  data: [],
-                });
-              }
-              if (!periodMap.has(obj.period) && obj.period) {
-                if (obj.metric_value && (obj.metric_value !== 'NA' && obj.metric_value !== '') && !this.isHistorical || this.isHistorical) {
-                  periodMap.set(obj.period, true);
-                  const str = obj.period.replace(" ", "'").slice(0, 3);
-                  this.labels.push(str + obj.period.slice(5))
+                  // check company availability and data existence
+                  if (this.currentQuoter && !this.isHistorical) {
+                    const quoter = obj.period.replace(" ", "'").slice(0, 3);
+                    const quoterYear = quoter + obj.period.slice(5);
+                    if (this.currentQuoter === quoterYear) {
+                      company.len += 1;
+                    }
+                    // or increment just by metric  and data length
+                  } else {
+                    company.len += 1;
+                  }
                 }
               }
+            });
+          }
 
-              if (!this.isHistorical) {
-                const str = obj.period.replace(" ", "'").slice(0, 3);
-                if (this.currentQuoter === (str + obj.period.slice(5))) {
+
+          if (this.companiesSelected) {
+            this.companiesSelected.some((company) => {
+              if (obj.company_id === company.id && this.metrics[this.currentMetricIndex].id === obj.metric_name) {
+                obj.color = company.color;
+                if (!map.has(obj.company_id)) {
+                  map.set(obj.company_id, true);
+                  this.datasets.push({
+                    label: obj.company_id,
+                    id: obj.company_id,
+                    backgroundColor: obj.color,
+                    borderColor: obj.color,
+                    fill: false,
+                    data: [],
+                  });
+                }
+                if (!periodMap.has(obj.period) && obj.period) {
+                  if (obj.metric_value && (obj.metric_value !== 'NA' && obj.metric_value !== '') && !this.isHistorical || this.isHistorical) {
+                    periodMap.set(obj.period, true);
+                    const str = obj.period.replace(" ", "'").slice(0, 3);
+                    this.labels.push(str + obj.period.slice(5))
+                  }
+                }
+
+                if (!this.isHistorical) {
+                  const str = obj.period.replace(" ", "'").slice(0, 3);
+                  if (this.currentQuoter === (str + obj.period.slice(5))) {
+                    this.currentData.push(obj);
+                  }
+                } else {
                   this.currentData.push(obj);
                 }
-              } else {
-                this.currentData.push(obj);
               }
-            }
-          });
+            });
+          }
         });
 
         this.currentData.forEach((obj) => {
@@ -425,11 +447,6 @@
           this.labels[0] = this.currentQuoter;
         }
 
-        setTimeout(() => {
-          this.$store.dispatch('loader/hide');
-        }, 650);
-
-
         // sorting from min to max for bar chart
         if (!this.isHistorical) {
           this.datasets = this.sortMinMax(this.datasets);
@@ -448,6 +465,10 @@
         if (!this.isHistorical && this.isLine) {
           this.datacollection = this.drawBar(this.datacollection);
         }
+
+        setTimeout(() => {
+          this.$store.dispatch('loader/hide');
+        }, 650);
       },
       sortByTime(lhs, rhs) {
         const lhsPeriod = lhs.period;
@@ -552,6 +573,7 @@
       timeLineChange(option) {
         this.currentTimeline = option;
         this.openTimeSelect = false;
+        if (this.isHistorical) this.currentQuoter = '';
         this.fillData();
       },
       dateChange(option) {
