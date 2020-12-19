@@ -25,13 +25,17 @@
 
   &__main {
     padding: 25px 64px 25px 30px;
-    @include sm {
+    @include md {
       display: flex;
       flex-wrap: wrap;
       flex-direction: row-reverse;
+      justify-content: space-between;
+    }
+    @include sm {
       padding-left: 30px;
       padding-right: 30px;
       justify-content: flex-end;
+      width: 100%;
     }
     @include xs {
       flex-direction: column-reverse;
@@ -146,7 +150,7 @@
     height: 100%;
     background-color: $primary;
     @include r(650) {
-      padding: 10px 20px;
+      padding: 10px 20px 16px;
     }
   }
 
@@ -192,6 +196,7 @@
       }
 
       &:last-child {
+        padding-left: 21px;
         font-size: 14px;
         opacity: .4;
         font-weight: 500;
@@ -286,6 +291,10 @@
     @include xs {
       margin-bottom: 0;
     }
+  }
+
+  #{$this}__col {
+    background-image: url(~@/assets/images/pattern.svg);
   }
 }
 

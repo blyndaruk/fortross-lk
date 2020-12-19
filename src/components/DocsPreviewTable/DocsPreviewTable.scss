@@ -53,6 +53,7 @@
     @include sm {
       order: 3;
       width: 100%;
+      max-width: none;
     }
     @include xs {
       padding: 5px 20px 13px;
