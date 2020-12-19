@@ -91,7 +91,9 @@
     font-weight: 500;
 
     .field__checkbox {
-      margin-right: 20px;
+      &:not(:last-child) {
+        margin-right: 20px;
+      }
     }
 
     .field__check {
@@ -127,16 +129,28 @@
         background-position: center center;
       }
     }
+  }
 
-    span {
-      margin-right: 10px;
+  &__check {
+    margin-right: 10px;
+  }
+
+  &__col {
+    display: flex;
+    align-items: center;
+
+    &:not(:last-child) {
+      margin-right: 40px;
+      @include xs {
+        margin-right: 0;
+      }
     }
   }
 
 
   .vdp-datepicker {
     input {
-      max-width: 101px;
+      max-width: 110px;
       padding-left: 16px;
       background-color: $main-bg;
       font-size: 16px;
@@ -214,6 +228,7 @@
 
 .field__date--quoter {
   padding: 0;
+  height: 40px;
 
   .sort-select {
     width: 100%;

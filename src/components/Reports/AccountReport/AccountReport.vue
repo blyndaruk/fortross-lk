@@ -70,6 +70,8 @@
       </div>
     </div>
 
+    <div class="report-no-data" v-if="!currentReports.length">{{ $t('no-data') }}</div>
+
     <div class="account-report__data">
       <div class="report-table" v-for="(table, index) in currentReports" :key="table.period">
         <div class="report-table__head">
@@ -227,7 +229,7 @@
               {
                 date: '23.03.2020',
                 type: 'MANFEE',
-                tooltip: 'Daily Markets: Lofty Valuations and Upcoming Election Contribute to Rising Market Volatility',
+                tooltip: 'Daily Markets: Lofty Valuations and Upcoming Election Contribute to Rising Market Volatility',
                 typeTooltip: 'Daily Markets: Lofty Valuations and Upcoming Election Contribute to Rising Market Volatility',
                 description: 'Man Fee Q1 \'020',
                 amount: '-579.57 USD'

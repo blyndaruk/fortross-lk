@@ -43,7 +43,7 @@
       return {
         tabs: [],
         scrollSettings: {
-          suppressScrollY: false,
+          suppressScrollY: true,
           suppressScrollX: false,
           wheelPropagation: true,
         },

@@ -21,7 +21,7 @@
     </div>
 
     <div class="document__download">
-      <DownloadFile :fileType="document.file_type" />
+      <DownloadFile :fileType="document.file_type" :url="document.file_url" />
     </div>
   </div>
 </template>

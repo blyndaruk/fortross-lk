@@ -72,6 +72,8 @@
       </div>
     </div>
 
+    <div class="report-no-data" v-if="!currentReports.length">{{ $t('no-data') }}</div>
+
     <div class="payment-report__data">
       <div class="report-table report-table--sm" v-for="(table, index) in currentReports" :key="table.period">
         <div class="report-table__head">
@@ -184,107 +186,6 @@
         currentReports: [],
         reportsNew: [],
         reports: [],
-        // reports: [
-        //   {
-        //     period: 'Март, 2020',
-        //     dataset: [
-        //       {
-        //         date: '27.03.2020',
-        //         type: 'INV',
-        //         description: 'MindBody Tech',
-        //         amount: '-5 484.84 USD',
-        //         payType: 'Income payment'
-        //       },
-        //       {
-        //         date: '23.03.2020',
-        //         type: 'INV',
-        //         description: 'Boston Techno',
-        //         amount: '-685.56 USD',
-        //         payType: 'Outcome payment'
-        //       },
-        //       {
-        //         date: '23.03.2020',
-        //         type: 'MANFEE',
-        //         description: 'Man Fee Q1 \'020',
-        //         amount: '-579.57 USD',
-        //         payType: 'Income payment'
-        //       },
-        //       {
-        //         date: '12.03.2020',
-        //         type: 'JDSPIOHPWPI JDSPIOHPWPI',
-        //         description: 'Boston Techno Astra Zeneca Sandvinotoric Boston Techno Astra Zeneca Sandvinotoric',
-        //         amount: '-1 230.78 USD',
-        //         payType: 'Outcome payment'
-        //       },
-        //       {
-        //         date: '12.03.2020',
-        //         type: 'OMX STOCkH OMX STOCkH',
-        //         tooltip: 'Daily Markets: Lofty Valuations and Upcoming Election Contribute to Rising Market Volatility',
-        //         description: '17-th Catch Up',
-        //         amount: '+36.14 USD',
-        //         payType: 'Outcome payment'
-        //       },
-        //       {
-        //         date: '12.03.2020',
-        //         type: 'CONT',
-        //         description: '17-th Additional Hennes & Ma',
-        //         amount: '+5 999 999.71 USD',
-        //         payType: 'Income payment'
-        //       },
-        //       {
-        //         date: '06.03.2020',
-        //         type: 'CONT',
-        //         description: 'MindBody Capital Call',
-        //         amount: '-1 023 293.91 USD',
-        //         payType: 'Outcome payment'
-        //       },
-        //     ]
-        //   },
-        //   {
-        //     period: 'Февраль, 2020',
-        //     dataset: [
-        //       {
-        //         date: '08.02.2020',
-        //         type: 'CATCH',
-        //         description: '15-th Catch Up',
-        //         amount: '+17 848.07 USD'
-        //       },
-        //       {
-        //         date: '08.02.2020',
-        //         type: 'MANFEE',
-        //         tooltip: 'Daily Markets: Lofty Valuations and Upcoming Election Contribute to Rising Market Volatility',
-        //         description: 'Man Fee Q3 \'20',
-        //         amount: '-788.52 USD'
-        //       },
-        //       {
-        //         date: '08.02.2020',
-        //         type: 'CONT',
-        //         description: 'Boston Techno Astra Zeneca Sandvicsalomin',
-        //         amount: '+468.13 USD',
-        //         payType: 'Income payment'
-        //       },
-        //       {
-        //         date: '06.02.2020',
-        //         type: 'JDSPIOHPWPI HFT UTYDE KJ TYVV 256',
-        //         description: '17-th Additional Hennes & Svenska Terranova Handelsbanken Swedish Match TeliaSonera',
-        //         amount: '+40 027.45 USD'
-        //       },
-        //       {
-        //         date: '01.02.2020',
-        //         type: '',
-        //         description: 'Additional amount paid',
-        //         amount: '-3 202.12 USD',
-        //         payType: 'Income payment'
-        //       },
-        //       {
-        //         date: '01.02.2020',
-        //         type: '',
-        //         description: 'Initial Investment',
-        //         amount: '+45 051.50 USD'
-        //       },
-        //     ]
-        //   }
-        // ]
       }
     },
     watch: {

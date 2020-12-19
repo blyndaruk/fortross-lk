@@ -29,6 +29,7 @@
     "investments": "fund investments",
     "share": "fund share"
   },
+  "no-data": "No data to display",
   "documents": {
     "payment-title": "Documents for payment",
     "paid-title": "Paid documents"

@@ -5,95 +5,96 @@
       <div class="field field--date">
         <div class="field__label">Период</div>
         <div class="field__inner">
-          <div class="field__date">
-            <div class="field__placeholder-left">{{ $t('datepicker.from') }}</div>
-            <datepicker
-                format="yyyy"
-                @selected="onStartDateSelect"
-                :typeable="true"
-                :language="$i18n.locale === 'ru' ? ru : en"
-                minimum-view="year"
-            ></datepicker>
-            <div class="field__placeholder-right">
-              <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" clip-rule="evenodd"
-                      d="M3 0H5V2H3V0ZM6 0H8V2H6V0ZM5 3H3V5H5V3ZM6 3H8V5H6V3ZM2 3H0V5H2V3ZM3 6H5V8H3V6ZM2 6H0V8H2V6Z"
-                      fill="#0B204E" />
-              </svg>
-            </div>
-          </div>
 
-          <div class="field__date field__date--quoter">
-            <div class="sort-select" v-click-outside="closeFromQSelect">
-              <div class="sort-select__wrap" @blur="openFromQSelect = false">
-                <div class="sort-select__active" :class="{ 'is-open': openFromQSelect }"
-                     @click="openFromQSelect = !openFromQSelect"
-                >
-                  {{ currentFromQ || 'Квартал' }}
-                </div>
-                <div class="sort-select__options" :class="{ 'is-open': openFromQSelect }">
-                  <div
-                      class="sort-select__option"
-                      v-for="(option, i) in quarters"
-                      :key="i"
-                      @click="sortFromQChange(option)"
+          <div class="field__col">
+            <div class="field__date">
+              <div class="field__placeholder-left">{{ $t('datepicker.from') }}</div>
+              <datepicker
+                  format="yyyy"
+                  @selected="onStartDateSelect"
+                  :typeable="true"
+                  :language="$i18n.locale === 'ru' ? ru : en"
+                  minimum-view="year"
+              ></datepicker>
+              <div class="field__placeholder-right">
+                <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd"
+                        d="M3 0H5V2H3V0ZM6 0H8V2H6V0ZM5 3H3V5H5V3ZM6 3H8V5H6V3ZM2 3H0V5H2V3ZM3 6H5V8H3V6ZM2 6H0V8H2V6Z"
+                        fill="#0B204E" />
+                </svg>
+              </div>
+            </div>
+            <div class="field__date field__date--quoter">
+              <div class="sort-select" v-click-outside="closeFromQSelect">
+                <div class="sort-select__wrap" @blur="openFromQSelect = false">
+                  <div class="sort-select__active" :class="{ 'is-open': openFromQSelect }"
+                       @click="openFromQSelect = !openFromQSelect"
                   >
-                    {{ option }}
+                    {{ currentFromQ || 'Квартал' }}
+                  </div>
+                  <div class="sort-select__options" :class="{ 'is-open': openFromQSelect }">
+                    <div
+                        class="sort-select__option"
+                        v-for="(option, i) in quarters"
+                        :key="i"
+                        @click="sortFromQChange(option)"
+                    >
+                      {{ option }}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-
-          <div class="field__date">
-            <div class="field__placeholder-left">{{ $t('datepicker.to') }}</div>
-            <datepicker
-                format="yyyy"
-                @selected="onEndDateSelect"
-                :typeable="true"
-                :language="$i18n.locale === 'ru' ? ru : en"
-                minimum-view="year"
-            ></datepicker>
-            <div class="field__placeholder-right">
-              <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" clip-rule="evenodd"
-                      d="M3 0H5V2H3V0ZM6 0H8V2H6V0ZM5 3H3V5H5V3ZM6 3H8V5H6V3ZM2 3H0V5H2V3ZM3 6H5V8H3V6ZM2 6H0V8H2V6Z"
-                      fill="#0B204E" />
-              </svg>
+          <div class="field__col">
+            <div class="field__date">
+              <div class="field__placeholder-left">{{ $t('datepicker.to') }}</div>
+              <datepicker
+                  format="yyyy"
+                  @selected="onEndDateSelect"
+                  :typeable="true"
+                  :language="$i18n.locale === 'ru' ? ru : en"
+                  minimum-view="year"
+              ></datepicker>
+              <div class="field__placeholder-right">
+                <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd"
+                        d="M3 0H5V2H3V0ZM6 0H8V2H6V0ZM5 3H3V5H5V3ZM6 3H8V5H6V3ZM2 3H0V5H2V3ZM3 6H5V8H3V6ZM2 6H0V8H2V6Z"
+                        fill="#0B204E" />
+                </svg>
+              </div>
             </div>
-          </div>
-
-
-
-          <div class="field__date field__date--quoter">
-            <div class="sort-select" v-click-outside="closeToQSelect">
-              <div class="sort-select__wrap" @blur="openToQSelect = false">
-                <div class="sort-select__active" :class="{ 'is-open': openToQSelect }"
-                     @click="openToQSelect = !openToQSelect"
-                >
-                  {{ currentToQ || 'Квартал' }}
-                </div>
-                <div class="sort-select__options" :class="{ 'is-open': openToQSelect }">
-                  <div
-                      class="sort-select__option"
-                      v-for="(option, i) in quarters"
-                      :key="i"
-                      @click="sortToQChange(option)"
+            <div class="field__date field__date--quoter">
+              <div class="sort-select" v-click-outside="closeToQSelect">
+                <div class="sort-select__wrap" @blur="openToQSelect = false">
+                  <div class="sort-select__active" :class="{ 'is-open': openToQSelect }"
+                       @click="openToQSelect = !openToQSelect"
                   >
-                    {{ option }}
+                    {{ currentToQ || 'Квартал' }}
+                  </div>
+                  <div class="sort-select__options" :class="{ 'is-open': openToQSelect }">
+                    <div
+                        class="sort-select__option"
+                        v-for="(option, i) in quarters"
+                        :key="i"
+                        @click="sortToQChange(option)"
+                    >
+                      {{ option }}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-
 
         </div>
       </div>
+
     </div>
 
 
+    <div class="report-no-data" v-if="!currentReports.length">{{ $t('no-data') }}</div>
 
     <div class="forecast__data">
       <div class="report-table">
@@ -130,13 +131,13 @@
       </div>
 
 
-      <div class="report-table" v-for="(table) in reports" :key="table.period">
-        <div class="report-table__head">
-          <div class="report-table__title">
-            {{table.period}}
-          </div>
-        </div>
-      </div>
+<!--      <div class="report-table" v-for="(table) in reports" :key="table.period">-->
+<!--        <div class="report-table__head">-->
+<!--          <div class="report-table__title">-->
+<!--            {{table.period}}-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
     </div>
   </div>
 </template>
@@ -333,10 +334,43 @@
       padding: 30px;
       margin-bottom: 40px;
       background-color: #ffffff;
+      @include xs {
+        padding: 20px;
+      }
     }
 
     &__period {
       margin-right: 40px;
+    }
+
+    .field{
+      &__date {
+        margin-right: 10px;
+        margin-bottom: 10px;
+        &:nth-child(2) {
+          margin-right: 30px;
+          @include xs {
+            margin-right: 0;
+          }
+        }
+        &:last-child {
+          margin-right: 0;
+        }
+
+        @include xs {
+          width: 50%;
+        }
+      }
+
+      &__inner {
+        @include md {
+          flex-wrap: wrap;
+          height: auto;
+        }
+        @include xs {
+          flex-wrap: wrap;
+        }
+      }
     }
   }
 </style>

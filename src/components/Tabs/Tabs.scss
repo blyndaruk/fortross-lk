@@ -117,9 +117,15 @@
     z-index: 3;
     opacity: 0;
     height: 6px;
+    @include sm {
+      pointer-events: none;
+    }
   }
 
   .ps__thumb-x {
     height: 3px;
+    @include sm {
+      pointer-events: none;
+    }
   }
 }
