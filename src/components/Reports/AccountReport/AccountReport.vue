@@ -76,7 +76,7 @@
       <div class="report-table" v-for="(table, index) in currentReports" :key="table.period">
         <div class="report-table__head">
           <div class="report-table__title" v-if="table.dataset && table.dataset.length">
-            {{table.period}}
+            {{table.periodMonth + ', ' + table.periodYear}}
           </div>
           <div class="report-table__head-actions">
             <div class="report-table__download" v-if="index === 0">
@@ -109,7 +109,7 @@
             </div>
           </div>
         </div>
-        <div class="report-table__body">
+        <div class="report-table__body" v-if="table.dataset && table.dataset.length">
           <div class="report-table__row js-row" v-for="(row, index) in table.dataset" :key="index">
             <div class="report-table__date">{{row.date}}</div>
             <div class="report-table__type">
@@ -152,7 +152,7 @@
                 </svg>
               </div>
             </div>
-            <div class="report-table__amount">{{row.amount}}</div>
+            <div class="report-table__amount">{{row.summ}}</div>
           </div>
         </div>
       </div>
@@ -210,149 +210,99 @@
           }
         ],
         currentReports: [],
-        reports: [
-          {
-            period: 'Март, 2020',
-            dataset: [
-              {
-                date: '27.03.2020',
-                type: 'INV',
-                description: 'MindBody Tech',
-                amount: '-5 484.84 USD'
-              },
-              {
-                date: '23.03.2020',
-                type: 'INV',
-                description: 'Boston Techno',
-                amount: '-685.56 USD'
-              },
-              {
-                date: '23.03.2020',
-                type: 'MANFEE',
-                tooltip: 'Daily Markets: Lofty Valuations and Upcoming Election Contribute to Rising Market Volatility',
-                typeTooltip: 'Daily Markets: Lofty Valuations and Upcoming Election Contribute to Rising Market Volatility',
-                description: 'Man Fee Q1 \'020',
-                amount: '-579.57 USD'
-              },
-              {
-                date: '12.03.2020',
-                type: 'JDSPIOHPWPI JDSPIOHPWPI',
-                description: 'Boston Techno Astra Zeneca Sandvinotoric Boston Techno Astra Zeneca Sandvinotoric',
-                typeTooltip: 'Daily Markets: Lofty Valuations and Upcoming Election Contribute to Rising Market Volatility',
-                amount: '-1 230.78 USD'
-              },
-              {
-                date: '12.03.2020',
-                type: 'OMX STOCkH OMX STOCkH',
-                tooltip: 'Daily Markets: Lofty Valuations and Upcoming Election Contribute to Rising Market Volatility',
-                description: '17-th Catch Up',
-                amount: '+36.14 USD'
-              },
-              {
-                date: '12.03.2020',
-                type: 'CONT',
-                description: '17-th Additional Hennes & Ma',
-                amount: '+5 999 999.71 USD'
-              },
-              {
-                date: '06.03.2020',
-                type: 'CONT',
-                description: 'MindBody Capital Call',
-                amount: '-1 023 293.91 USD'
-              },
-            ]
-          },
-          {
-            period: 'Февраль, 2020',
-            dataset: [
-              {
-                date: '08.02.2020',
-                type: 'CATCH',
-                description: '15-th Catch Up',
-                amount: '+17 848.07 USD'
-              },
-              {
-                date: '08.02.2020',
-                type: 'MANFEE',
-                tooltip: 'Daily Markets: Lofty Valuations and Upcoming Election Contribute to Rising Market Volatility',
-                description: 'Man Fee Q3 \'20',
-                amount: '-788.52 USD'
-              },
-              {
-                date: '08.02.2020',
-                type: 'CONT',
-                description: 'Boston Techno Astra Zeneca Sandvicsalomin',
-                amount: '+468.13 USD'
-              },
-              {
-                date: '06.02.2020',
-                type: 'JDSPIOHPWPI HFT UTYDE KJ TYVV 256',
-                description: '17-th Additional Hennes & Svenska Terranova Handelsbanken Swedish Match TeliaSonera',
-                amount: '+40 027.45 USD'
-              },
-              {
-                date: '01.02.2020',
-                type: '',
-                description: 'Additional amount paid',
-                amount: '-3 202.12 USD'
-              },
-              {
-                date: '01.02.2020',
-                type: '',
-                description: 'Initial Investment',
-                amount: '+45 051.50 USD'
-              },
-            ]
-          }
-        ]
+        reportsNew: [],
+        reports: [],
       }
     },
     methods: {
       updateData() {
+
         this.$store.dispatch('loader/show');
 
+        // if (this.currentFilterType.id === 'all') {
+        //   this.currentReports = this.reports;
+        // } else {
+        //   this.currentReports = [];
+        //   // const map = new Map();
+        //   this.reports.forEach((report, index) => {
+        //     this.currentReports.push({
+        //       period: report.period,
+        //       dataset: [],
+        //     });
+        //     report.dataset.forEach((dataset) => {
+        //       if (dataset.type.toLowerCase() === this.currentFilterType.id) {
+        //         this.currentReports[index].dataset.push(dataset);
+        //       }
+        //       // console.log(index);
+        //       // if (!map.has(dataset.type)) {
+        //       //   map.set(dataset.type, true);
+        //       //   this.types.push({
+        //       //     id: dataset.type.toLowerCase(),
+        //       //     title: dataset.type,
+        //       //   });
+        //       // }
+        //     });
+        //   });
+        // }
 
-        if (this.currentFilterType.id === 'all') {
-          this.currentReports = this.reports;
-        } else {
-          this.currentReports = [];
-          // const map = new Map();
-          this.reports.forEach((report, index) => {
-            this.currentReports.push({
-              period: report.period,
-              dataset: [],
-            });
-            report.dataset.forEach((dataset) => {
-              if (dataset.type.toLowerCase() === this.currentFilterType.id) {
+
+        this.currentReports = [];
+
+        this.reports.periods.forEach((report, index) => {
+          const formatted = DateTime.fromFormat(report.period, 'LL-yyyy', { locale: this.$i18n.locale });
+          const month = formatted.monthLong;
+          const year = formatted.year;
+          this.currentReports.push({
+            period: report.period,
+            periodMonth: month,
+            periodYear: year,
+            periodFormatted: month + ', ' + year,
+            // dataset: [],
+          });
+
+          report.strings.forEach((dataset) => {
+            if (this.currentFilterType.id === 'all') {
+              if (!this.currentReports[index].dataset) {
+                this.currentReports[index].dataset = [];
+                this.currentReports[index].dataset.push(dataset);
+              } else {
                 this.currentReports[index].dataset.push(dataset);
               }
-              // console.log(index);
-              // if (!map.has(dataset.type)) {
-              //   map.set(dataset.type, true);
-              //   this.types.push({
-              //     id: dataset.type.toLowerCase(),
-              //     title: dataset.type,
-              //   });
-              // }
-            });
+            } else {
+              if (dataset.type.toLowerCase() === this.currentFilterType.id) {
+                if (!this.currentReports[index].dataset) {
+                  this.currentReports[index].dataset = [];
+                  this.currentReports[index].dataset.push(dataset);
+                } else {
+                  this.currentReports[index].dataset.push(dataset);
+                }
+              }
+            }
           });
-        }
-
+        });
 
         // Filter by chosen date range
         if (this.startDate && this.endDate) {
           const startDateFormatted = DateTime.fromJSDate(this.startDate).startOf('day');
           const endDateFormatted = DateTime.fromJSDate(this.endDate).startOf('day');
           this.currentReports = this.currentReports.reduce((reports, report) => {
-            const tt = report.dataset.filter((dataset) => {
-              const datasetDate = DateTime.fromFormat(dataset.date, 'd.MM.yyyy');
-              return (datasetDate >= startDateFormatted && datasetDate <= endDateFormatted);
-            });
-            if (tt.length) {
-              reports.push({
-                period: report.period,
-                dataset: tt,
+            if (report.dataset) {
+              const tt = report.dataset.filter((dataset) => {
+                const datasetDate = DateTime.fromFormat(dataset.date, 'dd-MM-yyyy');
+                return (datasetDate >= startDateFormatted && datasetDate <= endDateFormatted);
               });
+              if (tt.length) {
+                const formatted = DateTime.fromFormat(report.period, 'LL-yyyy', { locale: this.$i18n.locale });
+                const month = formatted.monthLong;
+                const year = formatted.year;
+                reports.push({
+                  period: report.period,
+                  dataset: tt,
+                  periodMonth: month,
+                  periodYear: year,
+                  periodFormatted: month + ', ' + year,
+                });
+              }
             }
             return reports;
           }, []);
@@ -360,8 +310,8 @@
 
         // Sorting by dates
         this.currentReports.sort((a, b) => {
-          const keyA = DateTime.fromFormat(a.period.toLowerCase(), 'LLLL, yyyy', { locale: this.$i18n.locale });
-          const keyB = DateTime.fromFormat(b.period.toLowerCase(), 'LLLL, yyyy', { locale: this.$i18n.locale });
+          const keyA = DateTime.fromFormat(a.period.toLowerCase(), 'LL-yyyy', { locale: this.$i18n.locale });
+          const keyB = DateTime.fromFormat(b.period.toLowerCase(), 'LL-yyyy', { locale: this.$i18n.locale });
 
           // Compare the 2 dates
           if (this.currentSortType.id === 'to-high') {
@@ -422,67 +372,99 @@
         });
       },
     },
+    watch: {
+      '$i18n.locale': function () {
+        if (Object.keys(this.reports).length) this.updateData();
+      }
+    },
     mounted() {
-      // document.addEventListener('DOMContentLoaded', () => {
-      //   this.truncate();
-      // });
-      // this.truncate();
+      const investor = document.querySelector('.investor').value;
+
       httpClient
-        .get('/api/cash_flow_ex.php')
-        .then(() => {
-          // console.log(response);
-          // console.log(response.Период);
+        .get('/api/contributed_capital_base.php', {
+          params: {
+            investor,
+          },
+        })
+        .then((response) => {
+          this.reports = response;
+          // console.log(response, 'response');
 
-          // response.Период.forEach((report) => {
-          //   console.log(report);
-          // });
-          // response.Инвестор.forEach((report) => {
-          //   if (report.Периоды) {
-          //     console.log(report.Периоды);
-          //     if (report.Периоды instanceof Array) {
-          //       this.data = this.data.concat(report.Периоды);
-          //     } else {
-          //       this.data.push(report.Периоды)
-          //     }
-          //   }
-          // });
-
-          // this.data.forEach((obj) => {
-          //   console.log(obj.Период);
-          // });
-
-          // eslint-disable-next-line no-unused-vars
-          // const dateSorted = this.data.sort(function(a, b) {
-          //   // console.log(DateTime.fromFormat(a.Период, 'MM-yyyy'), a.Период);
-          //   return DateTime.fromFormat(a.Период, 'MM-yyyy') - DateTime.fromFormat(b.Период, 'MM-yyyy');
-          // });
-
-          // let period = dateSorted[0];
-          // dateSorted.forEach((obj) => {
-          //   console.log(obj);
-          // });
-        });
-
-
-      const map = new Map();
-      this.reports.forEach((report) => {
-        report.dataset.forEach((dataset) => {
-          if (!map.has(dataset.type)) {
-            map.set(dataset.type, true);
-            this.types.push({
-              id: dataset.type.toLowerCase(),
-              title: dataset.type,
+          const map = new Map();
+          this.reports.periods.forEach((report) => {
+            report.strings.forEach((dataset) => {
+              if (!map.has(dataset.type) && dataset.type) {
+                map.set(dataset.type, true);
+                this.types.push({
+                  id: dataset.type.toLowerCase(),
+                  title: dataset.type,
+                });
+              }
             });
-          }
+          });
+          this.updateData();
         });
-      });
-
-      this.updateData();
-
-
       setTimeout(() => {
         this.truncate();
-      }, 1000)
+      }, 1000);
+
+
+      // httpClient
+      //   .get('/api/cash_flow_ex.php')
+      //   .then(() => {
+      // console.log(response);
+      // console.log(response.Период);
+
+      // response.Период.forEach((report) => {
+      //   console.log(report);
+      // });
+      // response.Инвестор.forEach((report) => {
+      //   if (report.Периоды) {
+      //     console.log(report.Периоды);
+      //     if (report.Периоды instanceof Array) {
+      //       this.data = this.data.concat(report.Периоды);
+      //     } else {
+      //       this.data.push(report.Периоды)
+      //     }
+      //   }
+      // });
+
+      // this.data.forEach((obj) => {
+      //   console.log(obj.Период);
+      // });
+
+      // eslint-disable-next-line no-unused-vars
+      // const dateSorted = this.data.sort(function(a, b) {
+      //   // console.log(DateTime.fromFormat(a.Период, 'MM-yyyy'), a.Период);
+      //   return DateTime.fromFormat(a.Период, 'MM-yyyy') - DateTime.fromFormat(b.Период, 'MM-yyyy');
+      // });
+
+      // let period = dateSorted[0];
+      // dateSorted.forEach((obj) => {
+      //   console.log(obj);
+      // });
+      // });
+
+
+      // const map = new Map();
+      // this.reports.forEach((report) => {
+      //   report.dataset.forEach((dataset) => {
+      //     if (!map.has(dataset.type)) {
+      //       map.set(dataset.type, true);
+      //       this.types.push({
+      //         id: dataset.type.toLowerCase(),
+      //         title: dataset.type,
+      //       });
+      //     }
+      //   });
+      // });
+
+      // this.updateData();
+      //
+      //
+      // setTimeout(() => {
+      //   this.truncate();
+      // }, 1000)
     },
     computed: {},
     directives: {

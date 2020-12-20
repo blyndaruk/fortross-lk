@@ -211,10 +211,10 @@
             dataset: [],
           });
           report.strings.forEach((dataset) => {
-            if (dataset.type) {
-              if ((dataset.type.includes('Ingoing') && this.paymentsIncome) || (dataset.type.includes('Outgoing') && this.paymentsOutcome)) {
-                this.currentReports[index].dataset.push(dataset);
-              }
+            if ((dataset.type.includes('Ingoing') && this.paymentsIncome) || (dataset.type.includes('Outgoing') && this.paymentsOutcome)) {
+              this.currentReports[index].dataset.push(dataset);
+            } else {
+              this.currentReports = this.currentReports.splice(index, 1);
             }
           });
         });
