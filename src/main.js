@@ -3,6 +3,7 @@ import VueMq from 'vue-mq';
 import { VTooltip, VPopover, VClosePopover } from 'v-tooltip';
 import router from '@/router';
 import i18n from '@/i18n';
+import AsyncComputed from "vue-async-computed";
 import { store } from './store';
 
 import { filter } from '@/utils/VueFilter';
@@ -16,6 +17,9 @@ VTooltip.options.defaultTrigger = 'hover focus click';
 Vue.directive('tooltip', VTooltip);
 Vue.directive('close-popover', VClosePopover);
 Vue.component('v-popover', VPopover);
+
+Vue.use(AsyncComputed);
+Vue.config.productionTip = false;
 
 Vue.use(VueMq, {
   breakpoints: {

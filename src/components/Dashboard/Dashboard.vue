@@ -22,45 +22,33 @@
         <mq-layout mq="md+">
           <svg width="100%" height="100%" viewbox="0 0 100 100">
             <defs>
-              <radialGradient id="graphGradient">
-                <stop offset="10%" stop-color="rgba(11, 32, 78, 0)" />
-                <stop offset="43%" stop-color="#0B204E" stop-opacity="0.2" />
-                <stop offset="100%" stop-color="#24DBAF" />
+              <radialGradient id="graphGradient" cx="43%" cy="43%" r="100%" fx="43%" fy="100%">
+                <stop offset="10%" stop-color="#0B204E" />
+                <stop offset="85%" stop-color="#24DBAF" />
               </radialGradient>
             </defs>
-            <!--          radial-gradient(43.5% 43.5% at 50% 50%, #0B204E 0%, rgba(11, 32, 78, 0) 100%), #24DBAF-->
-            <!--          <circle cx="50" cy="50" r="40" fill="tomato"/>-->
-            <!--          <circle cx="50" cy="50" r="40" fill="transparent" stroke-width="20" stroke="grey"/>-->
             <!--          stroke-dashoffset = perimeter - perimeter * amount / 100-->
             <circle cx="50" cy="50" r="35" fill="transparent" stroke-width="30" stroke="url(#graphGradient)"
-                    stroke-dasharray="219.8" :stroke-dashoffset="activeAccountContributionPercentage" />
+                    stroke-dasharray="219.8" :stroke-dashoffset="activeAccountContributionPercentage || 219.8" />
             <circle cx="50" cy="50" r="35" fill="transparent" stroke-width="30" stroke="#24DBAF"
-                    stroke-dasharray="219.8" :stroke-dashoffset="activePercentage" />
+                    stroke-dasharray="219.8" :stroke-dashoffset="activePercentage || 219.8" />
           </svg>
         </mq-layout>
         <mq-layout :mq="['tablet', 'mobile']">
           <svg width="100%" height="100%" viewbox="0 0 220 220">
             <defs>
-              <radialGradient id="graphGradient">
-                <stop offset="10%" stop-color="rgba(11, 32, 78, 0)" />
-                <stop offset="43%" stop-color="#0B204E" stop-opacity="0.2" />
-                <stop offset="100%" stop-color="#24DBAF" />
+              <radialGradient id="graphGradient" cx="43%" cy="43%" r="100%" fx="43%" fy="100%">
+                <stop offset="10%" stop-color="#0B204E" />
+                <stop offset="85%" stop-color="#24DBAF" />
               </radialGradient>
             </defs>
-            <!--          radial-gradient(43.5% 43.5% at 50% 50%, #0B204E 0%, rgba(11, 32, 78, 0) 100%), #24DBAF-->
-            <!--          <circle cx="50" cy="50" r="40" fill="tomato"/>-->
-            <!--          <circle cx="50" cy="50" r="40" fill="transparent" stroke-width="20" stroke="grey"/>-->
-            <!--          stroke-dashoffset = perimeter - perimeter * amount / 100-->
-            <!--            perimeter = 2 * 3.14 * radius -->
+            <!--            perimeter = 2 * 3.14 * radius 483.56-->
             <circle cx="110" cy="110" r="77" fill="transparent" stroke-width="66" stroke="url(#graphGradient)"
-                    stroke-dasharray="219.8" :stroke-dashoffset="activePercentage-20" />
+                    stroke-dasharray="483.56" :stroke-dashoffset="activeAccountContributionPercentage" />
             <circle cx="110" cy="110" r="77" fill="transparent" stroke-width="66" stroke="#24DBAF"
-                    stroke-dasharray="219.8" :stroke-dashoffset="activePercentage" />
+                    stroke-dasharray="483.56" :stroke-dashoffset="activePercentage" />
           </svg>
         </mq-layout>
-        <!--        <div class="dashboard-graph__inactive"></div>-->
-        <!--        <div class="dashboard-graph__active"><div></div></div>-->
-        <!--        <div class="dashboard-graph__subactive"></div>-->
       </div>
       <div class="dashboard__info-right">
         <div class="dashboard__row">
@@ -110,13 +98,12 @@
     data() {
       return {
         mainAmount: '360 499 USD',
-        fullStroke: 219.8,
-        activePercentage: 219.8,
-        activeAccountContributionPercentage: 219.8,
+        activePercentage: this.$mq === 'tablet' || this.$mq === 'mobile' ? 483.56 : 219.8,
+        activeAccountContributionPercentage: this.$mq === 'tablet' || this.$mq === 'mobile' ? 483.56 : 219.8,
         sum: 50000,
         unfunded: 13679,
         capital: 36321,
-        accountContribution: 2002,
+        accountContribution: 8701,
         data: {
           simpleSummary: [
             {
@@ -146,16 +133,24 @@
       },
     },
     mounted() {
-      const capitalPercentage = this.capital * 100 / this.sum;
-      const accountContributionPercentage = this.accountContribution * 100 / this.sum;
-
-      setTimeout(() => {
-        this.activePercentage = this.fullStroke - this.fullStroke * capitalPercentage / 100;
-      }, 500);
-
-      setTimeout(() => {
-        this.activeAccountContributionPercentage = this.fullStroke - this.fullStroke * (accountContributionPercentage + capitalPercentage) / 100;
-      }, 500);
+    },
+    asyncComputed: {
+      activePercentage() {
+        const fullStroke = this.$mq === 'tablet' || this.$mq === 'mobile' ? 483.56 : 219.8;
+        return new Promise(resolve =>
+          setTimeout(() => resolve(
+            this.activePercentage = fullStroke - fullStroke * this.capitalPercentage / 100,
+          ), 1000)
+        );
+      },
+      activeAccountContributionPercentage() {
+        const fullStroke = this.$mq === 'tablet' || this.$mq === 'mobile' ? 483.56 : 219.8;
+        return new Promise(resolve =>
+          setTimeout(() => resolve(
+            fullStroke - fullStroke * (this.accountContributionPercentage + this.capitalPercentage) / 100,
+          ), 1000)
+        );
+      }
     },
     computed: {
       isSimple() {
@@ -166,6 +161,12 @@
       },
       isFull() {
         return this.viewType === 'full';
+      },
+      capitalPercentage() {
+        return this.capital * 100 / this.sum;
+      },
+      accountContributionPercentage() {
+        return this.accountContribution * 100 / this.sum;
       },
     }
   }
