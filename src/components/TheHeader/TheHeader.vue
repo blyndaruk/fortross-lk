@@ -10,7 +10,7 @@
               </mq-layout>
             </div>
             <mq-layout mq="laptop+">
-              <div class="header__id">ID 2345098-781-23</div>
+              <div class="header__id">ID {{investorID}}</div>
             </mq-layout>
           </div>
           <div class="header__center">
@@ -31,7 +31,7 @@
 
         <mq-layout :mq="['lg', 'md', 'tablet']">
           <div class="header__sub-row">
-            <div class="header__id">ID 2345098-781-23</div>
+            <div class="header__id">ID {{investorID}}</div>
             <div class="header__fund">
               {{ $t('fund') }}
               <span>SBT Fund 2</span>
@@ -42,7 +42,7 @@
         <mq-layout :mq="['mobile']">
           <div class="header__mob">
             <div class="header__mob-top">
-              <div class="header__id">ID 2345098-781-23</div>
+              <div class="header__id">ID {{investorID}}</div>
               <div class="header__fund">
                 {{ $t('fund') }}
                 <span>SBT Fund 2</span>
@@ -81,6 +81,11 @@
     methods: {
       onBurgerToggle(burger) {
         this.isBurgerActive = burger;
+      },
+    },
+    computed: {
+      investorID() {
+        return document.querySelector('.investor').value;
       },
     },
   }

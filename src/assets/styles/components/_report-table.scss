@@ -187,6 +187,9 @@
     align-items: center;
     flex-grow: 1;
     padding: 20px 30px;
+    @include sm {
+      display: block;
+    }
   }
 
   &__info-icon {
@@ -288,6 +291,10 @@
 }
 
 .report-no-data {
+  display: flex;
+  justify-content: center;
+  min-height: 190px;
+  padding-top: 20px;
   color: $primary;
   font-size: 20px;
   text-align: center;

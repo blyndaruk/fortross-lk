@@ -35,7 +35,7 @@
 
 <script>
   import DownloadFile from '@/components/DownloadFile/DownloadFile';
-  import VClamp from 'vue-clamp'
+  import VClamp from 'vue-clamp';
 
   export default {
     name: 'DocsPreviewTable',

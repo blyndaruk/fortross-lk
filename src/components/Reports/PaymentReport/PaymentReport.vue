@@ -7,11 +7,12 @@
         <div class="field__inner">
           <div class="field__date">
             <div class="field__placeholder-left">{{ $t('datepicker.from') }}</div>
-            <datepicker :disabled-dates="disabledStartDates"
-                        format="d.MM.yyyy"
-                        :typeable="true"
-                        @selected="onStartDateSelect"
-                        :language="$i18n.locale === 'ru' ? ru : en"
+            <datepicker
+                format="d.MM.yyyy"
+                :disabled-dates="disabledStartDates"
+                :typeable="true"
+                :language="$i18n.locale === 'ru' ? ru : en"
+                @selected="onStartDateSelect"
             ></datepicker>
             <div class="field__placeholder-right">
               <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -24,11 +25,11 @@
           <div class="field__date">
             <div class="field__placeholder-left">{{ $t('datepicker.to') }}</div>
             <datepicker
-                :disabled-dates="disabledEndDates"
                 format="d.MM.yyyy"
-                @selected="onEndDateSelect"
+                :disabled-dates="disabledEndDates"
                 :typeable="true"
                 :language="$i18n.locale === 'ru' ? ru : en"
+                @selected="onEndDateSelect"
             ></datepicker>
             <div class="field__placeholder-right">
               <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -147,9 +148,8 @@
   import httpClient from '@/utils/httpClient';
   import ClickOutside from 'vue-click-outside';
   import Datepicker from '@sum.cumo/vue-datepicker';
-  import { en, ru } from '@sum.cumo/vue-datepicker/dist/locale';
-
   import { DateTime } from "luxon";
+  import { en, ru } from '@sum.cumo/vue-datepicker/dist/locale';
 
 
   export default {
@@ -211,6 +211,10 @@
             dataset: [],
           });
           report.strings.forEach((dataset) => {
+            let date = DateTime.fromFormat(dataset.date, 'dd-MM-yyyy');
+            if (!date.c) date = DateTime.fromFormat(dataset.date, 'd.M.yyyy');
+            dataset.date = `${date.c.day}.${date.c.month}.${date.c.year}`;
+
             if ((dataset.type.includes('Ingoing') && this.paymentsIncome) || (dataset.type.includes('Outgoing') && this.paymentsOutcome)) {
               this.currentReports[index].dataset.push(dataset);
             } else {
@@ -225,7 +229,7 @@
           const endDateFormatted = DateTime.fromJSDate(this.endDate).startOf('day');
           this.currentReports = this.currentReports.reduce((reports, report) => {
             const tt = report.dataset.filter((dataset) => {
-              const datasetDate = DateTime.fromFormat(dataset.date, 'dd-MM-yyyy');
+              const datasetDate = DateTime.fromFormat(dataset.date, 'd.M.yyyy');
               return (datasetDate >= startDateFormatted && datasetDate <= endDateFormatted);
             });
             if (tt.length) {

@@ -164,9 +164,8 @@
   import httpClient from '@/utils/httpClient';
   import ClickOutside from 'vue-click-outside';
   import Datepicker from '@sum.cumo/vue-datepicker';
-  import { en, ru } from '@sum.cumo/vue-datepicker/dist/locale';
-
   import { DateTime } from "luxon";
+  import { en, ru } from '@sum.cumo/vue-datepicker/dist/locale';
 
 
   export default {
@@ -219,33 +218,6 @@
 
         this.$store.dispatch('loader/show');
 
-        // if (this.currentFilterType.id === 'all') {
-        //   this.currentReports = this.reports;
-        // } else {
-        //   this.currentReports = [];
-        //   // const map = new Map();
-        //   this.reports.forEach((report, index) => {
-        //     this.currentReports.push({
-        //       period: report.period,
-        //       dataset: [],
-        //     });
-        //     report.dataset.forEach((dataset) => {
-        //       if (dataset.type.toLowerCase() === this.currentFilterType.id) {
-        //         this.currentReports[index].dataset.push(dataset);
-        //       }
-        //       // console.log(index);
-        //       // if (!map.has(dataset.type)) {
-        //       //   map.set(dataset.type, true);
-        //       //   this.types.push({
-        //       //     id: dataset.type.toLowerCase(),
-        //       //     title: dataset.type,
-        //       //   });
-        //       // }
-        //     });
-        //   });
-        // }
-
-
         this.currentReports = [];
 
         this.reports.periods.forEach((report, index) => {
@@ -257,29 +229,27 @@
             periodMonth: month,
             periodYear: year,
             periodFormatted: month + ', ' + year,
-            // dataset: [],
+            dataset: [],
           });
 
           report.strings.forEach((dataset) => {
+            let date = DateTime.fromFormat(dataset.date, 'dd-MM-yyyy');
+            if (!date.c) date = DateTime.fromFormat(dataset.date, 'd.M.yyyy');
+
+            dataset.date = `${date.c.day}.${date.c.month}.${date.c.year}`;
+
             if (this.currentFilterType.id === 'all') {
-              if (!this.currentReports[index].dataset) {
-                this.currentReports[index].dataset = [];
-                this.currentReports[index].dataset.push(dataset);
-              } else {
-                this.currentReports[index].dataset.push(dataset);
-              }
+              this.currentReports[index].dataset.push(dataset);
             } else {
               if (dataset.type.toLowerCase() === this.currentFilterType.id) {
-                if (!this.currentReports[index].dataset) {
-                  this.currentReports[index].dataset = [];
-                  this.currentReports[index].dataset.push(dataset);
-                } else {
-                  this.currentReports[index].dataset.push(dataset);
-                }
+                this.currentReports[index].dataset.push(dataset);
               }
             }
           });
         });
+
+        // remove periods without data
+        this.currentReports = this.currentReports.filter(report => report.dataset.length);
 
         // Filter by chosen date range
         if (this.startDate && this.endDate) {
@@ -288,7 +258,7 @@
           this.currentReports = this.currentReports.reduce((reports, report) => {
             if (report.dataset) {
               const tt = report.dataset.filter((dataset) => {
-                const datasetDate = DateTime.fromFormat(dataset.date, 'dd-MM-yyyy');
+                const datasetDate = DateTime.fromFormat(dataset.date, 'd.M.yyyy');
                 return (datasetDate >= startDateFormatted && datasetDate <= endDateFormatted);
               });
               if (tt.length) {
@@ -388,7 +358,6 @@
         })
         .then((response) => {
           this.reports = response;
-          // console.log(response, 'response');
 
           const map = new Map();
           this.reports.periods.forEach((report) => {
@@ -407,64 +376,6 @@
       setTimeout(() => {
         this.truncate();
       }, 1000);
-
-
-      // httpClient
-      //   .get('/api/cash_flow_ex.php')
-      //   .then(() => {
-      // console.log(response);
-      // console.log(response.Период);
-
-      // response.Период.forEach((report) => {
-      //   console.log(report);
-      // });
-      // response.Инвестор.forEach((report) => {
-      //   if (report.Периоды) {
-      //     console.log(report.Периоды);
-      //     if (report.Периоды instanceof Array) {
-      //       this.data = this.data.concat(report.Периоды);
-      //     } else {
-      //       this.data.push(report.Периоды)
-      //     }
-      //   }
-      // });
-
-      // this.data.forEach((obj) => {
-      //   console.log(obj.Период);
-      // });
-
-      // eslint-disable-next-line no-unused-vars
-      // const dateSorted = this.data.sort(function(a, b) {
-      //   // console.log(DateTime.fromFormat(a.Период, 'MM-yyyy'), a.Период);
-      //   return DateTime.fromFormat(a.Период, 'MM-yyyy') - DateTime.fromFormat(b.Период, 'MM-yyyy');
-      // });
-
-      // let period = dateSorted[0];
-      // dateSorted.forEach((obj) => {
-      //   console.log(obj);
-      // });
-      // });
-
-
-      // const map = new Map();
-      // this.reports.forEach((report) => {
-      //   report.dataset.forEach((dataset) => {
-      //     if (!map.has(dataset.type)) {
-      //       map.set(dataset.type, true);
-      //       this.types.push({
-      //         id: dataset.type.toLowerCase(),
-      //         title: dataset.type,
-      //       });
-      //     }
-      //   });
-      // });
-
-      // this.updateData();
-      //
-      //
-      // setTimeout(() => {
-      //   this.truncate();
-      // }, 1000)
     },
     computed: {},
     directives: {

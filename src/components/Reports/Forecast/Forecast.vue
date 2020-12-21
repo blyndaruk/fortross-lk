@@ -114,30 +114,46 @@
 
         <div class="report-table__body">
           <div class="report-table__row" v-for="(row, index) in currentReports" :key="index">
-            <div class="report-table__text">
-              <p>{{row.title}}</p>
-              <div class="report-table__info-icon" v-if="row.tooltip"
-                   v-tooltip.top-start="{ content: row.tooltip, classes: 'report-tooltip' } ">
-                <svg width="2" height="8" viewBox="0 0 2 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path fill-rule="evenodd" clip-rule="evenodd"
-                        d="M1.00098 2C1.55326 2 2.00098 1.55228 2.00098 1C2.00098 0.447715 1.55326 0 1.00098 0C0.448692 0 0.000976562 0.447715 0.000976562 1C0.000976562 1.55228 0.448692 2 1.00098 2ZM2.00098 4C2.00098 3.44772 1.55326 3 1.00098 3C0.448692 3 0.000976562 3.44772 0.000976562 4V7C0.000976562 7.55228 0.448692 8 1.00098 8C1.55326 8 2.00098 7.55228 2.00098 7L2.00098 4Z"
-                        fill="white" />
-                </svg>
-              </div>
-            </div>
+
+              <v-clamp class="report-table__text" autoresize :max-lines="1">
+                {{row.title}}
+                <template #after="{ toggle, expanded, clamped }">
+                  <button
+                      v-if="expanded || clamped"
+                      class="toggle-clamp"
+                      @click="toggle"
+                  >
+                    <svg width="20" height="4" viewBox="0 0 20 4" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path fill-rule="evenodd" clip-rule="evenodd"
+                            d="M4 2C4 3.10457 3.10457 4 2 4C0.895431 4 0 3.10457 0 2C0 0.895431 0.895431 0 2 0C3.10457 0 4 0.895431 4 2ZM12 2C12 3.10457 11.1046 4 10 4C8.89543 4 8 3.10457 8 2C8 0.895431 8.89543 0 10 0C11.1046 0 12 0.895431 12 2ZM18 4C19.1046 4 20 3.10457 20 2C20 0.895431 19.1046 0 18 0C16.8954 0 16 0.895431 16 2C16 3.10457 16.8954 4 18 4Z"
+                            fill="currentColor" />
+                    </svg>
+                  </button>
+
+                  <div class="report-table__info-icon" v-if="row.tooltip"
+                       v-tooltip.top-start="{ content: row.tooltip, classes: 'report-tooltip' } ">
+                    <svg width="2" height="8" viewBox="0 0 2 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path fill-rule="evenodd" clip-rule="evenodd"
+                            d="M1.00098 2C1.55326 2 2.00098 1.55228 2.00098 1C2.00098 0.447715 1.55326 0 1.00098 0C0.448692 0 0.000976562 0.447715 0.000976562 1C0.000976562 1.55228 0.448692 2 1.00098 2ZM2.00098 4C2.00098 3.44772 1.55326 3 1.00098 3C0.448692 3 0.000976562 3.44772 0.000976562 4V7C0.000976562 7.55228 0.448692 8 1.00098 8C1.55326 8 2.00098 7.55228 2.00098 7L2.00098 4Z"
+                            fill="white" />
+                    </svg>
+                  </div>
+                </template>
+              </v-clamp>
+
             <div class="report-table__amount">{{row.amount}}</div>
           </div>
         </div>
       </div>
 
 
-<!--      <div class="report-table" v-for="(table) in reports" :key="table.period">-->
-<!--        <div class="report-table__head">-->
-<!--          <div class="report-table__title">-->
-<!--            {{table.period}}-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </div>-->
+      <!--      <div class="report-table" v-for="(table) in reports" :key="table.period">-->
+      <!--        <div class="report-table__head">-->
+      <!--          <div class="report-table__title">-->
+      <!--            {{table.period}}-->
+      <!--          </div>-->
+      <!--        </div>-->
+      <!--      </div>-->
     </div>
   </div>
 </template>
@@ -149,12 +165,14 @@
   import ClickOutside from 'vue-click-outside';
   import Datepicker from '@sum.cumo/vue-datepicker';
   import { en, ru } from '@sum.cumo/vue-datepicker/dist/locale';
+  import VClamp from 'vue-clamp';
   // import { DateTime } from "luxon";
 
   export default {
     name: 'Forecast',
     components: {
       Datepicker,
+      VClamp,
     },
     data() {
       return {
@@ -181,7 +199,7 @@
             date: '20-10-2020',
           },
           {
-            title: 'Upcoming Investments (estimate)',
+            title: 'Upcoming Investments (estimate) Upcoming Investments (estimate)',
             amount: '-45 000.00 USD',
             quarter: 'Q1',
           },
@@ -218,16 +236,16 @@
       this.updateData();
       // console.log(DateTime);
       // httpClient
-        // .get('/api/projected_balance_ex.php')
-        // .then((response) => {
-          // console.log(response);
-          // response.Инвестор.Периоды.forEach((report) => {
-          //   // console.log(report);
-          //   report.Таблица.Строка.forEach((dataset) => {
-          //     console.log(dataset);
-          //   });
-          // });
-        // });
+      // .get('/api/projected_balance_ex.php')
+      // .then((response) => {
+      // console.log(response);
+      // response.Инвестор.Периоды.forEach((report) => {
+      //   // console.log(report);
+      //   report.Таблица.Строка.forEach((dataset) => {
+      //     console.log(dataset);
+      //   });
+      // });
+      // });
     },
     methods: {
       onStartDateSelect() {
@@ -343,16 +361,18 @@
       margin-right: 40px;
     }
 
-    .field{
+    .field {
       &__date {
         margin-right: 10px;
         margin-bottom: 10px;
+
         &:nth-child(2) {
           margin-right: 30px;
           @include xs {
             margin-right: 0;
           }
         }
+
         &:last-child {
           margin-right: 0;
         }
@@ -369,6 +389,25 @@
         }
         @include xs {
           flex-wrap: wrap;
+        }
+      }
+    }
+
+    .report-table {
+      &__text {
+        @include sm {
+          padding: 20px 20px 8px;
+        }
+      }
+      &__row {
+        @include md {
+          flex-wrap: wrap;
+          white-space: normal;
+        }
+      }
+      &__amount {
+        @include sm {
+          text-align: left;
         }
       }
     }

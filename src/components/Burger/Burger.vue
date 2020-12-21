@@ -7,6 +7,8 @@
 </template>
 
 <script>
+  import scrollLock from '@/utils/scrollLock';
+
   export default {
     name: 'Burger',
     data() {
@@ -21,12 +23,14 @@
       },
       toggleBurger() {
         if (this.isActive) {
+          scrollLock.disable();
           this.isOpen = !this.isOpen;
           setTimeout(() => {
             this.isActive = !this.isActive;
             this.$emit('burger-toggle', this.isActive);
           }, 150);
         } else {
+          scrollLock.enable();
           this.isActive = !this.isActive;
           this.$emit('burger-toggle', this.isActive);
           setTimeout(() => {
