@@ -44,7 +44,9 @@
               },
               ticks: {
                 beginAtZero: true,
-                callback: value => this.unit === '%' ? value + this.unit : this.unit + value,
+                callback: value => {
+                  return this.unit === '%' ? this.commarize(value) + this.unit : this.unit + this.commarize(value);
+                },
               }
             }]
           },
@@ -53,9 +55,12 @@
               radius: 3,
               hoverRadius: 5.4,
             },
-            // line: {
-            //   tension: 0.2
-            // }
+            line: {
+              cubicInterpolationMode: 'monotone',
+              steppedLine: false
+              // tension: 0.2
+              // tension: 0.4
+            }
           },
           hover: {
             mode: 'index',
@@ -155,6 +160,26 @@
       },
       unit: {
         type: String
+      }
+    },
+    methods: {
+      commarize(value) {
+        const min = 1e3;
+        // Alter numbers larger than 1k
+        if (value >= min && this.unit !== '%') {
+          const units = ["K", "M", "B", "T"];
+
+          const order = Math.floor(Math.log(value) / Math.log(1000));
+
+          const unitName = units[(order - 1)];
+          const num = Math.floor(value / 1000 ** order);
+
+          // output number remainder + unitname
+          return num + unitName
+        }
+
+        // return formatted original number
+        return value.toLocaleString()
       }
     },
     mounted() {
