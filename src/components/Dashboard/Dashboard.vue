@@ -33,14 +33,14 @@
     </div>
     <div class="dashboard__info">
       <div class="dashboard__info-left">
-        <div class="dashboard__row">{{sum.toLocaleString()}} USD</div>
+        <div class="dashboard__row">{{sum.toLocaleString('ru')}} USD</div>
         <div class="dashboard__row">COMMITED <br> CAPITAL</div>
       </div>
       <div class="dashboard__info-graph dashboard-graph">
         <mq-layout mq="md+">
           <svg width="100%" height="100%" viewbox="0 0 100 100">
             <defs>
-              <radialGradient id="graphGradient" cx="43%" cy="43%" r="100%" fx="43%" fy="100%">
+              <radialGradient id="graphGradient" cx="43%" cy="43%" r="90%" fx="43%" fy="60%">
                 <stop offset="10%" stop-color="#0B204E" />
                 <stop offset="85%" stop-color="#24DBAF" />
               </radialGradient>
@@ -55,7 +55,7 @@
         <mq-layout :mq="['tablet', 'mobile']">
           <svg width="100%" height="100%" viewbox="0 0 220 220">
             <defs>
-              <radialGradient id="graphGradient" cx="43%" cy="43%" r="100%" fx="43%" fy="100%">
+              <radialGradient id="graphGradient" cx="43%" cy="43%" r="90%" fx="43%" fy="60%">
                 <stop offset="10%" stop-color="#0B204E" />
                 <stop offset="85%" stop-color="#24DBAF" />
               </radialGradient>
@@ -72,18 +72,18 @@
         <div class="dashboard__row">
           <div class="dashboard__unfunded">
             <span></span>
-            <span>{{unfunded.toLocaleString()}} USD</span>
+            <span>{{unfunded.toLocaleString('ru')}} USD</span>
             <span>{{ $t('dashboard.unfunded') }}</span>
           </div>
         </div>
         <div class="dashboard__row">
           <div class="dashboard__amounts">
             <div class="dashboard__amount">
-              <span>{{capital.toLocaleString()}} USD</span>
+              <span>{{capital.toLocaleString('ru')}} USD</span>
               <span>{{ $t('dashboard.contributed-capital') }}</span>
             </div>
             <div class="dashboard__amount">
-              <span>{{accountContribution.toLocaleString()}} USD</span>
+              <span>{{accountContribution.toLocaleString('ru')}} USD</span>
               <span>{{ $t('dashboard.contributed-account') }}</span>
             </div>
           </div>
@@ -138,10 +138,10 @@
         mainAmount: '',
         activePercentage: this.$mq === 'tablet' || this.$mq === 'mobile' ? 483.56 : 219.8,
         activeAccountContributionPercentage: this.$mq === 'tablet' || this.$mq === 'mobile' ? 483.56 : 219.8,
-        sum: 50000,
-        unfunded: 13679,
-        capital: 36321,
-        accountContribution: 8701,
+        sum: 20000,
+        unfunded: 0,
+        capital: 10000,
+        accountContribution: 5000,
         companiesAmount: 0,
         exits: 0,
         totalInvested: 0,
@@ -157,7 +157,6 @@
       },
     },
     mounted() {
-      const investor = document.querySelector('.investor').value;
 
       httpClient
         .get('/api/portfolio_dashboard.php')
@@ -170,6 +169,7 @@
           this.fairValueFormatted = response.investment_fair_value_formated.toUpperCase();
         });
 
+      const investor = document.querySelector('.investor').value;
       httpClient
         .get('/api/my_account_base.php', {
           params: {
@@ -177,11 +177,13 @@
           },
         })
         .then((response) => {
-          // console.log(response);
           if (!response) return;
           const allData = response.all;
-          this.mainAmount = parseInt(allData['Current_state_of_account'].summ).toLocaleString();
-          // this.sum = parseInt(allData['~Commitment'].summ);
+          this.mainAmount = parseInt(allData['Current_state_of_account'].summ).toLocaleString('ru');
+          this.sum = parseInt(allData['~Commitment'].summ);
+          this.capital = parseInt(allData['~Contributed_capital'].summ);
+          this.unfunded = this.sum - this.capital;
+          this.accountContribution = parseInt(allData['Current_state_of_account'].summ);
         });
 
     },
@@ -190,16 +192,22 @@
         const fullStroke = this.$mq === 'tablet' || this.$mq === 'mobile' ? 483.56 : 219.8;
         return new Promise(resolve =>
           setTimeout(() => resolve(
-            this.activePercentage = fullStroke - fullStroke * this.capitalPercentage / 100,
+            this.activePercentage = fullStroke - fullStroke / 100 * (this.capitalPercentage - this.contributionAccountPercent)
+            // this.activePercentage = fullStroke - fullStroke / 100 * this.capitalPercentage
+            // this.activePercentage = fullStroke - fullStroke * this.capitalPercentage / 100
           ), 1000)
         );
       },
       activeAccountContributionPercentage() {
         const fullStroke = this.$mq === 'tablet' || this.$mq === 'mobile' ? 483.56 : 219.8;
-        return new Promise(resolve =>
-          setTimeout(() => resolve(
-            fullStroke - fullStroke * (this.accountContributionPercentage + this.capitalPercentage) / 100,
-          ), 1000)
+        // console.log(fullStroke - fullStroke / 100 * this.capitalPercentage, this.capitalPercentage, 'eeee');
+        return new Promise(resolve => {
+            // const asf = 'asf';
+            return setTimeout(() => resolve(
+              this.activeAccountContributionPercentage = fullStroke - fullStroke / 100 * this.capitalPercentage
+              // this.activeAccountContributionPercentage = this.activePercentage - this.accountContributionPercentage
+            ), 1000)
+          }
         );
       }
     },
@@ -214,10 +222,47 @@
         return this.viewType === 'full';
       },
       capitalPercentage() {
+        // console.log(this.capital * 100 / this.sum, 'this.summ');
         return this.capital * 100 / this.sum;
+        // return (this.capital - this.accountContribution) * 100 / this.sum;
+        // return (20000 - 10000) * 100 / 20000;
+      },
+      contributionAccountPercent() {
+        // console.log(this.activePercentage, this.accountContribution * 100 / this.capital, 'this.accountContribution * 100 / this.capital');
+
+        const thisPercentage = this.accountContribution * 100 / this.capital;
+        return ((this.capitalPercentage / 100) * (thisPercentage / 100)) * 100;
+        // return this.accountContribution * 100 / this.capital;
       },
       accountContributionPercentage() {
-        return this.accountContribution * 100 / this.sum;
+        // same + percentage of capital
+        // console.log(this.capital, this.accountContribution);
+        // console.log(this.accountContribution * 100 / this.capital, this.capitalPercentage, 'grad');
+        // return (20000 - 15000) * 100 / 20000;
+        // console.log(fullStroke - fullStroke * this.accountContributionPercentage / 100);
+        // console.log(this.activePercentage, this.accountContribution * 100 / this.capital, 'perc');
+        // console.log();
+        // this.$mq === 'tablet' || this.$mq === 'mobile' ? 483.56 : 219.8;
+
+
+
+        // const fullStroke = this.$mq === 'tablet' || this.$mq === 'mobile' ? 483.56 : 219.8;
+
+        // console.log(this.activePercentage / 100 * this.accountContribution * 100 / this.capital, 'offs');
+        // console.log(100 / fullStroke * (this.activePercentage / 100 * this.accountContribution * 100 / this.capital), 'perc');
+        //
+        // console.log((this.accountContribution * 100 / this.capital) / this.capitalPercentage, 'test');
+        //
+        // console.log(fullStroke - fullStroke * this.accountContribution * 100 / this.capital / this.capitalPercentage);
+
+
+
+
+
+        // console.log(this.capitalPercentage, 'this.capitalPercentage');
+        return this.capitalPercentage * (this.accountContribution * 100 / this.capital) / this.capitalPercentage;
+        // return this.activePercentage / 100 * this.accountContribution * 100 / this.capital;
+        // return this.accountContribution * 100 / this.capital;
       },
     }
   }

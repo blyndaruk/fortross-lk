@@ -1,13 +1,15 @@
 .tabs {
   $this: &;
 
-  @include r(700) {
-    margin-left: -40px;
-    margin-right: -40px;
-  }
-  @include xs {
-    margin-left: -20px;
-    margin-right: -20px;
+  &:not(.is-simple) {
+    @include r(700) {
+      margin-left: -40px;
+      margin-right: -40px;
+    }
+    @include xs {
+      margin-left: -20px;
+      margin-right: -20px;
+    }
   }
 
   &__list {
@@ -82,6 +84,14 @@
       padding-top: 0;
       margin-bottom: 30px;
       background-color: transparent;
+      @include r(700) {
+        margin-left: 40px;
+        margin-right: 40px;
+      }
+      @include xs {
+        margin-left: 20px;
+        margin-right: 20px;
+      }
     }
 
     #{$this}__item {
@@ -90,6 +100,9 @@
 
     li {
       background-color: transparent;
+      @include xs {
+        padding-right: 0;
+      }
     }
   }
 }

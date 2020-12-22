@@ -3,7 +3,7 @@
     <div class="documents">
       <div class="documents__section">
         <div class="documents__head">
-          <h2 class="documents__title">{{ currentYear }}<span>текущиий год</span></h2>
+          <h2 class="documents__title">{{ currentYear }}<span>текущий год</span></h2>
           <SortSelect :options="sortTypes" @selected-option="sortDocs" />
         </div>
         <div class="documents__list">

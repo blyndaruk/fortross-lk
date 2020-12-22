@@ -99,17 +99,13 @@
     <div class="report-no-data" v-if="!currentReports.length">{{ $t('no-data') }}</div>
 
     <div class="forecast__data">
-      <div class="report-table">
+      <div class="report-table" v-for="(period, index) in currentReports" :key="period.period">
         <div class="report-table__head">
           <div class="report-table__title" v-if="currentReports && currentReports.length">
-            <p v-if="startDate && endDate && currentToQ && currentFromQ">
-              Forecast for the {{ startDateFormatted.year }} {{ currentFromQ }} &ndash; {{ endDateFormatted.year }} {{
-              currentToQ }}
-            </p>
-            <p v-else>Forecast for the <span>{{ currentYear }} {{ currentQuarter }}</span></p>
+            <p>Forecast for the <span>{{period.period}}</span></p>
           </div>
           <div class="report-table__head-actions">
-            <div class="report-table__download">
+            <div class="report-table__download" v-if="index === 0">
               <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" clip-rule="evenodd"
                       d="M16.0015 15C16.0015 15.5523 15.5537 16 15.0015 16L1.00146 16C0.44918 16 0.00146485 15.5523 0.00146486 15C0.00146486 14.4477 0.44918 14 1.00146 14L6.51452 14L1.82836 9.74006C1.41969 9.36856 1.38956 8.73611 1.76105 8.32744C2.13255 7.91878 2.765 7.88865 3.17367 8.26014L7.00102 11.7394L7.00102 -2.01468e-06L9.00102 -1.99083e-06L9.00102 11.7397L12.8283 8.26018C13.237 7.88866 13.8694 7.91876 14.2409 8.32741C14.6125 8.73606 14.5824 9.36851 14.1737 9.74002L9.48796 14L15.0015 14C15.5537 14 16.0015 14.4477 16.0015 15Z"
@@ -121,7 +117,7 @@
         </div>
 
         <div class="report-table__body">
-          <div class="report-table__row" v-for="(row, index) in currentReports" :key="index">
+          <div class="report-table__row" v-for="(row, index) in period.strings" :key="index">
 
             <v-clamp class="report-table__text" autoresize :max-lines="1">
               {{row.description}} (For test - {{row.year}} {{row.quarter}})
@@ -181,6 +177,7 @@
           'Q3',
           'Q4',
         ],
+        periods: [],
         startDate: '',
         endDate: '',
         currentQuarter: '',
@@ -212,11 +209,10 @@
           },
         })
         .then((response) => {
-          response.periods.forEach((period) => {
-            this.currentReports = this.currentReports.concat(period.strings);
-            this.dataset = this.currentReports.concat(period.strings);
+          Object.values(response).map((periods) => {
+            this.currentReports = periods;
+            this.dataset = periods;
           });
-
           this.updateData();
         });
     },
@@ -258,14 +254,18 @@
           this.startDateFormatted = DateTime.fromJSDate(this.startDate).startOf('year').plus({ quarter: parseInt(this.currentFromQ.match(/\d+/)[0] - 1) });
           this.endDateFormatted = DateTime.fromJSDate(this.endDate).startOf('year').plus({ quarter: parseInt(this.currentToQ.match(/\d+/)[0] - 1) });
 
-          this.currentReports = this.dataset.filter((period) => {
-            const datasetDate = DateTime.fromFormat(period.year, 'yyyy').plus({ quarter: parseInt(period.quarter.match(/\d+/)[0] - 1) });
-            return (datasetDate >= this.startDateFormatted && datasetDate <= this.endDateFormatted);
-          });
-        } else {
-          this.currentReports = this.currentReports.filter((period) => {
-            return parseInt(period.year) === parseInt(this.currentYear) && period.quarter === this.currentQuarter;
-          });
+          this.currentReports = this.dataset.reduce((reports, report) => {
+            if (report.strings) {
+              const tt = report.strings.filter((dataset) => {
+                const datasetDate = DateTime.fromFormat(dataset.year, 'yyyy').plus({ quarter: parseInt(dataset.quarter.match(/\d+/)[0] - 1) });
+                return (datasetDate >= this.startDateFormatted && datasetDate <= this.endDateFormatted);
+              });
+              if (tt.length) {
+                reports.push(report);
+              }
+            }
+            return reports;
+          }, []);
         }
         setTimeout(() => {
           this.$store.dispatch('loader/hide');

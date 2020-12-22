@@ -23,6 +23,13 @@
     min-height: 190px;
   }
 
+  @include xs {
+    margin-left: -20px;
+    margin-right: -20px;
+    padding: 20px;
+    width: calc(100% + 40px);
+  }
+
   &:nth-child(4n) {
     margin-right: 0;
     @include md {

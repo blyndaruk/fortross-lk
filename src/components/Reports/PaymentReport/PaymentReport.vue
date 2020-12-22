@@ -77,7 +77,7 @@
 
     <div class="payment-report__data">
       <div class="report-table report-table--sm" v-for="(table, index) in currentReports" :key="table.period">
-        <div class="report-table__head">
+        <div class="report-table__head" v-if="table.dataset && table.dataset.length">
           <div class="report-table__title" v-if="table.dataset && table.dataset.length">
             {{table.periodMonth + ', ' + table.periodYear}}
           </div>
@@ -112,30 +112,30 @@
             </div>
           </div>
         </div>
-        <div class="report-table__body">
+        <div class="report-table__body" v-if="table.dataset && table.dataset.length">
           <div class="report-table__row js-row" v-for="(row, index) in table.dataset" :key="index">
             <div class="report-table__date">{{row.date}}</div>
 
-            <div class="report-table__description">
-              <p class="report-table__trunc" ref="truncate">
-                {{ row.type }}
-              </p>
-              <div class="report-table__info-icon" v-if="row.tooltip"
-                   v-tooltip.top-start="{ content: row.tooltip, classes: 'report-tooltip' } ">
-                <svg width="2" height="8" viewBox="0 0 2 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path fill-rule="evenodd" clip-rule="evenodd"
-                        d="M1.00098 2C1.55326 2 2.00098 1.55228 2.00098 1C2.00098 0.447715 1.55326 0 1.00098 0C0.448692 0 0.000976562 0.447715 0.000976562 1C0.000976562 1.55228 0.448692 2 1.00098 2ZM2.00098 4C2.00098 3.44772 1.55326 3 1.00098 3C0.448692 3 0.000976562 3.44772 0.000976562 4V7C0.000976562 7.55228 0.448692 8 1.00098 8C1.55326 8 2.00098 7.55228 2.00098 7L2.00098 4Z"
-                        fill="white" />
-                </svg>
-              </div>
-              <div class="report-table__trunc-more" @click="toggleMore">
-                <svg width="20" height="4" viewBox="0 0 20 4" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path fill-rule="evenodd" clip-rule="evenodd"
-                        d="M4 2C4 3.10457 3.10457 4 2 4C0.895431 4 0 3.10457 0 2C0 0.895431 0.895431 0 2 0C3.10457 0 4 0.895431 4 2ZM12 2C12 3.10457 11.1046 4 10 4C8.89543 4 8 3.10457 8 2C8 0.895431 8.89543 0 10 0C11.1046 0 12 0.895431 12 2ZM18 4C19.1046 4 20 3.10457 20 2C20 0.895431 19.1046 0 18 0C16.8954 0 16 0.895431 16 2C16 3.10457 16.8954 4 18 4Z"
-                        fill="currentColor" />
-                </svg>
-              </div>
-            </div>
+<!--            <div class="report-table__description">-->
+<!--              <p class="report-table__trunc" ref="truncate">-->
+<!--                {{ row.type }}-->
+<!--              </p>-->
+<!--              <div class="report-table__info-icon" v-if="row.tooltip"-->
+<!--                   v-tooltip.top-start="{ content: row.tooltip, classes: 'report-tooltip' } ">-->
+<!--                <svg width="2" height="8" viewBox="0 0 2 8" fill="none" xmlns="http://www.w3.org/2000/svg">-->
+<!--                  <path fill-rule="evenodd" clip-rule="evenodd"-->
+<!--                        d="M1.00098 2C1.55326 2 2.00098 1.55228 2.00098 1C2.00098 0.447715 1.55326 0 1.00098 0C0.448692 0 0.000976562 0.447715 0.000976562 1C0.000976562 1.55228 0.448692 2 1.00098 2ZM2.00098 4C2.00098 3.44772 1.55326 3 1.00098 3C0.448692 3 0.000976562 3.44772 0.000976562 4V7C0.000976562 7.55228 0.448692 8 1.00098 8C1.55326 8 2.00098 7.55228 2.00098 7L2.00098 4Z"-->
+<!--                        fill="white" />-->
+<!--                </svg>-->
+<!--              </div>-->
+<!--              <div class="report-table__trunc-more" @click="toggleMore">-->
+<!--                <svg width="20" height="4" viewBox="0 0 20 4" fill="none" xmlns="http://www.w3.org/2000/svg">-->
+<!--                  <path fill-rule="evenodd" clip-rule="evenodd"-->
+<!--                        d="M4 2C4 3.10457 3.10457 4 2 4C0.895431 4 0 3.10457 0 2C0 0.895431 0.895431 0 2 0C3.10457 0 4 0.895431 4 2ZM12 2C12 3.10457 11.1046 4 10 4C8.89543 4 8 3.10457 8 2C8 0.895431 8.89543 0 10 0C11.1046 0 12 0.895431 12 2ZM18 4C19.1046 4 20 3.10457 20 2C20 0.895431 19.1046 0 18 0C16.8954 0 16 0.895431 16 2C16 3.10457 16.8954 4 18 4Z"-->
+<!--                        fill="currentColor" />-->
+<!--                </svg>-->
+<!--              </div>-->
+<!--            </div>-->
             <div class="report-table__amount">{{row.summ}}</div>
           </div>
         </div>
@@ -198,29 +198,27 @@
         this.$store.dispatch('loader/show');
 
         this.currentReports = [];
-        this.reports.periods.forEach((report, index) => {
+        this.reports.periods.forEach((report) => {
           const formatted = DateTime.fromFormat(report.period, 'LL-yyyy', { locale: this.$i18n.locale });
           const month = formatted.monthLong;
           const year = formatted.year;
 
-          this.currentReports.push({
-            period: report.period,
-            periodMonth: month,
-            periodYear: year,
-            periodFormatted: month + ', ' + year,
-            dataset: [],
-          });
-          report.strings.forEach((dataset) => {
+          const dataset = report.strings.filter((dataset) => {
             let date = DateTime.fromFormat(dataset.date, 'dd-MM-yyyy');
             if (!date.c) date = DateTime.fromFormat(dataset.date, 'd.M.yyyy');
             dataset.date = `${date.c.day}.${date.c.month}.${date.c.year}`;
-
-            if ((dataset.type.includes('Ingoing') && this.paymentsIncome) || (dataset.type.includes('Outgoing') && this.paymentsOutcome)) {
-              this.currentReports[index].dataset.push(dataset);
-            } else {
-              this.currentReports = this.currentReports.splice(index, 1);
-            }
+            return (dataset.type.includes('Ingoing') && this.paymentsIncome) || (dataset.type.includes('Outgoing') && this.paymentsOutcome);
           });
+
+          if (dataset.length) {
+            this.currentReports.push({
+              period: report.period,
+              periodMonth: month,
+              periodYear: year,
+              periodFormatted: month + ', ' + year,
+              dataset,
+            });
+          }
         });
 
         // Filter by chosen date range

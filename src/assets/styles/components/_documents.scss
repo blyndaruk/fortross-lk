@@ -1,5 +1,13 @@
 .documents {
   margin-bottom: 40px;
+  //@include r(700) {
+  //  margin-left: -40px;
+  //  margin-right: -40px;
+  //}
+  //@include xs {
+  //  margin-left: -20px;
+  //  margin-right: -20px;
+  //}
 
   &__head {
     display: flex;
@@ -48,9 +56,31 @@
     }
   }
 
+  .sort-select {
+    white-space: nowrap;
+  }
   .sort-select__options {
     @include sm {
       white-space: nowrap;
+    }
+  }
+
+  .tabs {
+    .documents__section {
+      @include r(700) {
+        padding: 0 20px;
+      }
+    }
+    .documents__head {
+      @include r(700) {
+        padding: 0;
+      }
+    }
+
+    &.is-simple {
+      @include xs {
+        margin-top: -30px;
+      }
     }
   }
 }
