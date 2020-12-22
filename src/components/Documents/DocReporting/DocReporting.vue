@@ -2,7 +2,7 @@
   <div class="documents">
     <Tabs :scroll="false" :is-simple="true">
       <Tab :name="'Личное'" :selected="true">
-        <DocReportingPersonal />
+        <DocReportingPersonal :search="search" />
       </Tab>
       <Tab :name="'Общее'">
         <DocReportingGeneral />
@@ -24,6 +24,12 @@
       DocReportingPersonal,
       Tab,
       Tabs
+    },
+    props: {
+      search: {
+        type: String,
+        default: ''
+      }
     },
   }
 </script>

@@ -1,21 +1,21 @@
 <template>
   <div class="documents">
-    <Tabs>
+    <Tabs @tab-toggle="onTabToggle">
       <Tab :name="'Capital calls'" :selected="true">
-        <Search />
-        <CapitalCalls />
+        <Search @input="onInput" :value="search" />
+        <CapitalCalls :search="search" />
       </Tab>
       <Tab :name="'Письма инвесторам'">
-        <Search />
-        <Investors />
+        <Search @input="onInput" :value="search" />
+        <Investors :search="search" />
       </Tab>
       <Tab :name="'Отчетность'">
-        <Search />
-        <DocReporting />
+        <Search @input="onInput" :value="search" />
+        <DocReporting :search="search" />
       </Tab>
       <Tab :name="'Документы'">
-        <Search />
-        <DocsInner />
+        <Search @input="onInput" :value="search" />
+        <DocsInner :search="search" @subtabs-toggle="onTabToggle" />
       </Tab>
     </Tabs>
   </div>
@@ -41,6 +41,21 @@
       Tab,
       Tabs
     },
+    data() {
+      return {
+        search: '',
+      }
+    },
+    methods: {
+      onInput(e) {
+        this.search = e.target.value;
+      },
+      onTabToggle() {
+        setTimeout(() => {
+          this.search = '';
+        }, 300);
+      }
+    }
   }
 </script>
 

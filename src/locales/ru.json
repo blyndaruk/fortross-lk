@@ -10,7 +10,11 @@
     "state": "Текущее состояние счёта",
     "unfunded": "Unfunded commitment",
     "contributed-capital": "Contributed capital",
-    "contributed-account": "Contribution to the account"
+    "contributed-account": "Contribution to the account",
+    "portfolio_companies": "портфельных компаний",
+    "exits": "выход",
+    "total-invested": "всего инвестировано",
+    "fair-value": "инвестировано"
   },
   "my-account": {
     "account-report-tab": "Отчет о состоянии счета",

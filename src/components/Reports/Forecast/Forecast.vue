@@ -234,6 +234,9 @@
     },
     mounted() {
       this.updateData();
+      // /api/projected_balance_base.php?investor=009447
+
+
       // console.log(DateTime);
       // httpClient
       // .get('/api/projected_balance_ex.php')

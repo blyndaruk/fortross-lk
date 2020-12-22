@@ -37,6 +37,7 @@
   .fade-enter-active,
   .fade-leave-active {
     transition: opacity .8s, transform .8s;
+    width: 100%;
   }
 
   .fade-enter,

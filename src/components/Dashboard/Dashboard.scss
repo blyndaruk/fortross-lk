@@ -101,8 +101,8 @@
 
   &__col {
     position: relative;
-    width: 100%;
     padding-right: 60px;
+    width: 25%;
 
     @include lg {
       width: 50%;
@@ -164,6 +164,7 @@
     margin-top: 1px;
     font-size: 14px;
     @include semi;
+    white-space: nowrap;
   }
 
   &__info-left,
@@ -196,12 +197,12 @@
       }
 
       &:last-child {
-        padding-left: 21px;
         font-size: 14px;
         opacity: .4;
         font-weight: 500;
         @include sm {
           width: 100%;
+          padding-left: 21px;
           margin-top: 3px;
         }
       }

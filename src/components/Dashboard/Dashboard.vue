@@ -1,16 +1,34 @@
 <template>
   <div v-if="isSimple" class="dashboard is-simple">
-    <div class="dashboard__col" v-for="item in data.simpleSummary" :key="item.title">
+    <div class="dashboard__col" v-if="companiesAmount">
       <div class="dashboard__col-inner">
-        <div class="dashboard__title-value">{{ item.title }}</div>
-        <div class="dashboard__note">{{ item.note }}</div>
+        <div class="dashboard__title-value">{{ companiesAmount }}</div>
+        <div class="dashboard__note">{{ $t('dashboard.portfolio_companies') }}</div>
+      </div>
+    </div>
+    <div class="dashboard__col" v-if="exits">
+      <div class="dashboard__col-inner">
+        <div class="dashboard__title-value">{{ exits }}</div>
+        <div class="dashboard__note">{{ $t('dashboard.exits') }}</div>
+      </div>
+    </div>
+    <div class="dashboard__col" v-if="totalInvestedFormatted">
+      <div class="dashboard__col-inner">
+        <div class="dashboard__title-value">{{ totalInvestedFormatted }} USD</div>
+        <div class="dashboard__note">{{ $t('dashboard.total-invested') }}</div>
+      </div>
+    </div>
+    <div class="dashboard__col" v-if="fairValueFormatted">
+      <div class="dashboard__col-inner">
+        <div class="dashboard__title-value">{{ fairValueFormatted }} USD</div>
+        <div class="dashboard__note">{{ $t('dashboard.fair-value') }}</div>
       </div>
     </div>
   </div>
 
   <div v-else-if="isMedium || isFull" class="dashboard is-default">
     <div class="dashboard__main">
-      <div class="dashboard__main-amount">{{ mainAmount }}</div>
+      <div class="dashboard__main-amount">{{ mainAmount || 0 }} USD</div>
       <div class="dashboard__main-note">{{ $t('dashboard.state') }}</div>
     </div>
     <div class="dashboard__info">
@@ -74,10 +92,28 @@
     </div>
 
     <div class="dashboard__bottom" v-if="isFull">
-      <div class="dashboard__col" v-for="item in data.simpleSummary" :key="item.title">
+      <div class="dashboard__col" v-if="companiesAmount">
         <div class="dashboard__col-inner">
-          <div class="dashboard__title-value">{{ item.title }}</div>
-          <div class="dashboard__note">{{ item.note }}</div>
+          <div class="dashboard__title-value">{{ companiesAmount }}</div>
+          <div class="dashboard__note">{{ $t('dashboard.portfolio_companies') }}</div>
+        </div>
+      </div>
+      <div class="dashboard__col" v-if="exits">
+        <div class="dashboard__col-inner">
+          <div class="dashboard__title-value">{{ exits }}</div>
+          <div class="dashboard__note">{{ $t('dashboard.exits') }}</div>
+        </div>
+      </div>
+      <div class="dashboard__col" v-if="totalInvestedFormatted">
+        <div class="dashboard__col-inner">
+          <div class="dashboard__title-value">{{ totalInvestedFormatted }} USD</div>
+          <div class="dashboard__note">{{ $t('dashboard.total-invested') }}</div>
+        </div>
+      </div>
+      <div class="dashboard__col" v-if="fairValueFormatted">
+        <div class="dashboard__col-inner">
+          <div class="dashboard__title-value">{{ fairValueFormatted }} USD</div>
+          <div class="dashboard__note">{{ $t('dashboard.fair-value') }}</div>
         </div>
       </div>
     </div>
@@ -93,37 +129,25 @@
 </template>
 
 <script>
+  import httpClient from '@/utils/httpClient';
+
   export default {
     name: 'Dashboard',
     data() {
       return {
-        mainAmount: '360 499 USD',
+        mainAmount: '',
         activePercentage: this.$mq === 'tablet' || this.$mq === 'mobile' ? 483.56 : 219.8,
         activeAccountContributionPercentage: this.$mq === 'tablet' || this.$mq === 'mobile' ? 483.56 : 219.8,
         sum: 50000,
         unfunded: 13679,
         capital: 36321,
         accountContribution: 8701,
-        data: {
-          simpleSummary: [
-            {
-              title: '025',
-              note: 'of portfolio companies',
-            },
-            {
-              title: '003',
-              note: 'of exits',
-            },
-            {
-              title: '320M USD',
-              note: 'total invested capital',
-            },
-            {
-              title: '120M USD',
-              note: 'investments fair value',
-            },
-          ]
-        }
+        companiesAmount: 0,
+        exits: 0,
+        totalInvested: 0,
+        totalInvestedFormatted: '',
+        fairValue: 0,
+        fairValueFormatted: '',
       }
     },
     props: {
@@ -133,6 +157,33 @@
       },
     },
     mounted() {
+      const investor = document.querySelector('.investor').value;
+
+      httpClient
+        .get('/api/portfolio_dashboard.php')
+        .then((response) => {
+          this.companiesAmount = response.portfolio_companies;
+          this.exits = response.of_exits;
+          this.totalInvested = response.total_invested;
+          this.totalInvestedFormatted = response.total_invested_formated.toUpperCase();
+          this.fairValue = response.investment_fair_value;
+          this.fairValueFormatted = response.investment_fair_value_formated.toUpperCase();
+        });
+
+      httpClient
+        .get('/api/my_account_base.php', {
+          params: {
+            investor,
+          },
+        })
+        .then((response) => {
+          // console.log(response);
+          if (!response) return;
+          const allData = response.all;
+          this.mainAmount = parseInt(allData['Current_state_of_account'].summ).toLocaleString();
+          // this.sum = parseInt(allData['~Commitment'].summ);
+        });
+
     },
     asyncComputed: {
       activePercentage() {

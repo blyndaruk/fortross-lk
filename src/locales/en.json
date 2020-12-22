@@ -10,7 +10,11 @@
     "state": "Current state of the account",
     "unfunded": "Unfunded commitment",
     "contributed-capital": "Contributed capital",
-    "contributed-account": "Contribution to the account"
+    "contributed-account": "Contribution to the account",
+    "portfolio_companies": "of portfolio companies",
+    "exits": "of exits",
+    "total-invested": "total invested capital",
+    "fair-value": "investments fair value"
   },
   "my-account": {
     "account-report-tab": "Account status report",

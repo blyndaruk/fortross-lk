@@ -1,11 +1,11 @@
 <template>
   <div class="documents">
-    <Tabs :scroll="false" :is-simple="true">
+    <Tabs :scroll="false" :is-simple="true" @tab-toggle="onTabToggle">
       <Tab :name="'Личное'" :selected="true">
-        <DocReportingPersonal />
+        <DocReportingPersonal :search="search" />
       </Tab>
       <Tab :name="'Общее'">
-        <DocReportingGeneral />
+        <DocReportingGeneral :search="search" />
       </Tab>
     </Tabs>
   </div>
@@ -25,10 +25,17 @@
       Tab,
       Tabs,
     },
-    data() {
-      return {
+    props: {
+      search: {
+        type: String,
+        default: ''
       }
     },
+    methods: {
+      onTabToggle() {
+        this.$emit('subtabs-toggle');
+      }
+    }
   }
 </script>
 

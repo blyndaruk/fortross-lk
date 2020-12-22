@@ -1,13 +1,24 @@
 <template>
   <div class="capital-calls">
     <div class="documents">
-      <div class="documents__section" v-for="items in documents" :key="items.title">
+      <div class="documents__section">
         <div class="documents__head">
-          <h2 class="documents__title">{{ items.title }}</h2>
-          <SortSelect :options="sortTypes" />
+          <h2 class="documents__title">Документы на подписание</h2>
+          <SortSelect :options="sortTypes" @selected-option="sortSigning" />
         </div>
         <div class="documents__list">
-          <Document v-for="(document, index) in items.data" :key="index" :document="document" />
+          <div class="documents-no-data" v-if="!filteredSigningDocs.length">{{ $t('no-data') }}</div>
+          <Document v-for="(document, index) in filteredSigningDocs" :key="index" :document="document" />
+        </div>
+      </div>
+      <div class="documents__section">
+        <div class="documents__head">
+          <h2 class="documents__title">Подписанные документы</h2>
+          <SortSelect :options="sortTypes" @selected-option="sortToSign" />
+        </div>
+        <div class="documents__list">
+          <div class="documents-no-data" v-if="!filteredToSignDocs.length">{{ $t('no-data') }}</div>
+          <Document v-for="(document, index) in filteredToSignDocs" :key="index" :document="document" />
         </div>
       </div>
     </div>
@@ -17,12 +28,15 @@
 <script>
   import Document from '@/components/Documents/Document/Document';
   import SortSelect from '@/components/SortSelect/SortSelect';
+  import httpClient from '@/utils/httpClient';
 
   export default {
     name: 'DocReportingPersonal',
     components: { SortSelect, Document },
     data() {
       return {
+        signingDocs: [],
+        toSignDocs: [],
         sortTypes: [
           {
             title: 'Названию (A—Z)',
@@ -33,62 +47,58 @@
             type: 'to-less'
           },
         ],
-        documents: [
-          {
-            title: 'Документы на подписание',
-            type: 'to-sign',
-            data: [
-              {
-                date: '14.02.2020',
-                text: 'Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet',
-              },
-              {
-                date: '14.02.2020',
-                text: 'Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores',
-              },
-              {
-                date: '14.02.2020',
-                text: 'Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam',
-              },
-              {
-                date: '14.02.2020',
-                text: 'Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia',
-              },
-            ]
-          },
-          {
-            title: 'Подписанные документы',
-            type: 'signed',
-            data: [
-              {
-                date: '14.02.2020',
-                text: 'Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet',
-              },
-              {
-                date: '14.02.2020',
-                text: 'Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores sed quia odit a quia consequuntur magni dolores',
-              },
-              {
-                date: '14.02.2020',
-                text: 'Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam',
-              },
-              {
-                date: '14.02.2020',
-                text: 'Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia',
-              },
-              {
-                date: '14.02.2020',
-                text: 'Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet',
-              },
-              {
-                date: '14.02.2020',
-                text: 'Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia',
-              },
-            ]
-          },
-        ]
       }
     },
+    props: {
+      search: {
+        type: String,
+        default: ''
+      }
+    },
+    mounted() {
+      const investor = document.querySelector('.investor').value;
+
+      httpClient
+        .get('api/docs/docs_docs.php', {
+          params: {
+            investor,
+            type: 'personal',
+          }
+        })
+        .then((response) => {
+          this.signingDocs = Object.values(response)[0];
+          this.toSignDocs = Object.values(response)[1];
+        });
+    },
+    methods: {
+      sortSigning(option) {
+        this.sortDocs(this.signingDocs, option);
+      },
+      sortToSign(option) {
+        this.sortDocs(this.toSignDocs, option);
+      },
+      sortDocs(docs, type) {
+        docs.sort((a, b) => {
+          const nameA = a.file_name.toLowerCase(), nameB = b.file_name.toLowerCase();
+          if (type.type === 'to-less') {
+            if (nameA > nameB) return -1;
+            if (nameA < nameB) return 1;
+          } else {
+            if (nameA < nameB) return -1;
+            if (nameA > nameB) return 1;
+          }
+          return 0; //default return value (no sorting)
+        });
+      }
+    },
+    computed: {
+      filteredSigningDocs() {
+        return this.signingDocs.filter(doc => doc.file_name.toLowerCase().includes(this.search.toLowerCase()));
+      },
+      filteredToSignDocs() {
+        return this.toSignDocs.filter(doc => doc.file_name.toLowerCase().includes(this.search.toLowerCase()));
+      }
+    }
   }
 </script>
 

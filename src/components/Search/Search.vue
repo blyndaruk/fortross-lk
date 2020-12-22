@@ -1,7 +1,13 @@
 <template>
   <div class="search-field">
     <label for="search" class="search-field__label">
-      <input type="search" name="search" id="search" placeholder="Поиск по названию">
+      <input type="search"
+             name="search"
+             id="search"
+             placeholder="Поиск по названию"
+             :value="value"
+             @input="$emit('input', $event)"
+      >
     </label>
   </div>
 </template>
@@ -9,6 +15,10 @@
 <script>
   export default {
     name: 'Search',
+    methods: {},
+    props: {
+      value: String
+    }
   }
 </script>
 

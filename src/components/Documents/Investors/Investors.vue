@@ -1,13 +1,14 @@
 <template>
   <div class="investors">
     <div class="documents">
-      <div class="documents__section" v-for="items in documents" :key="items.title">
+      <div class="documents__section">
         <div class="documents__head">
-          <h2 class="documents__title">{{ items.title }}<span>текущиий год</span></h2>
-          <SortSelect :options="sortTypes" />
+          <h2 class="documents__title">{{ currentYear }}<span>текущиий год</span></h2>
+          <SortSelect :options="sortTypes" @selected-option="sortDocs" />
         </div>
         <div class="documents__list">
-          <Document v-for="(document, index) in items.data" :key="index" :document="document" />
+          <div class="documents-no-data" v-if="!filteredDocs.length">{{ $t('no-data') }}</div>
+          <Document v-for="(document, index) in filteredDocs" :key="index" :document="document" />
         </div>
       </div>
     </div>
@@ -17,12 +18,18 @@
 <script>
   import Document from '@/components/Documents/Document/Document';
   import SortSelect from '@/components/SortSelect/SortSelect';
+  import httpClient from '@/utils/httpClient';
+  import { DateTime } from 'luxon';
 
   export default {
     name: 'Investors',
-    components: { SortSelect, Document },
+    components: {
+      SortSelect,
+      Document
+    },
     data() {
       return {
+        currentYear: '',
         sortTypes: [
           {
             title: 'Названию (A—Z)',
@@ -33,32 +40,47 @@
             type: 'to-less'
           },
         ],
-        documents: [
-          {
-            title: '2020',
-            type: 'to-pay',
-            data: [
-              {
-                date: '14.02.2020',
-                text: 'Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet',
-              },
-              {
-                date: '14.02.2020',
-                text: 'Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores',
-              },
-              {
-                date: '14.02.2020',
-                text: 'Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam',
-              },
-              {
-                date: '14.02.2020',
-                text: 'Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia',
-              },
-            ]
-          },
-        ]
+        documents: []
       }
     },
+    props: {
+      search: {
+        type: String,
+        default: ''
+      }
+    },
+    mounted() {
+      const currentYear = DateTime.fromJSDate(new Date()).year;
+
+      httpClient
+        .get('/api/docs/investors_letters_docs.php')
+        .then((response) => {
+          Object.entries(response[0]).map((period) => {
+            this.currentYear = period[0] || currentYear;
+            this.documents = period[1];
+          });
+        });
+    },
+    methods: {
+      sortDocs(option) {
+        this.documents.sort((a, b) => {
+          const nameA = a.file_name.toLowerCase(), nameB = b.file_name.toLowerCase();
+          if (option.type === 'to-less') {
+            if (nameA > nameB) return -1;
+            if (nameA < nameB) return 1;
+          } else {
+            if (nameA < nameB) return -1;
+            if (nameA > nameB) return 1;
+          }
+          return 0; //default return value (no sorting)
+        });
+      }
+    },
+    computed: {
+      filteredDocs() {
+        return this.documents.filter(doc => doc.file_name.toLowerCase().includes(this.search.toLowerCase()));
+      },
+    }
   }
 </script>
 

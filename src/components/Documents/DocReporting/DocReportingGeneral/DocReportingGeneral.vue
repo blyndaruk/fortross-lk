@@ -17,6 +17,8 @@
 <script>
   import Document from '@/components/Documents/Document/Document';
   import SortSelect from '@/components/SortSelect/SortSelect';
+  import httpClient from '@/utils/httpClient';
+  // import { DateTime } from 'luxon';
 
   export default {
     name: 'DocReportingGeneral',
@@ -88,6 +90,23 @@
           },
         ]
       }
+    },
+    mounted() {
+      // const currentYear = DateTime.fromJSDate(new Date()).year;
+
+      httpClient
+        .get('/api/docs/reporting_docs.php', {
+          params: {
+            type: 'general',
+          }
+        })
+        .then((response) => {
+          console.log(response, 'report general');
+          // Object.entries(response[0]).map((period) => {
+          //   this.currentYear = period[0] || currentYear;
+          //   this.documents = period[1];
+          // });
+        });
     },
   }
 </script>

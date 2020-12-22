@@ -7,7 +7,8 @@
           <SortSelect :options="sortTypes" @selected-option="sortPayment" />
         </div>
         <div class="documents__list">
-          <Document v-for="(document, index) in paymentDocs" :key="index" :document="document" />
+          <div class="documents-no-data" v-if="!filteredPaymentDocs.length">{{ $t('no-data') }}</div>
+          <Document v-for="(document, index) in filteredPaymentDocs" :key="index" :document="document" />
         </div>
       </div>
 
@@ -17,7 +18,8 @@
           <SortSelect :options="sortTypes" @selected-option="sortPaid" />
         </div>
         <div class="documents__list">
-          <Document v-for="(document, index) in paidDocs" :key="index" :document="document" />
+          <div class="documents-no-data" v-if="!filteredPaidDocs.length">{{ $t('no-data') }}</div>
+          <Document v-for="(document, index) in filteredPaidDocs" :key="index" :document="document" />
         </div>
       </div>
     </div>
@@ -51,6 +53,12 @@
         ],
       }
     },
+    props: {
+      search: {
+        type: String,
+        default: ''
+      }
+    },
     mounted() {
       const investor = document.querySelector('.investor').value;
 
@@ -73,7 +81,6 @@
           },
         })
         .then((response) => {
-          console.log(response);
           this.paidDocs = Object.values(response);
         });
     },
@@ -84,6 +91,7 @@
       sortPaid(option) {
         this.sortDocs(this.paidDocs, option);
       },
+      // TODO: to utils method
       sortDocs(docs, type) {
         docs.sort(function (a, b) {
           const nameA = a.file_name.toLowerCase(), nameB = b.file_name.toLowerCase();
@@ -96,6 +104,14 @@
           }
           return 0; //default return value (no sorting)
         });
+      },
+    },
+    computed: {
+      filteredPaymentDocs() {
+        return this.paymentDocs.filter(doc => doc.file_name.toLowerCase().includes(this.search.toLowerCase()));
+      },
+      filteredPaidDocs() {
+        return this.paidDocs.filter(doc => doc.file_name.toLowerCase().includes(this.search.toLowerCase()));
       }
     }
   }

@@ -54,6 +54,7 @@
     },
     methods: {
       selectTab(selectedTab) {
+        this.$emit('tab-toggle');
         this.tabs.forEach(tab => {
           tab.isActive = (tab.name === selectedTab.name);
         });
