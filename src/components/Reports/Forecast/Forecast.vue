@@ -11,10 +11,11 @@
               <div class="field__placeholder-left">{{ $t('datepicker.from') }}</div>
               <datepicker
                   format="yyyy"
-                  @selected="onStartDateSelect"
+                  minimum-view="year"
+                  :disabled-dates="disabledStartDates"
                   :typeable="true"
                   :language="$i18n.locale === 'ru' ? ru : en"
-                  minimum-view="year"
+                  @selected="onStartDateSelect"
               ></datepicker>
               <div class="field__placeholder-right">
                 <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -52,10 +53,11 @@
               <div class="field__placeholder-left">{{ $t('datepicker.to') }}</div>
               <datepicker
                   format="yyyy"
-                  @selected="onEndDateSelect"
+                  minimum-view="year"
+                  :disabled-dates="disabledEndDates"
                   :typeable="true"
                   :language="$i18n.locale === 'ru' ? ru : en"
-                  minimum-view="year"
+                  @selected="onEndDateSelect"
               ></datepicker>
               <div class="field__placeholder-right">
                 <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -99,7 +101,13 @@
     <div class="forecast__data">
       <div class="report-table">
         <div class="report-table__head">
-          <div class="report-table__title">Forecast for the <span>2020 Q4</span></div>
+          <div class="report-table__title" v-if="currentReports && currentReports.length">
+            <p v-if="startDate && endDate && currentToQ && currentFromQ">
+              Forecast for the {{ startDateFormatted.year }} {{ currentFromQ }} &ndash; {{ endDateFormatted.year }} {{
+              currentToQ }}
+            </p>
+            <p v-else>Forecast for the <span>{{ currentYear }} {{ currentQuarter }}</span></p>
+          </div>
           <div class="report-table__head-actions">
             <div class="report-table__download">
               <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -115,58 +123,47 @@
         <div class="report-table__body">
           <div class="report-table__row" v-for="(row, index) in currentReports" :key="index">
 
-              <v-clamp class="report-table__text" autoresize :max-lines="1">
-                {{row.title}}
-                <template #after="{ toggle, expanded, clamped }">
-                  <button
-                      v-if="expanded || clamped"
-                      class="toggle-clamp"
-                      @click="toggle"
-                  >
-                    <svg width="20" height="4" viewBox="0 0 20 4" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path fill-rule="evenodd" clip-rule="evenodd"
-                            d="M4 2C4 3.10457 3.10457 4 2 4C0.895431 4 0 3.10457 0 2C0 0.895431 0.895431 0 2 0C3.10457 0 4 0.895431 4 2ZM12 2C12 3.10457 11.1046 4 10 4C8.89543 4 8 3.10457 8 2C8 0.895431 8.89543 0 10 0C11.1046 0 12 0.895431 12 2ZM18 4C19.1046 4 20 3.10457 20 2C20 0.895431 19.1046 0 18 0C16.8954 0 16 0.895431 16 2C16 3.10457 16.8954 4 18 4Z"
-                            fill="currentColor" />
-                    </svg>
-                  </button>
+            <v-clamp class="report-table__text" autoresize :max-lines="1">
+              {{row.description}} (For test - {{row.year}} {{row.quarter}})
+              <template #after="{ toggle, expanded, clamped }">
+                <button
+                    v-if="expanded || clamped"
+                    class="toggle-clamp"
+                    @click="toggle"
+                >
+                  <svg width="20" height="4" viewBox="0 0 20 4" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd"
+                          d="M4 2C4 3.10457 3.10457 4 2 4C0.895431 4 0 3.10457 0 2C0 0.895431 0.895431 0 2 0C3.10457 0 4 0.895431 4 2ZM12 2C12 3.10457 11.1046 4 10 4C8.89543 4 8 3.10457 8 2C8 0.895431 8.89543 0 10 0C11.1046 0 12 0.895431 12 2ZM18 4C19.1046 4 20 3.10457 20 2C20 0.895431 19.1046 0 18 0C16.8954 0 16 0.895431 16 2C16 3.10457 16.8954 4 18 4Z"
+                          fill="currentColor" />
+                  </svg>
+                </button>
 
-                  <div class="report-table__info-icon" v-if="row.tooltip"
-                       v-tooltip.top-start="{ content: row.tooltip, classes: 'report-tooltip' } ">
-                    <svg width="2" height="8" viewBox="0 0 2 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path fill-rule="evenodd" clip-rule="evenodd"
-                            d="M1.00098 2C1.55326 2 2.00098 1.55228 2.00098 1C2.00098 0.447715 1.55326 0 1.00098 0C0.448692 0 0.000976562 0.447715 0.000976562 1C0.000976562 1.55228 0.448692 2 1.00098 2ZM2.00098 4C2.00098 3.44772 1.55326 3 1.00098 3C0.448692 3 0.000976562 3.44772 0.000976562 4V7C0.000976562 7.55228 0.448692 8 1.00098 8C1.55326 8 2.00098 7.55228 2.00098 7L2.00098 4Z"
-                            fill="white" />
-                    </svg>
-                  </div>
-                </template>
-              </v-clamp>
+                <div class="report-table__info-icon" v-if="row.tooltip"
+                     v-tooltip.top-start="{ content: row.tooltip, classes: 'report-tooltip' } ">
+                  <svg width="2" height="8" viewBox="0 0 2 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd"
+                          d="M1.00098 2C1.55326 2 2.00098 1.55228 2.00098 1C2.00098 0.447715 1.55326 0 1.00098 0C0.448692 0 0.000976562 0.447715 0.000976562 1C0.000976562 1.55228 0.448692 2 1.00098 2ZM2.00098 4C2.00098 3.44772 1.55326 3 1.00098 3C0.448692 3 0.000976562 3.44772 0.000976562 4V7C0.000976562 7.55228 0.448692 8 1.00098 8C1.55326 8 2.00098 7.55228 2.00098 7L2.00098 4Z"
+                          fill="white" />
+                  </svg>
+                </div>
+              </template>
+            </v-clamp>
 
-            <div class="report-table__amount">{{row.amount}}</div>
+            <div class="report-table__amount">{{row.summ}}</div>
           </div>
         </div>
       </div>
-
-
-      <!--      <div class="report-table" v-for="(table) in reports" :key="table.period">-->
-      <!--        <div class="report-table__head">-->
-      <!--          <div class="report-table__title">-->
-      <!--            {{table.period}}-->
-      <!--          </div>-->
-      <!--        </div>-->
-      <!--      </div>-->
     </div>
   </div>
 </template>
 
 <script>
-  // import { DateTime } from 'luxon';
-
-  // import httpClient from '@/utils/httpClient';
+  import httpClient from '@/utils/httpClient';
   import ClickOutside from 'vue-click-outside';
-  import Datepicker from '@sum.cumo/vue-datepicker';
-  import { en, ru } from '@sum.cumo/vue-datepicker/dist/locale';
   import VClamp from 'vue-clamp';
-  // import { DateTime } from "luxon";
+  import Datepicker from '@sum.cumo/vue-datepicker';
+  import { DateTime } from 'luxon';
+  import { en, ru } from '@sum.cumo/vue-datepicker/dist/locale';
 
   export default {
     name: 'Forecast',
@@ -184,6 +181,14 @@
           'Q3',
           'Q4',
         ],
+        startDate: '',
+        endDate: '',
+        currentQuarter: '',
+        currentYear: '',
+        startDateFormatted: '',
+        endDateFormatted: '',
+        disabledStartDates: {},
+        disabledEndDates: {},
         openFromQSelect: false,
         currentFromQ: '',
         fromQuarters: [],
@@ -191,71 +196,44 @@
         currentToQ: '',
         toQuarters: [],
         currentReports: [],
-        reports: [
-          {
-            title: 'Upcoming Investments (estimate)',
-            amount: '-45 000.00 USD',
-            quarter: 'Q4',
-            date: '20-10-2020',
-          },
-          {
-            title: 'Upcoming Investments (estimate) Upcoming Investments (estimate)',
-            amount: '-45 000.00 USD',
-            quarter: 'Q1',
-          },
-          {
-            title: 'Upcoming Investments (estimate)',
-            amount: '-45 000.00 USD',
-            tooltip: 'Upcoming Investments',
-            quarter: 'Q1',
-            date: '22-01-2020',
-          },
-          {
-            title: 'Upcoming Investments (estimate)',
-            amount: '-45 000.00 USD',
-            quarter: 'Q2',
-          },
-          {
-            title: 'Upcoming Investments (estimate)',
-            amount: '-45 000.00 USD',
-            quarter: 'Q4',
-          },
-          {
-            title: 'Upcoming Investments (estimate)',
-            amount: '-45 000.00 USD',
-            quarter: 'Q3',
-          },
-          {
-            title: 'Upcoming Investments (estimate)',
-            amount: '-45 000.00 USD',
-          },
-        ],
+        dataset: [],
       }
     },
     mounted() {
-      this.updateData();
-      // /api/projected_balance_base.php?investor=009447
+      const investor = document.querySelector('.investor').value;
+      const currentDate = DateTime.fromJSDate(new Date());
+      this.currentYear = currentDate.year;
+      this.currentQuarter = this.quarters[currentDate.quarter - 1];
 
+      httpClient
+        .get('/api/projected_balance_base.php', {
+          params: {
+            investor,
+          },
+        })
+        .then((response) => {
+          response.periods.forEach((period) => {
+            this.currentReports = this.currentReports.concat(period.strings);
+            this.dataset = this.currentReports.concat(period.strings);
+          });
 
-      // console.log(DateTime);
-      // httpClient
-      // .get('/api/projected_balance_ex.php')
-      // .then((response) => {
-      // console.log(response);
-      // response.Инвестор.Периоды.forEach((report) => {
-      //   // console.log(report);
-      //   report.Таблица.Строка.forEach((dataset) => {
-      //     console.log(dataset);
-      //   });
-      // });
-      // });
+          this.updateData();
+        });
     },
     methods: {
-      onStartDateSelect() {
-
+      onStartDateSelect(time) {
+        this.startDate = time;
+        this.disabledEndDates = {
+          to: time,
+        };
+        if (this.startDate && this.endDate && this.currentToQ && this.currentFromQ) this.updateData();
       },
-      onEndDateSelect() {
-
+      onEndDateSelect(time) {
+        this.endDate = time;
+        this.disabledStartDates = {
+          from: time,
+        };
+        if (this.startDate && this.endDate && this.currentToQ && this.currentFromQ) this.updateData();
       },
       closeFromQSelect() {
         this.openFromQSelect = false;
@@ -263,7 +241,7 @@
       sortFromQChange(option) {
         this.currentFromQ = option;
         this.openFromQSelect = false;
-        // this.updateData();
+        if (this.startDate && this.endDate && this.currentToQ && this.currentFromQ) this.updateData();
       },
       closeToQSelect() {
         this.openToQSelect = false;
@@ -271,73 +249,25 @@
       sortToQChange(option) {
         this.currentToQ = option;
         this.openToQSelect = false;
-        // this.updateData();
+        if (this.startDate && this.endDate && this.currentToQ && this.currentFromQ) this.updateData();
       },
       updateData() {
         this.$store.dispatch('loader/show');
 
-        this.currentReports = [];
-        const mapFromQuarters = new Map();
-        // const mapToQuaters = new Map();
-        this.reports.forEach((report) => {
-          // this.currentReports.push({
-          //   period: report.period,
-          //   dataset: [],
-          // });
-          // console.log(report.quarter, index);
-          // report.forEach((dataset) => {
-          //   if (dataset.type.toLowerCase() === this.currentFilterType.id) {
-          //     this.currentReports[index].dataset.push(dataset);
-          //   }
-          //   // console.log(index);
-          if (report.quarter) {
-            if (!mapFromQuarters.has(report.quarter)) {
-              mapFromQuarters.set(report.quarter, true);
-              this.fromQuarters.push(report.quarter);
-              this.toQuarters.push(report.quarter);
-            }
-          }
-          this.currentReports.push(report);
-        });
+        if (this.startDate && this.endDate && this.currentToQ && this.currentFromQ) {
+          this.startDateFormatted = DateTime.fromJSDate(this.startDate).startOf('year').plus({ quarter: parseInt(this.currentFromQ.match(/\d+/)[0] - 1) });
+          this.endDateFormatted = DateTime.fromJSDate(this.endDate).startOf('year').plus({ quarter: parseInt(this.currentToQ.match(/\d+/)[0] - 1) });
 
-
-        // Filter by chosen date range
-        // if (this.startDate && this.endDate) {
-        //   const startDateFormatted = DateTime.fromJSDate(this.startDate).startOf('day');
-        //   const endDateFormatted = DateTime.fromJSDate(this.endDate).startOf('day');
-        //   this.currentReports = this.currentReports.reduce((reports, report) => {
-        //     const tt = report.dataset.filter((dataset) => {
-        //       const datasetDate = DateTime.fromFormat(dataset.date, 'd.MM.yyyy');
-        //       return (datasetDate >= startDateFormatted && datasetDate <= endDateFormatted);
-        //     });
-        //     if (tt.length) {
-        //       reports.push({
-        //         period: report.period,
-        //         dataset: tt,
-        //       });
-        //     }
-        //     return reports;
-        //   }, []);
-        // }
-
-        // Sorting by dates
-        // this.currentReports.sort((a, b) => {
-        //   const keyA = DateTime.fromFormat(a.period.toLowerCase(), 'LLLL, yyyy', { locale: this.$i18n.locale });
-        //   const keyB = DateTime.fromFormat(b.period.toLowerCase(), 'LLLL, yyyy', { locale: this.$i18n.locale });
-        //
-        //   // Compare the 2 dates
-        //   if (this.currentSortType.id === 'to-high') {
-        //     if (keyA > keyB) return -1;
-        //     if (keyA < keyB) return 1;
-        //   } else {
-        //     if (keyA < keyB) return -1;
-        //     if (keyA > keyB) return 1;
-        //   }
-        //   return 0;
-        // });
-
+          this.currentReports = this.dataset.filter((period) => {
+            const datasetDate = DateTime.fromFormat(period.year, 'yyyy').plus({ quarter: parseInt(period.quarter.match(/\d+/)[0] - 1) });
+            return (datasetDate >= this.startDateFormatted && datasetDate <= this.endDateFormatted);
+          });
+        } else {
+          this.currentReports = this.currentReports.filter((period) => {
+            return parseInt(period.year) === parseInt(this.currentYear) && period.quarter === this.currentQuarter;
+          });
+        }
         setTimeout(() => {
-          // this.truncate();
           this.$store.dispatch('loader/hide');
         }, 400);
       },
@@ -402,12 +332,14 @@
           padding: 20px 20px 8px;
         }
       }
+
       &__row {
         @include md {
           flex-wrap: wrap;
           white-space: normal;
         }
       }
+
       &__amount {
         @include sm {
           text-align: left;

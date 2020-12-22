@@ -333,13 +333,15 @@
         e.currentTarget.closest('.js-row').classList.toggle('is-open');
       },
       truncate() {
-        this.$refs.truncate.forEach((el) => {
-          if (el.offsetWidth < el.scrollWidth) {
-            el.classList.add('is-overflow');
-          } else {
-            el.classList.remove('is-overflow');
-          }
-        });
+        if (Object.keys(this.$refs).length !== 0) {
+          this.$refs.truncate.forEach((el) => {
+            if (el.offsetWidth < el.scrollWidth) {
+              el.classList.add('is-overflow');
+            } else {
+              el.classList.remove('is-overflow');
+            }
+          });
+        }
       },
     },
     watch: {
