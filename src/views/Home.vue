@@ -3,8 +3,8 @@
     <Dashboard viewType="full" />
     <div class="home__content">
       <DocsPreviewTable title="Документы на подписание" :note="true" :list="toSign" />
-      <DocsPreviewTable title="Документы на оплату" :note="false" :list="toSign" />
-      <RecentTransactions />
+      <DocsPreviewTable title="Документы на оплату" :note="false" :list="paymentDocs" />
+      <RecentTransactions :reports="reports" />
     </div>
   </div>
 </template>
@@ -13,6 +13,7 @@
   import Dashboard from '@/components/Dashboard/Dashboard';
   import DocsPreviewTable from '@/components/DocsPreviewTable/DocsPreviewTable';
   import RecentTransactions from '@/components/RecentTransactions/RecentTransactions';
+  import httpClient from '@/utils/httpClient';
 
   export default {
     name: 'Home',
@@ -23,24 +24,27 @@
     },
     data() {
       return {
-        toSign: [
-          {
-            description: 'Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet',
-            date: '14.02.2020',
-          },
-          {
-            description: 'Quisquam est, qui dolorem ipsum quia dolor sit amet',
-            date: '14.02.2020',
-          },
-          {
-            description: 'Quisquam est, qui dolorem ipsum quia dolor sit amet Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet',
-            date: '14.02.2020',
-          },
-        ],
+        paymentDocs: [],
+        toSign: [],
+        reports: [],
       };
     },
     mounted() {
-    }
+      const investor = document.querySelector('.investor').value;
+
+      httpClient
+        .get('/api/home_api.php', {
+          params: {
+            investor,
+          },
+        })
+        .then((response) => {
+          this.toSign = response.signing_docs;
+          this.paymentDocs = response.for_payment_docs;
+          this.reports = response.recent_transaction.strings;
+        });
+    },
+    methods: {}
   }
 </script>
 

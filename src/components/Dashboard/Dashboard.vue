@@ -138,10 +138,10 @@
         mainAmount: '',
         activePercentage: this.$mq === 'tablet' || this.$mq === 'mobile' ? 483.56 : 219.8,
         activeAccountContributionPercentage: this.$mq === 'tablet' || this.$mq === 'mobile' ? 483.56 : 219.8,
-        sum: 20000,
+        sum: 0,
         unfunded: 0,
-        capital: 10000,
-        accountContribution: 5000,
+        capital: 0,
+        accountContribution: 0,
         companiesAmount: 0,
         exits: 0,
         totalInvested: 0,
@@ -167,24 +167,24 @@
           this.totalInvestedFormatted = response.total_invested_formated.toUpperCase();
           this.fairValue = response.investment_fair_value;
           this.fairValueFormatted = response.investment_fair_value_formated.toUpperCase();
+          const investor = document.querySelector('.investor').value;
+          httpClient
+            .get('/api/my_account_base.php', {
+              params: {
+                investor,
+              },
+            })
+            .then((response) => {
+              if (!response) return;
+              const allData = response.all;
+              this.mainAmount = parseInt(allData['Current_state_of_account'].summ).toLocaleString('ru');
+              this.sum = parseInt(allData['~Commitment'].summ);
+              this.capital = parseInt(allData['~Contributed_capital'].summ);
+              this.unfunded = this.sum - this.capital;
+              this.accountContribution = parseInt(allData['Current_state_of_account'].summ);
+            });
         });
 
-      const investor = document.querySelector('.investor').value;
-      httpClient
-        .get('/api/my_account_base.php', {
-          params: {
-            investor,
-          },
-        })
-        .then((response) => {
-          if (!response) return;
-          const allData = response.all;
-          this.mainAmount = parseInt(allData['Current_state_of_account'].summ).toLocaleString('ru');
-          this.sum = parseInt(allData['~Commitment'].summ);
-          this.capital = parseInt(allData['~Contributed_capital'].summ);
-          this.unfunded = this.sum - this.capital;
-          this.accountContribution = parseInt(allData['Current_state_of_account'].summ);
-        });
 
     },
     asyncComputed: {
@@ -195,7 +195,7 @@
             this.activePercentage = fullStroke - fullStroke / 100 * (this.capitalPercentage - this.contributionAccountPercent)
             // this.activePercentage = fullStroke - fullStroke / 100 * this.capitalPercentage
             // this.activePercentage = fullStroke - fullStroke * this.capitalPercentage / 100
-          ), 1000)
+          ), 1750)
         );
       },
       activeAccountContributionPercentage() {
@@ -206,7 +206,7 @@
             return setTimeout(() => resolve(
               this.activeAccountContributionPercentage = fullStroke - fullStroke / 100 * this.capitalPercentage
               // this.activeAccountContributionPercentage = this.activePercentage - this.accountContributionPercentage
-            ), 1000)
+            ), 1750)
           }
         );
       }

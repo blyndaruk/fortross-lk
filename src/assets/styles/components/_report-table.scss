@@ -89,13 +89,13 @@
 
   &__date {
     width: 140px;
-    padding: 20px 30px;
+    padding: 20px 24px 20px 30px;
     @include md {
       width: 22%;
       flex-shrink: 0;
     }
     @include xs {
-      padding: 12px 20px;
+      padding: 12px 15px 12px 20px;
       width: 125px;
     }
   }

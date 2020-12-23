@@ -9,10 +9,10 @@
     <div class="docs-preview-table__list">
       <div class="docs-preview-table__row" v-for="(item, index) in list" :key="index">
         <div class="docs-preview-table__link">
-          <DownloadFile />
+          <DownloadFile :url="item.file_url" :fileType="item.file_type" />
         </div>
         <v-clamp class="docs-preview-table__text" autoresize :max-lines="1">
-          {{ item.description }}
+          {{ item.file_name }}
           <template #after="{ toggle, expanded, clamped }">
             <button
                 v-if="expanded || clamped"
@@ -27,7 +27,7 @@
             </button>
           </template>
         </v-clamp>
-        <div class="docs-preview-table__date">{{ item.date }}</div>
+        <div class="docs-preview-table__date">{{ item.file_date_small }}</div>
       </div>
     </div>
   </div>

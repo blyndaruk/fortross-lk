@@ -72,7 +72,7 @@
               </svg>
             </div>
           </div>
-          <div class="report-table__amount">{{row.amount}}</div>
+          <div class="report-table__amount">{{row.summ}}</div>
         </div>
       </div>
     </div>
@@ -83,74 +83,47 @@
   export default {
     name: 'RecentTransactions',
     data() {
-      return {
-        reports: [
-          {
-            date: '27.03.2020',
-            type: 'INV',
-            description: 'MindBody Tech',
-            amount: '-5 484.84 USD'
-          },
-          {
-            date: '23.03.2020',
-            type: 'INV',
-            description: 'Boston Techno',
-            amount: '-685.56 USD'
-          },
-          {
-            date: '23.03.2020',
-            type: 'MANFEE',
-            tooltip: 'Daily Markets: Lofty Valuations and Upcoming Election Contribute to Rising Market Volatility',
-            typeTooltip: 'Daily Markets: Lofty Valuations and Upcoming Election Contribute to Rising Market Volatility',
-            description: 'Man Fee Q1 \'020',
-            amount: '-579.57 USD'
-          },
-          {
-            date: '12.03.2020',
-            type: 'JDSPIOHPWPI JDSPIOHPWPI',
-            description: 'Boston Techno Astra Zeneca Sandvinotoric Boston Techno Astra Zeneca Sandvinotoric',
-            typeTooltip: 'Daily Markets: Lofty Valuations and Upcoming Election Contribute to Rising Market Volatility',
-            amount: '-1 230.78 USD'
-          },
-          {
-            date: '12.03.2020',
-            type: 'OMX STOCkH OMX STOCkH',
-            tooltip: 'Daily Markets: Lofty Valuations and Upcoming Election Contribute to Rising Market Volatility',
-            description: '17-th Catch Up',
-            amount: '+36.14 USD'
-          },
-          {
-            date: '12.03.2020',
-            type: 'CONT',
-            description: '17-th Additional Hennes & Ma',
-            amount: '+5 999 999.71 USD'
-          },
-          {
-            date: '06.03.2020',
-            type: 'CONT',
-            description: 'MindBody Capital Call',
-            amount: '-1 023 293.91 USD'
-          },
-        ],
+      return {}
+    },
+    props: {
+      reports: {
+        type: Array,
+      }
+    },
+    watch: {
+      'reports'() {
+        setTimeout(() => {
+          this.truncate();
+        }, 1000)
       }
     },
     mounted() {
       setTimeout(() => {
         this.truncate();
-      }, 1000)
+      }, 1000);
+      window.addEventListener('resize', this.truncate);
+    },
+    beforeDestroy() {
+      window.removeEventListener('resize', this.truncate);
     },
     methods: {
       toggleMore(e) {
         e.currentTarget.closest('.js-row').classList.toggle('is-open');
       },
       truncate() {
-        this.$refs.truncate.forEach((el) => {
-          if (el.offsetWidth < el.scrollWidth) {
-            el.classList.add('is-overflow');
-          } else {
+        if (this.$refs.truncate) {
+          const buttons = Array.prototype.slice.call(document.querySelectorAll('.js-row'));
+          if (buttons.length) buttons.forEach(btn => btn.classList.remove('is-open'));
+
+          this.$refs.truncate.forEach((el) => {
             el.classList.remove('is-overflow');
-          }
-        });
+            if (el.offsetWidth < el.scrollWidth) {
+              el.classList.add('is-overflow');
+            } else {
+              el.classList.remove('is-overflow');
+            }
+          });
+        }
       },
     },
   }

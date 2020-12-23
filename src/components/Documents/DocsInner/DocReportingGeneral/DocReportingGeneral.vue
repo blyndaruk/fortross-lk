@@ -46,7 +46,7 @@
     },
     mounted() {
       httpClient
-        .get('api/docs/docs_docs.php', {
+        .get('/api/docs/docs_docs.php', {
           params: {
             type: 'general',
           }

@@ -74,7 +74,7 @@
         scrollSettings: {
           suppressScrollY: true,
           suppressScrollX: false,
-          wheelPropagation: false,
+          wheelPropagation: true,
         },
       }
     },

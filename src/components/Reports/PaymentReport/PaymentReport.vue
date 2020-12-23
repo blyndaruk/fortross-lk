@@ -13,6 +13,7 @@
                 :typeable="true"
                 :language="$i18n.locale === 'ru' ? ru : en"
                 @selected="onStartDateSelect"
+                @blur="onBlur"
             ></datepicker>
             <div class="field__placeholder-right">
               <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -30,6 +31,7 @@
                 :typeable="true"
                 :language="$i18n.locale === 'ru' ? ru : en"
                 @selected="onEndDateSelect"
+                @blur="onBlur"
             ></datepicker>
             <div class="field__placeholder-right">
               <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -194,6 +196,9 @@
       }
     },
     methods: {
+      onBlur() {
+        this.updateData();
+      },
       updateData() {
         this.$store.dispatch('loader/show');
 

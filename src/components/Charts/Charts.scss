@@ -259,8 +259,11 @@
   }
 
   &.is-disabled {
-    opacity: 0.3;
     pointer-events: none;
+    .chart-timeline__label,
+    .chart-timeline__active {
+      opacity: 0.3;
+    }
   }
 
   &__active {
@@ -436,6 +439,13 @@
   color: $primary;
   @include semi;
   cursor: pointer;
+
+  &.is-open {
+    &:after {
+      transform: scale(1, -1);
+      top: 6px;
+    }
+  }
 
   &:hover {
     &:before {
