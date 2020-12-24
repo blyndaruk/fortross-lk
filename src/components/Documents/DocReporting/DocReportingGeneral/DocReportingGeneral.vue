@@ -3,7 +3,7 @@
     <div class="documents">
       <div class="documents__section">
         <div class="documents__head">
-          <h2 class="documents__title">{{ currentYear }}<span>текущий год</span></h2>
+          <h2 class="documents__title" v-if="currentYear">{{ currentYear }}<span>{{ $t('current-year') }}</span></h2>
           <SortSelect :options="sortTypes" @selected-option="sortSigning" />
         </div>
         <div class="documents__list">
@@ -13,7 +13,7 @@
       </div>
       <div class="documents__section">
         <div class="documents__head">
-          <h2 class="documents__title">Прошлые года</h2>
+          <h2 class="documents__title">{{ $t('last-years') }}</h2>
           <SortSelect :options="sortTypes" @selected-option="sortToSign" />
         </div>
         <div class="documents__list">
@@ -41,11 +41,11 @@
         previousDocs: [],
         sortTypes: [
           {
-            title: 'Названию (A—Z)',
+            title: `${this.$i18n.messages[this.$i18n.locale]['search-by-name']} (A—Z)`,
             type: 'to-more'
           },
           {
-            title: 'Названию (Z—A)',
+            title: `${this.$i18n.messages[this.$i18n.locale]['search-by-name']} (Z—A)`,
             type: 'to-less'
           },
         ],
@@ -55,6 +55,20 @@
       search: {
         type: String,
         default: ''
+      }
+    },
+    watch: {
+      '$i18n.locale': function () {
+        this.sortTypes = [
+          {
+            title: `${this.$i18n.messages[this.$i18n.locale]['search-by-name']} (A—Z)`,
+            type: 'to-more'
+          },
+          {
+            title: `${this.$i18n.messages[this.$i18n.locale]['search-by-name']} (Z—A)`,
+            type: 'to-less'
+          },
+        ];
       }
     },
     mounted() {

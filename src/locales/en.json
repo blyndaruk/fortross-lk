@@ -7,15 +7,37 @@
     "documents": "Documents"
   },
   "dashboard": {
-    "state": "Current state of the account",
+    "state": "Current balance (cash)",
+    "commited": "Committed capital",
     "unfunded": "Unfunded commitment",
     "contributed-capital": "Contributed capital",
-    "contributed-account": "Contribution to the account",
-    "portfolio_companies": "of portfolio companies",
-    "exits": "of exits",
-    "total-invested": "total invested capital",
-    "fair-value": "investments fair value"
+    "contributed-account": "Current balance (cash)",
+    "portfolio_companies": "Portfolio companies",
+    "exits": "Exits",
+    "total-invested": "Total invested capital",
+    "fair-value": "Investments fair value"
   },
+  "send-to": "Please send signed documents to the following email addresses :",
+  "transactions": "Transactions",
+  "all-transactions": "All transactions",
+  "period": "Period",
+  "type": "Type",
+  "all": "All",
+  "historical": "Historic data",
+  "quarter": "Quarter",
+  "quarter-data": "Quarter",
+  "forecast-for": "Forecast For The",
+  "incoming": "Incoming",
+  "outgoing": "Outgoing",
+  "payments": "Payments",
+  "date": "Date",
+  "sorting": "Sort",
+  "sorting-by": "Sort by",
+  "sort-by-list": {
+    "to-low": "high-to-low",
+    "to-high": "low-to-high"
+  },
+  "toggle-all-companies": "Choose all",
   "my-account": {
     "account-report-tab": "Account status report",
     "payment-report-tab": "Payment report",
@@ -28,6 +50,11 @@
   "fund": "fund",
   "companies-title": "Portfolio Companies",
   "all-companies": "All companies",
+  "portfolio-sorting": {
+    "valuation": "Company valuation",
+    "investments": "Fund investments",
+    "share": "Fund share"
+  },
   "company-card": {
     "valuation": "company valuation",
     "investments": "fund investments",
@@ -35,7 +62,20 @@
   },
   "no-data": "No data to display",
   "documents": {
-    "payment-title": "Documents for payment",
-    "paid-title": "Paid documents"
-  }
+    "payment-title": "Payments due",
+    "paid-title": "Paid documents",
+    "to-sign": "Documents to sign",
+    "signed": "Signed documents",
+    "general-docs": "General documents",
+    "capital-calls": "Capital calls",
+    "letters": "Investor letters",
+    "reports": "Reports",
+    "docs": "Documents"
+  },
+  "search": "Search by name",
+  "search-by-name": "Search by name",
+  "current-year": "current year",
+  "personal": "Clients",
+  "general": "General",
+  "last-years": "Last years"
 }

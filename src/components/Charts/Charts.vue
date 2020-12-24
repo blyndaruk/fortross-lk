@@ -44,7 +44,8 @@
             <div class="chart-timeline__active" :class="{ 'is-open': openTimeSelect }"
                  @click="openTimeSelect = !openTimeSelect"
             >
-              {{ currentTimeline.title }}
+              {{ currentTimeline.title === 'historical' ? $t('historical') : currentTimeline.title
+              || currentTimeline.title === 'quarter' ? $t('quarter-data') : currentTimeline.title }}
             </div>
             <div class="chart-timeline__options" :class="{ 'is-open': openTimeSelect }">
               <div
@@ -53,14 +54,15 @@
                   :key="i"
                   @click="timeLineChange(option)"
               >
-                {{ option.title }}
+                {{ option.title === 'historical' ? $t('historical') : option.title
+                || option.title === 'quarter' ? $t('quarter-data') : option.title }}
               </div>
             </div>
           </div>
         </div>
 
         <div class="chart-timeline" v-if="!isHistorical && currentQuoter" v-click-outside="closeDateSelect">
-          <div class="chart-timeline__label">Период</div>
+          <div class="chart-timeline__label">{{ $t('period') }}</div>
           <div class="chart-timeline__wrap" @blur="openDateSelect = false">
             <div class="chart-timeline__active" :class="{ 'is-open': openDateSelect }"
                  @click="openDateSelect = !openDateSelect"
@@ -81,16 +83,16 @@
         </div>
 
         <div class="chart-timeline" v-if="!isHistorical" v-click-outside="closeSortSelect">
-          <div class="chart-timeline__label">Сортировка</div>
+          <div class="chart-timeline__label">{{ $t('sorting') }}</div>
           <div class="chart-timeline__wrap" @blur="openSortSelect = false">
             <div class="chart-timeline__active" ref="sortingSelected" :class="{ 'is-open': openSortSelect }"
                  @click="openSortSelect = !openSortSelect"
             >
-              По убыванию
+              {{$t('sort-by-list.to-low')}}
             </div>
             <div class="chart-timeline__options" :class="{ 'is-open': openSortSelect }">
-              <div class="chart-timeline__option" @click="sortChange('to-low', 'По убыванию')">По убыванию</div>
-              <div class="chart-timeline__option" @click="sortChange('to-big', 'По возрастанию')">По возрастанию</div>
+              <div class="chart-timeline__option" @click="sortChange('to-low', $t('sort-by-list.to-low'))">{{$t('sort-by-list.to-low')}}</div>
+              <div class="chart-timeline__option" @click="sortChange('to-big', $t('sort-by-list.to-high'))">{{$t('sort-by-list.to-high')}}</div>
             </div>
           </div>
         </div>
@@ -159,7 +161,7 @@
     <div class="graphic-companies-actions">
       <div class="toggle-all-companies" v-if="companies.length > 8" @click="toggleAllCompanies"
            :class="{ 'is-open': allCompaniesShown }">
-        Все компании
+        {{ $t('all-companies') }}
       </div>
 
       <div class="check-all-companies">
@@ -170,7 +172,7 @@
                  @change="onCompanyUpdate('all')"
                  v-model="selectAll"
           />
-          <span>Выделить все компании</span>
+          <span>{{ $t('toggle-all-companies') }}</span>
           <span class="companies__check"></span>
         </label>
       </div>
@@ -213,16 +215,16 @@
         timelineType: [
           {
             id: 'historical',
-            title: 'Исторические данные',
+            title: 'historical',
           },
           {
             id: 'date',
-            title: 'Данные на квартал',
+            title: 'quarter',
           },
         ],
         currentTimeline: {
           id: 'historical',
-          title: 'Исторические данные',
+          title: 'historical',
         },
         currentQuoter: '',
         data: [],
@@ -300,7 +302,7 @@
         this.chartType = 'line';
         this.currentTimeline = {
           id: 'historical',
-          title: 'Исторические данные',
+          title: 'historical',
         };
         this.unit = this.getUnit;
         this.fillData();
@@ -535,7 +537,7 @@
             data.labels.push(obj.label);
             data.datasets[0].data.push(obj.data);
             data.datasets[0].backgroundColor.push(obj.backgroundColor);
-            data.datasets[0].hoverBackgroundColor.push(tinycolor(obj.backgroundColor).darken(16).toString());
+            data.datasets[0].hoverBackgroundColor.push(tinycolor(obj.backgroundColor).darken(10).toString());
           }
         });
         return data;
@@ -551,7 +553,7 @@
             labels.push(obj.label);
             data.push(parseFloat(obj.data[0]).toFixed(2));
             bgColors.push(obj.backgroundColor);
-            hoverBgColors.push(tinycolor(obj.backgroundColor).darken(16).toString());
+            hoverBgColors.push(tinycolor(obj.backgroundColor).darken(10).toString());
           }
         });
 

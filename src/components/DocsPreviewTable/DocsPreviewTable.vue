@@ -2,7 +2,7 @@
   <div class="docs-preview-table">
     <div class="docs-preview-table__title">{{ title }}</div>
     <div class="docs-preview-table__note" v-if="note">
-      Подписанные документы просьба отправлять на следующие адреса:
+      {{ $t('send-to') }}
       <a href="mailto:LP@moneytime.ventures">LP@moneytime.ventures</a>,
       <a href="mailto:investorservicesiom@ocorian.com">investorservicesiom@ocorian.com</a>
     </div>
@@ -51,7 +51,7 @@
         type: Boolean,
       },
       list: {
-        type: Array,
+        // type: Array || Object,
       }
     }
   }

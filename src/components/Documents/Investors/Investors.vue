@@ -3,7 +3,7 @@
     <div class="documents">
       <div class="documents__section">
         <div class="documents__head">
-          <h2 class="documents__title">{{ currentYear }}<span>текущий год</span></h2>
+          <h2 class="documents__title">{{ currentYear }}<span>{{ $t('current-year') }}</span></h2>
           <SortSelect :options="sortTypes" @selected-option="sortDocs" />
         </div>
         <div class="documents__list">
@@ -32,11 +32,11 @@
         currentYear: '',
         sortTypes: [
           {
-            title: 'Названию (A—Z)',
+            title: `${this.$i18n.messages[this.$i18n.locale]['search-by-name']} (A—Z)`,
             type: 'to-more'
           },
           {
-            title: 'Названию (Z—A)',
+            title: `${this.$i18n.messages[this.$i18n.locale]['search-by-name']} (Z—A)`,
             type: 'to-less'
           },
         ],
@@ -47,6 +47,20 @@
       search: {
         type: String,
         default: ''
+      }
+    },
+    watch: {
+      '$i18n.locale': function () {
+        this.sortTypes = [
+          {
+            title: `${this.$i18n.messages[this.$i18n.locale]['search-by-name']} (A—Z)`,
+            type: 'to-more'
+          },
+          {
+            title: `${this.$i18n.messages[this.$i18n.locale]['search-by-name']} (Z—A)`,
+            type: 'to-less'
+          },
+        ];
       }
     },
     mounted() {

@@ -34,7 +34,7 @@
     <div class="dashboard__info">
       <div class="dashboard__info-left">
         <div class="dashboard__row">{{sum.toLocaleString('ru')}} USD</div>
-        <div class="dashboard__row">COMMITED <br> CAPITAL</div>
+        <div class="dashboard__row is-commited">{{ $t('dashboard.commited') }}</div>
       </div>
       <div class="dashboard__info-graph dashboard-graph">
         <mq-layout mq="md+">

@@ -1,19 +1,19 @@
 <template>
   <div class="documents">
     <Tabs @tab-toggle="onTabToggle">
-      <Tab :name="'Capital calls'" :selected="true">
+      <Tab :name="$t('documents.capital-calls')" :selected="true">
         <Search @input="onInput" :value="search" />
         <CapitalCalls :search="search" />
       </Tab>
-      <Tab :name="'Письма инвесторам'">
+      <Tab :name="$t('documents.letters')">
         <Search @input="onInput" :value="search" />
         <Investors :search="search" />
       </Tab>
-      <Tab :name="'Отчетность'">
+      <Tab :name="$t('documents.reports')">
         <Search @input="onInput" :value="search" />
         <DocReporting :search="search" />
       </Tab>
-      <Tab :name="'Документы'">
+      <Tab :name="$t('documents.docs')">
         <Search @input="onInput" :value="search" />
         <DocsInner :search="search" @subtabs-toggle="onTabToggle" />
       </Tab>

@@ -97,6 +97,14 @@
         display: none;
       }
     }
+
+    &.is-commited {
+      text-transform: uppercase;
+      max-width: 80px;
+      @include xs {
+        max-width: none;
+      }
+    }
   }
 
   &__col {
@@ -167,9 +175,15 @@
     white-space: nowrap;
   }
 
-  &__info-left,
-  &__info-right {
+  &__info-left {
     flex-grow: 1;
+  }
+
+  &__info-left {
+    max-width: 205px;
+    @include sm {
+      max-width: none;
+    }
   }
 
   &__unfunded {
@@ -200,6 +214,7 @@
         font-size: 14px;
         opacity: .4;
         font-weight: 500;
+        max-width: 195px;
         @include sm {
           width: 100%;
           padding-left: 21px;

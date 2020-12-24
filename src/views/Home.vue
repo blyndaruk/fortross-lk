@@ -2,8 +2,8 @@
   <div class="home">
     <Dashboard viewType="full" />
     <div class="home__content">
-      <DocsPreviewTable title="Документы на подписание" :note="true" :list="toSign" />
-      <DocsPreviewTable title="Документы на оплату" :note="false" :list="paymentDocs" />
+      <DocsPreviewTable :title="$t('documents.to-sign')" :note="true" :list="toSign" />
+      <DocsPreviewTable :title="$t('documents.payment-title')" :note="false" :list="paymentDocs" />
       <RecentTransactions :reports="reports" />
     </div>
   </div>

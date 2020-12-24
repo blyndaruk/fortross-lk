@@ -50,15 +50,15 @@
       return {
         sortTypes: [
           {
-            title: 'Стоимости компании',
+            title: this.$i18n.messages[this.$i18n.locale]['portfolio-sorting'].valuation,
             type: 'company_valuation'
           },
           {
-            title: 'По размеру инвестиции',
+            title: this.$i18n.messages[this.$i18n.locale]['portfolio-sorting'].investments,
             type: 'total_invested'
           },
           {
-            title: 'По доли фонда',
+            title: this.$i18n.messages[this.$i18n.locale]['portfolio-sorting'].share,
             type: 'fund_share'
           },
         ],
@@ -76,6 +76,26 @@
           suppressScrollX: false,
           wheelPropagation: true,
         },
+      }
+    },
+
+    watch: {
+      '$i18n.locale': function () {
+        this.sortTypes = [
+          {
+            title: this.$i18n.messages[this.$i18n.locale]['portfolio-sorting'].valuation,
+            // title: 'Стоимости компании',
+            type: 'company_valuation'
+          },
+          {
+            title: this.$i18n.messages[this.$i18n.locale]['portfolio-sorting'].investments,
+            type: 'total_invested'
+          },
+          {
+            title: this.$i18n.messages[this.$i18n.locale]['portfolio-sorting'].share,
+            type: 'fund_share'
+          },
+        ];
       }
     },
 
@@ -142,7 +162,6 @@
       },
       filteredIndustries() {
         return this.industries.map(category => {
-          // console.log(category.id, this.companiesCount, this.companiesCount[category.id]);
           const amount = category.id === 'all' ? this.companies.length : this.companiesCount[category.id];
           return { ...category, amount };
         });

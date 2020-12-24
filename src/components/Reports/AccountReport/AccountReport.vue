@@ -3,7 +3,7 @@
     <div class="account-report__head">
 
       <div class="field field--date">
-        <div class="field__label">Период</div>
+        <div class="field__label">{{ $t('period') }}</div>
         <div class="field__inner">
           <div class="field__date">
             <div class="field__placeholder-left">{{ $t('datepicker.from') }}</div>
@@ -45,7 +45,7 @@
       </div>
 
       <div class="field field--sort">
-        <div class="field__label">Тип</div>
+        <div class="field__label">{{ $t('type') }}</div>
         <div class="field__inner">
 
           <div class="sort-select" v-click-outside="closeTypeSelect">
@@ -53,7 +53,7 @@
               <div class="sort-select__active" :class="{ 'is-open': openTypeSelect }"
                    @click="openTypeSelect = !openTypeSelect"
               >
-                {{ currentFilterType.title }}
+                {{ currentFilterType.title === 'All' ? $t('all') : currentFilterType.title }}
               </div>
               <div class="sort-select__options" :class="{ 'is-open': openTypeSelect }">
                 <div
@@ -62,7 +62,7 @@
                     :key="i"
                     @click="filterTypeChange(option)"
                 >
-                  {{ option.title }}
+                  {{ option.title === 'All' ? $t('all') : option.title }}
                 </div>
               </div>
             </div>
@@ -90,22 +90,16 @@
               <span>XLS</span>
             </div>
             <div class="sort-select" v-if="index === 0" v-click-outside="closeSelect">
-              <div class="sort-select__label">Сортировка по:</div>
+              <div class="sort-select__label">{{ $t('sorting-by') }}</div>
               <div class="sort-select__wrap" @blur="openSortSelect = false">
                 <div class="sort-select__active" :class="{ 'is-open': openSortSelect }"
                      @click="openSortSelect = !openSortSelect"
                 >
-                  Дате
+                  {{ $t('date') }}
                 </div>
                 <div class="sort-select__options" :class="{ 'is-open': openSortSelect }">
-                  <div
-                      class="sort-select__option"
-                      v-for="(option, i) in sortTypes"
-                      :key="i"
-                      @click="sortChange(option)"
-                  >
-                    {{ option.title }}
-                  </div>
+                  <div class="sort-select__option" @click="sortChange('to-low', $t('sort-by-list.to-low'))">{{$t('sort-by-list.to-low')}}</div>
+                  <div class="sort-select__option" @click="sortChange('to-high', $t('sort-by-list.to-high'))">{{$t('sort-by-list.to-high')}}</div>
                 </div>
               </div>
             </div>
@@ -191,10 +185,7 @@
             id: 'to-low',
           },
         ],
-        currentSortType: {
-          title: 'По возрастанию',
-          id: 'to-high'
-        },
+        currentSortType: 'to-high',
         openTypeSelect: false,
         disabledStartDates: {},
         disabledEndDates: {},
@@ -202,12 +193,12 @@
         endDate: '',
         currentFilterType: {
           id: 'all',
-          title: 'Все'
+          title: 'All'
         },
         types: [
           {
             id: 'all',
-            title: 'Все',
+            title: this.$i18n.messages[this.$i18n.locale].all
           }
         ],
         currentReports: [],
@@ -217,7 +208,7 @@
     },
     methods: {
       onBlur() {
-        this.updateData();
+        if (!this.startDate && !this.endDate) this.updateData();
       },
       updateData() {
 
@@ -289,7 +280,7 @@
           const keyB = DateTime.fromFormat(b.period.toLowerCase(), 'LL-yyyy', { locale: this.$i18n.locale });
 
           // Compare the 2 dates
-          if (this.currentSortType.id === 'to-high') {
+          if (this.currentSortType === 'to-high') {
             if (keyA > keyB) return -1;
             if (keyA < keyB) return 1;
           } else {
@@ -325,6 +316,7 @@
         this.openTypeSelect = false;
       },
       sortChange(option) {
+        // console.log(option);
         this.currentSortType = option;
         this.openSortSelect = false;
         this.updateData();
@@ -351,6 +343,7 @@
     },
     watch: {
       '$i18n.locale': function () {
+        // this.$i18n.messages[this.$i18n.locale].title
         if (Object.keys(this.reports).length) this.updateData();
       }
     },

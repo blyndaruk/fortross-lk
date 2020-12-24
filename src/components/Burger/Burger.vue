@@ -44,6 +44,11 @@
         if (this.isActive) {
           this.toggleBurger();
         }
+      },
+      '$i18n.locale' () {
+        if (this.isActive) {
+          this.toggleBurger();
+        }
       }
     }
   }

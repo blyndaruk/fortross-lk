@@ -4,7 +4,7 @@
       <input type="search"
              name="search"
              id="search"
-             placeholder="Поиск по названию"
+             :placeholder="$t('search')"
              :value="value"
              @input="$emit('input', $event)"
       >

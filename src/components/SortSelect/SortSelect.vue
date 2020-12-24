@@ -1,6 +1,6 @@
 <template>
   <div class="sort-select" v-click-outside="closeSelect">
-    <div class="sort-select__label">Сортировка по:</div>
+    <div class="sort-select__label">{{ $t('sorting-by') }}</div>
     <div class="sort-select__wrap" @blur="openSelect = false">
       <div class="sort-select__active" :class="{ 'is-open': openSelect }"
            @click="openSelect = !openSelect"
@@ -35,6 +35,11 @@
     props: {
       options: {
         type: Array,
+      }
+    },
+    watch: {
+      'options'() {
+        this.sortChange(this.options[0]);
       }
     },
     methods: {

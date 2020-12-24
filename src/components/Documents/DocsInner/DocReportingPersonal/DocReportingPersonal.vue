@@ -3,7 +3,7 @@
     <div class="documents">
       <div class="documents__section">
         <div class="documents__head">
-          <h2 class="documents__title">Документы на подписание</h2>
+          <h2 class="documents__title">{{ $t('documents.to-sign') }}</h2>
           <SortSelect :options="sortTypes" @selected-option="sortSigning" />
         </div>
         <div class="documents__list">
@@ -13,7 +13,7 @@
       </div>
       <div class="documents__section">
         <div class="documents__head">
-          <h2 class="documents__title">Подписанные документы</h2>
+          <h2 class="documents__title">{{ $t('documents.signed') }}</h2>
           <SortSelect :options="sortTypes" @selected-option="sortToSign" />
         </div>
         <div class="documents__list">
@@ -39,11 +39,11 @@
         toSignDocs: [],
         sortTypes: [
           {
-            title: 'Названию (A—Z)',
+            title: `${this.$i18n.messages[this.$i18n.locale]['search-by-name']} (A—Z)`,
             type: 'to-more'
           },
           {
-            title: 'Названию (Z—A)',
+            title: `${this.$i18n.messages[this.$i18n.locale]['search-by-name']} (Z—A)`,
             type: 'to-less'
           },
         ],
@@ -69,6 +69,20 @@
           this.signingDocs = Object.values(response)[0];
           this.toSignDocs = Object.values(response)[1];
         });
+    },
+    watch: {
+      '$i18n.locale': function () {
+        this.sortTypes = [
+          {
+            title: `${this.$i18n.messages[this.$i18n.locale]['search-by-name']} (A—Z)`,
+            type: 'to-more'
+          },
+          {
+            title: `${this.$i18n.messages[this.$i18n.locale]['search-by-name']} (Z—A)`,
+            type: 'to-less'
+          },
+        ];
+      }
     },
     methods: {
       sortSigning(option) {

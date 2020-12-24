@@ -50,6 +50,7 @@
             </div>
             <div class="header__mob-nav">
               <Nav />
+              <LocaleSwitcher />
             </div>
           </div>
         </mq-layout>

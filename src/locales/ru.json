@@ -7,19 +7,41 @@
     "documents": "Документы"
   },
   "dashboard": {
-    "state": "Текущее состояние счёта",
-    "unfunded": "Unfunded commitment",
-    "contributed-capital": "Contributed capital",
-    "contributed-account": "Contribution to the account",
-    "portfolio_companies": "портфельных компаний",
-    "exits": "выход",
+    "state": "Текущий баланс (cash)",
+    "commited": "Обязательства подписки",
+    "unfunded": "Не профинансированные обязательства",
+    "contributed-capital": "Внесенные средства",
+    "contributed-account": "Текущий баланс (cash)",
+    "portfolio_companies": "портфельные компании",
+    "exits": "выходы",
     "total-invested": "всего инвестировано",
-    "fair-value": "инвестировано"
+    "fair-value": "текущая оценка"
   },
+  "send-to": "Подписанные документы просьба отправлять на следующие адреса:",
+  "transactions": "Транзакции",
+  "all-transactions": "Все транзакции",
+  "period": "Период",
+  "type": "Тип",
+  "all": "Все",
+  "historical": "Исторические данные",
+  "quarter": "Квартал",
+  "quarter-data": "Данные на квартал",
+  "forecast-for": "Прогноз на",
+  "incoming": "Поступления",
+  "outgoing": "Расходы",
+  "payments": "Платежи",
+  "date": "Дате",
+  "sorting": "Сортировка",
+  "sorting-by": "Сортировка по",
+  "sort-by-list": {
+    "to-low": "По убыванию",
+    "to-high": "По возрастанию"
+  },
+  "toggle-all-companies": "Выделить все компании",
   "my-account": {
     "account-report-tab": "Отчет о состоянии счета",
-    "payment-report-tab": "Отчет по платежам",
-    "forecast-tab": "Прогноз состояния счета"
+    "payment-report-tab": "Отчет о движении средств (ввод/вывод)",
+    "forecast-tab": "Прогноз"
   },
   "datepicker": {
     "from": "с",
@@ -28,6 +50,11 @@
   "fund": "фонд",
   "companies-title": "Компании в портфеле",
   "all-companies": "Все компании",
+  "portfolio-sorting": {
+    "valuation": "Стоимости компании",
+    "investments": "Размеру инвестиций",
+    "share": "По доли фонда"
+  },
   "company-card": {
     "valuation": "оценка компании",
     "investments": "инвестиции фонда",
@@ -36,6 +63,19 @@
   "no-data": "Нет данных для отображения",
   "documents": {
     "payment-title": "Документы на оплату",
-    "paid-title": "Оплаченные документы"
-  }
+    "paid-title": "Оплаченные документы",
+    "to-sign": "Документы на подписание",
+    "signed": "Подписанные документы",
+    "general-docs": "Общие документы",
+    "capital-calls": "Capital calls",
+    "letters": "Письма инвесторам",
+    "reports": "Отчетность",
+    "docs": "Документы"
+  },
+  "search": "Поиск по названию",
+  "search-by-name": "Названию",
+  "current-year": "текущий",
+  "personal": "Личное",
+  "general": "Общее",
+  "last-years": "Прошлые года"
 }

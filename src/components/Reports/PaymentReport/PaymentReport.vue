@@ -3,7 +3,7 @@
     <div class="payment-report__head">
 
       <div class="field field--date">
-        <div class="field__label">Период</div>
+        <div class="field__label">{{ $t('period') }}</div>
         <div class="field__inner">
           <div class="field__date">
             <div class="field__placeholder-left">{{ $t('datepicker.from') }}</div>
@@ -45,7 +45,7 @@
       </div>
 
       <div class="field">
-        <div class="field__label">Платежи</div>
+        <div class="field__label">{{ $t('payments') }}</div>
         <div class="field__checkboxes">
           <div class="field__checkbox">
             <label :for="'payments_income'">
@@ -56,7 +56,7 @@
                      @change="onPaymentTypeChange"
               >
               <span class="field__check"></span>
-              <span>Поступления</span>
+              <span>{{ $t('incoming') }}</span>
             </label>
           </div>
           <div class="field__checkbox">
@@ -68,7 +68,7 @@
                      @change="onPaymentTypeChange"
               >
               <span class="field__check"></span>
-              <span>Расходы</span>
+              <span>{{ $t('outgoing') }}</span>
             </label>
           </div>
         </div>
@@ -93,22 +93,16 @@
               <span>XLS</span>
             </div>
             <div class="sort-select" v-if="index === 0" v-click-outside="closeSelect">
-              <div class="sort-select__label">Сортировка по:</div>
+              <div class="sort-select__label">{{ $t('sorting-by') }}</div>
               <div class="sort-select__wrap" @blur="openSortSelect = false">
                 <div class="sort-select__active" :class="{ 'is-open': openSortSelect }"
                      @click="openSortSelect = !openSortSelect"
                 >
-                  Дате
+                  {{ $t('date') }}
                 </div>
                 <div class="sort-select__options" :class="{ 'is-open': openSortSelect }">
-                  <div
-                      class="sort-select__option"
-                      v-for="(option, i) in sortTypes"
-                      :key="i"
-                      @click="sortChange(option)"
-                  >
-                    {{ option.title }}
-                  </div>
+                  <div class="sort-select__option" @click="sortChange('to-low', $t('sort-by-list.to-low'))">{{$t('sort-by-list.to-low')}}</div>
+                  <div class="sort-select__option" @click="sortChange('to-high', $t('sort-by-list.to-high'))">{{$t('sort-by-list.to-high')}}</div>
                 </div>
               </div>
             </div>
@@ -176,10 +170,7 @@
             id: 'to-low',
           },
         ],
-        currentSortType: {
-          title: 'По возрастанию',
-          id: 'to-high'
-        },
+        currentSortType: 'to-high',
         openTypeSelect: false,
         disabledStartDates: {},
         disabledEndDates: {},
@@ -197,7 +188,7 @@
     },
     methods: {
       onBlur() {
-        this.updateData();
+        if (!this.startDate && !this.endDate) this.updateData();
       },
       updateData() {
         this.$store.dispatch('loader/show');
@@ -257,7 +248,7 @@
           const keyB = DateTime.fromFormat(b.period.toLowerCase(), 'LL-yyyy', { locale: this.$i18n.locale });
 
           // Compare the 2 dates
-          if (this.currentSortType.id === 'to-high') {
+          if (this.currentSortType === 'to-high') {
             if (keyA > keyB) return -1;
             if (keyA < keyB) return 1;
           } else {

@@ -3,7 +3,7 @@
     <div class="forecast__head">
 
       <div class="field field--date">
-        <div class="field__label">Период</div>
+        <div class="field__label">{{ $t('period') }}</div>
         <div class="field__inner">
 
           <div class="field__col">
@@ -32,7 +32,7 @@
                   <div class="sort-select__active" :class="{ 'is-open': openFromQSelect }"
                        @click="openFromQSelect = !openFromQSelect"
                   >
-                    {{ currentFromQ || 'Квартал' }}
+                    {{ currentFromQ || $t('quarter') }}
                   </div>
                   <div class="sort-select__options" :class="{ 'is-open': openFromQSelect }">
                     <div
@@ -75,7 +75,7 @@
                   <div class="sort-select__active" :class="{ 'is-open': openToQSelect }"
                        @click="openToQSelect = !openToQSelect"
                   >
-                    {{ currentToQ || 'Квартал' }}
+                    {{ currentToQ || $t('quarter') }}
                   </div>
                   <div class="sort-select__options" :class="{ 'is-open': openToQSelect }">
                     <div
@@ -104,7 +104,7 @@
       <div class="report-table" v-for="(period, index) in currentReports" :key="period.period">
         <div class="report-table__head">
           <div class="report-table__title" v-if="currentReports && currentReports.length">
-            <p>Forecast for the <span>{{period.period}}</span></p>
+            <p>{{ $t('forecast-for') }} <span>{{period.period}}</span></p>
           </div>
           <div class="report-table__head-actions">
             <div class="report-table__download" v-if="index === 0">
@@ -220,7 +220,7 @@
     },
     methods: {
       onBlur() {
-        this.updateData();
+        if (!this.startDate && !this.endDate) this.updateData();
       },
       onStartDateSelect(time) {
         this.startDate = time;

@@ -3,6 +3,11 @@
   align-items: center;
   flex-direction: row-reverse;
 
+  @include xs {
+    margin-top: 34px;
+    justify-content: flex-end;
+  }
+
   &__item {
     margin-right: 10px;
     @include semi;

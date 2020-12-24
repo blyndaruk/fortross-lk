@@ -1,10 +1,10 @@
 <template>
   <div class="documents">
     <Tabs :scroll="false" :is-simple="true" @tab-toggle="onTabToggle">
-      <Tab :name="'Личное'" :selected="true">
+      <Tab :name="$t('personal')" :selected="true">
         <DocReportingPersonal :search="search" />
       </Tab>
-      <Tab :name="'Общее'">
+      <Tab :name="$t('general')">
         <DocReportingGeneral :search="search" />
       </Tab>
     </Tabs>
