@@ -7,31 +7,12 @@
           <div class="report-table__show">
             <router-link to="/my-account">{{ $t('all-transactions') }}</router-link>
           </div>
-          <!--          <div class="sort-select" v-if="index === 0" v-click-outside="closeSelect">-->
-          <!--            <div class="sort-select__label">Сортировка по:</div>-->
-          <!--            <div class="sort-select__wrap" @blur="openSortSelect = false">-->
-          <!--              <div class="sort-select__active" :class="{ 'is-open': openSortSelect }"-->
-          <!--                   @click="openSortSelect = !openSortSelect"-->
-          <!--              >-->
-          <!--                Дате-->
-          <!--              </div>-->
-          <!--              <div class="sort-select__options" :class="{ 'is-open': openSortSelect }">-->
-          <!--                <div-->
-          <!--                    class="sort-select__option"-->
-          <!--                    v-for="(option, i) in sortTypes"-->
-          <!--                    :key="i"-->
-          <!--                    @click="sortChange(option)"-->
-          <!--                >-->
-          <!--                  {{ option.title }}-->
-          <!--                </div>-->
-          <!--              </div>-->
-          <!--            </div>-->
-          <!--          </div>-->
         </div>
       </div>
+      <div class="report-no-data" v-if="!reports.length">{{ $t('no-data') }}</div>
       <div class="report-table__body">
         <div class="report-table__row js-row" v-for="(row, index) in reports" :key="index">
-          <div class="report-table__date">{{row.date}}</div>
+          <div class="report-table__date">{{ row.date.split('.')[0].length === 1 ? '0' + row.date.replace(/-/g, '.') : row.date.replace(/-/g, '.') }}</div>
           <div class="report-table__type">
             <p class="report-table__trunc" ref="truncate">
               {{row.type}}
@@ -72,7 +53,7 @@
               </svg>
             </div>
           </div>
-          <div class="report-table__amount">{{row.summ}}</div>
+          <div class="report-table__amount">{{sign(row.summ)}}{{row.summ}}</div>
         </div>
       </div>
     </div>
@@ -124,6 +105,9 @@
             }
           });
         }
+      },
+      sign(value) {
+        return value.includes('-') ? '' : '+';
       },
     },
   }

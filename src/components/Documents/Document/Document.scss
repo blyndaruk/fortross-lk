@@ -11,6 +11,7 @@
   min-height: 260px;
   background-color: #ffffff;
   transition: all $easing-default;
+  word-break: break-all;
 
   @include md {
     width: calc(50% - 20px);

@@ -7,7 +7,7 @@
           <SortSelect :options="sortTypes" @selected-option="sortPayment" />
         </div>
         <div class="documents__list">
-          <div class="documents-no-data" v-if="!filteredPaymentDocs.length">{{ $t('no-data') }}</div>
+          <div class="documents-no-data" v-if="!filteredPaymentDocs.length">{{ $t('no-docs-data') }}</div>
           <Document v-for="(document, index) in filteredPaymentDocs" :key="index" :document="document" />
         </div>
       </div>
@@ -18,7 +18,7 @@
           <SortSelect :options="sortTypes" @selected-option="sortPaid" />
         </div>
         <div class="documents__list">
-          <div class="documents-no-data" v-if="!filteredPaidDocs.length">{{ $t('no-data') }}</div>
+          <div class="documents-no-data" v-if="!filteredPaidDocs.length">{{ $t('no-docs-data') }}</div>
           <Document v-for="(document, index) in filteredPaidDocs" :key="index" :document="document" />
         </div>
       </div>
@@ -84,6 +84,7 @@
           },
         })
         .then((response) => {
+          if (!response) return;
           this.paymentDocs = Object.values(response);
         });
 
@@ -95,6 +96,7 @@
           },
         })
         .then((response) => {
+          if (!response) return;
           this.paidDocs = Object.values(response);
         });
     },

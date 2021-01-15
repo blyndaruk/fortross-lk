@@ -24,7 +24,14 @@
   &.is-inactive {
     border-color: rgba(187, 187, 187, 0.4);
     background-color: $main-bg;
-    pointer-events: none;
+    //pointer-events: none;
+
+    #{$this}__row {
+      color: $dark-gray;
+      span {
+        color: inherit;
+      }
+    }
   }
 
   &:hover {
@@ -70,6 +77,9 @@
     margin-bottom: 20px;
 
     background-color: #dedede;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
 
     img {
       max-width: 100%;

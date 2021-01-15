@@ -147,7 +147,7 @@
 
 .companies::v-deep {
   .ps__rail-x {
-    bottom: 12px !important;
+    bottom: 17px !important;
     height: 0;
     @include sm {
       pointer-events: none;
@@ -155,8 +155,10 @@
   }
 
   .ps__thumb-x {
-    height: 5px;
+    height: 4px;
     cursor: pointer;
+    //opacity: 0.3;
+    background-color: #bebebe !important;
     @include sm {
       pointer-events: none;
     }

@@ -1,7 +1,7 @@
 <template>
   <div class="charts-wrapper">
     <mq-layout :mq="['lg', 'md', 'tablet', 'mobile']">
-      <div class="charts-wrapper-notification" @click="setDesktopViewport"><span>Open desktop version</span></div>
+      <div class="charts-wrapper-notification" @click="setDesktopViewport"><span>{{ $t('open-desktop') }}</span></div>
     </mq-layout>
     <div class="charts-wrapper__metrics">
       <div class="chart-metric"
@@ -39,7 +39,6 @@
     <div class="chart-head">
       <div class="chart-head__selects">
         <div class="chart-timeline" :class="{ 'is-disabled': !companiesSelected.length }" v-click-outside="closeSelect">
-          <div class="chart-timeline__label">Срез:</div>
           <div class="chart-timeline__wrap" @blur="openTimeSelect = false">
             <div class="chart-timeline__active" :class="{ 'is-open': openTimeSelect }"
                  @click="openTimeSelect = !openTimeSelect"
@@ -121,8 +120,16 @@
 
     <mq-layout mq="laptop+">
       <div class="chart-wrapper">
+
+        <div class="charts-wrapper-notification" v-if="noGraphData"><span>{{ $t('no-data') }}</span></div>
         <input id="unit_type" type="hidden" name="unit_type" :value="unit">
-        <line-chart class="chart" v-if="isHistorical" :chart-data="datacollection" :unit="getUnit"></line-chart>
+
+        <div :class="{ 'has-scroll': this.labels.length > 18 }">
+          <vue-custom-scrollbar class="scroll-area" :settings="scrollSettings">
+            <line-chart class="chart chart-line" :class="{ 'has-scroll': this.labels.length > 18 }" v-if="isHistorical" :chart-data="datacollection" :unit="getUnit"></line-chart>
+          </vue-custom-scrollbar>
+        </div>
+
         <bar-chart
             class="chart-bar"
             v-if="isLine && !isHistorical"
@@ -189,6 +196,8 @@
   import httpClient from '@/utils/httpClient';
   import setDesktopViewport from '@/utils/setDesktopViewport';
   import setMobileViewport from '@/utils/setMobileViewport';
+  import vueCustomScrollbar from 'vue-custom-scrollbar';
+  import 'vue-custom-scrollbar/dist/vueScrollbar.css';
 
   import LineChart from '@/components/Charts/LineChart/LineChart';
   import PieChart from '@/components/Charts/PieChart/PieChart';
@@ -201,6 +210,7 @@
       BarChart,
       PieChart,
       LineChart,
+      vueCustomScrollbar,
     },
     data() {
       return {
@@ -212,6 +222,12 @@
         companiesSet: [],
         companiesData: [],
         sorting: 'to-low',
+        scrollSettings: {
+          suppressScrollY: true,
+          suppressScrollX: false,
+          wheelPropagation: true,
+          useBothWheelAxes: true,
+        },
         timelineType: [
           {
             id: 'historical',
@@ -254,8 +270,7 @@
       // : 'data/chart_online.json';
       httpClient
         .get(url)
-        .then((response) => {
-          this.data = response;
+        .then((responseData) => {
           this.chartBackgroundColor();
 
           httpClient
@@ -263,6 +278,7 @@
             .then((response) => {
               const companies = response;
               this.companiesSet = response;
+              this.data = responseData;
               const map = new Map();
               const metricsMap = new Map();
 
@@ -628,6 +644,10 @@
       },
       moreMetrics() {
         return this.metrics.slice(this.showedMetrics.length, this.metrics.length);
+      },
+      noGraphData() {
+        if (!this.datacollection.datasets) return false;
+        return !this.datacollection.datasets.length;
       },
       selectAll: {
         get() {

@@ -22,6 +22,7 @@
                 {{ $t('fund') }}
                 <span>SBT Fund 2</span>
               </div>
+              <a href="/sign-out?logout=yes" :title="$t('sign-out')" class="header__sign-out"></a>
             </mq-layout>
             <mq-layout :mq="['lg', 'md', 'tablet', 'mobile']">
               <Burger @burger-toggle="onBurgerToggle"></Burger>
@@ -36,6 +37,7 @@
               {{ $t('fund') }}
               <span>SBT Fund 2</span>
             </div>
+            <a href="/sign-out?logout=yes" :title="$t('sign-out')" class="header__sign-out"></a>
           </div>
         </mq-layout>
 
@@ -47,6 +49,7 @@
                 {{ $t('fund') }}
                 <span>SBT Fund 2</span>
               </div>
+              <a href="/sign-out?logout=yes" :title="$t('sign-out')" class="header__sign-out"></a>
             </div>
             <div class="header__mob-nav">
               <Nav />

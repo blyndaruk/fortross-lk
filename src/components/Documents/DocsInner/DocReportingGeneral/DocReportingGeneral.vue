@@ -4,10 +4,10 @@
       <div class="documents__section">
         <div class="documents__head">
           <h2 class="documents__title">{{ $t('documents.general-docs') }}</h2>
-          <SortSelect :options="sortTypes" @selected-option="sortDocs" />
+          <SortSelect :options="sortTypes" @selected-option="sortDocs" v-if="filteredDocuments.length" />
         </div>
         <div class="documents__list">
-          <div class="documents-no-data" v-if="!filteredDocuments.length">{{ $t('no-data') }}</div>
+          <div class="documents-no-data" v-if="!filteredDocuments.length">{{ $t('no-docs-data') }}</div>
           <Document v-for="(document, index) in filteredDocuments" :key="index" :document="document" />
         </div>
       </div>
@@ -52,6 +52,7 @@
           }
         })
         .then((response) => {
+          if (!response) return;
           this.documents = Object.values(response)[0].signed;
         });
     },
@@ -86,7 +87,11 @@
     },
     computed: {
       filteredDocuments() {
-        return this.documents.filter(doc => doc.file_name.toLowerCase().includes(this.search.toLowerCase()));
+        if (this.documents.length) {
+          return this.documents.filter(doc => doc.file_name.toLowerCase().includes(this.search.toLowerCase()));
+        } else {
+          return [];
+        }
       },
     }
   }

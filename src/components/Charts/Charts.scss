@@ -55,17 +55,50 @@
 }
 
 .chart-wrapper {
+  position: relative;
   //width: 600px;
-  //overflow-x: auto;
+  overflow-x: auto;
 
-  //.chart {
-  //  width: 2000px;
+  &::v-deep .ps__rail-x {
+    display: none !important;
+  }
+
+  &::v-deep .chart-line {
+    &.has-scroll {
+      width: 1150px;
+
+      & ~ .ps__rail-x {
+        display: block !important;
+      }
+    }
+
+    &:not(.has-scroll) {
+      & + .ps__rail-x {
+        display: none !important;
+      }
+    }
+
+  }
+
+
+  .has-scroll {
+    &::v-deep .ps__rail-x {
+      display: block !important;
+    }
+  }
+  //&:not(.has-scroll) {
+  //  &::v-deep .ps__rail-x {
+  //    display: none !important;
+  //  }
   //}
 
-  //.ps-container {
-  //  padding-bottom: 20px;
-  //}
+  .ps-container {
+    padding-bottom: 20px;
+  }
 
+  &::v-deep .ps__thumb-x {
+    background-color: #bebebe !important;
+  }
 }
 
 

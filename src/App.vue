@@ -1,5 +1,13 @@
 <template>
   <div class="app">
+    <svg class="graph-grad">
+      <defs>
+        <radialGradient id="graphgradient" cx="43%" cy="43%" r="90%" fx="43%" fy="60%">
+          <stop offset="10%" stop-color="#0B204E" />
+          <stop offset="85%" stop-color="#24DBAF" />
+        </radialGradient>
+      </defs>
+    </svg>
     <Loader :visible="loading" />
     <TheHeader />
     <main class="main">
@@ -70,5 +78,11 @@
     left: 0;
     transform: translateX(-20%);
     transition: opacity .3s, transform .8s;
+  }
+
+  .graph-grad {
+    position: absolute;
+    left: -99999px;
+    opacity: 0;
   }
 </style>

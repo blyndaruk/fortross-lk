@@ -10,12 +10,9 @@
   background-color: $primary;
   background-image: url(~@/assets/images/pattern.svg);
 
-  @include lg {
+  @include r(1270) {
     flex-wrap: wrap;
     padding-right: 0;
-  }
-
-  @include sm {
   }
 
   @include xs {
@@ -24,22 +21,24 @@
   }
 
   &__main {
-    padding: 25px 64px 25px 30px;
-    @include md {
+    //padding: 25px 64px 25px 30px;
+    padding: 25px 50px 25px 30px;
+    @include lg {
       display: flex;
       flex-wrap: wrap;
       flex-direction: row-reverse;
       justify-content: space-between;
+      width: 100%;
     }
     @include sm {
       padding-left: 30px;
       padding-right: 30px;
-      justify-content: flex-end;
       width: 100%;
-    }
-    @include xs {
+      justify-content: flex-end;
       flex-direction: column-reverse;
       padding: 15px 20px 12px;
+    }
+    @include xs {
     }
   }
 
@@ -81,6 +80,9 @@
 
   &__row {
     @include semi;
+    display: flex;
+    //align-items: center;
+    //line-height: 1.5;
 
     &:first-child {
       margin-top: 5px;
@@ -105,6 +107,13 @@
         max-width: none;
       }
     }
+
+    .is-mobile {
+      width: 100%;
+      @include smUp {
+        display: none;
+      }
+    }
   }
 
   &__col {
@@ -112,7 +121,7 @@
     padding-right: 60px;
     width: 25%;
 
-    @include lg {
+    @include r(1270) {
       width: 50%;
       &:before {
         content: '';
@@ -145,7 +154,7 @@
     }
 
     &:nth-child(2n) {
-      @include lg {
+      @include r(1270) {
         &:after {
           display: none;
         }
@@ -177,12 +186,16 @@
 
   &__info-left {
     flex-grow: 1;
-  }
-
-  &__info-left {
-    max-width: 205px;
+    max-width: 190px;
     @include sm {
       max-width: none;
+    }
+  }
+
+  &__info-right {
+    display: flex;
+    @include sm {
+      display: block;
     }
   }
 
@@ -211,14 +224,17 @@
       }
 
       &:last-child {
-        font-size: 14px;
-        opacity: .4;
-        font-weight: 500;
-        max-width: 195px;
         @include sm {
+          font-size: 14px;
+          opacity: .4;
+          font-weight: 500;
+          max-width: 195px;
           width: 100%;
           padding-left: 21px;
           margin-top: 3px;
+        }
+        @include xs {
+          max-width: 225px;
         }
       }
     }
@@ -236,6 +252,9 @@
       height: calc(100% - 10px);
       border-radius: 6px;
       background-color: $secondary;
+      @include sm {
+        height: 67px;
+      }
     }
 
     &:after {
@@ -247,6 +266,43 @@
       height: 6px;
       border-radius: 50%;
       background: linear-gradient(0deg, rgba(36, 219, 175, 0.5), rgba(36, 219, 175, 0.5)), #0b204e;
+      @include sm {
+        bottom: 30px;
+      }
+    }
+  }
+
+  &__naming {
+    font-size: 14px;
+    opacity: .4;
+    line-height: 1.6;
+    font-weight: 500;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    //max-width: 170px;
+    overflow: hidden;
+
+    @include ru {
+      max-width: 170px;
+    }
+
+    @include sm {
+      display: block;
+      width: 100%;
+      margin-top: 3px;
+      line-height: 1.4;
+    }
+
+    div + div {
+      @include sm {
+        margin-top: 12px;
+      }
+    }
+  }
+
+  &__naming-wrap {
+    @include sm {
+      display: none;
     }
   }
 
@@ -267,10 +323,10 @@
       }
 
       &:last-child {
-        font-size: 14px;
-        opacity: .4;
-        font-weight: 500;
         @include sm {
+          font-size: 14px;
+          opacity: .4;
+          font-weight: 500;
           display: block;
           width: 100%;
           margin-top: 3px;
@@ -285,7 +341,7 @@
     margin-right: -60px;
     background-color: $primary;
     border-top: 1px solid $main-bg;
-    @include lg {
+    @include r(1270) {
       width: 100%;
       margin-right: 0;
       flex-wrap: wrap;
@@ -320,6 +376,7 @@
   width: 100px;
   height: 100px;
   margin: 0 40px;
+  flex-shrink: 0;
   border-radius: 50%;
   background-color: $dark-gray;
   transform: rotate(90deg) scale(-1, 1);
@@ -379,4 +436,3 @@
   //  //}
   //}
 }
-

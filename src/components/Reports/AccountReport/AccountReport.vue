@@ -9,9 +9,12 @@
             <div class="field__placeholder-left">{{ $t('datepicker.from') }}</div>
             <datepicker
                 format="d.MM.yyyy"
+                initial-view="year"
                 :disabled-dates="disabledStartDates"
                 :typeable="true"
                 :language="$i18n.locale === 'ru' ? ru : en"
+                :open-date="disabledStartDates.from"
+                :monday-first="true"
                 @selected="onStartDateSelect"
                 @blur="onBlur"
             ></datepicker>
@@ -27,9 +30,12 @@
             <div class="field__placeholder-left">{{ $t('datepicker.to') }}</div>
             <datepicker
                 format="d.MM.yyyy"
+                initial-view="year"
                 :disabled-dates="disabledEndDates"
                 :typeable="true"
                 :language="$i18n.locale === 'ru' ? ru : en"
+                :open-date="disabledEndDates.from"
+                :monday-first="true"
                 @selected="onEndDateSelect"
                 @blur="onBlur"
             ></datepicker>
@@ -53,16 +59,39 @@
               <div class="sort-select__active" :class="{ 'is-open': openTypeSelect }"
                    @click="openTypeSelect = !openTypeSelect"
               >
-                {{ currentFilterType.title === 'All' ? $t('all') : currentFilterType.title }}
+                {{ checkedFiltersRender }}
               </div>
               <div class="sort-select__options" :class="{ 'is-open': openTypeSelect }">
                 <div
-                    class="sort-select__option"
+                    class="sort-select__option sort-select__option--checkbox"
                     v-for="(option, i) in types"
                     :key="i"
-                    @click="filterTypeChange(option)"
                 >
-                  {{ option.title === 'All' ? $t('all') : option.title }}
+                  <label v-if="i === 0" for="select-all">
+                    <input id="select-all"
+                           class="conditions-check"
+                           v-model="selectAll"
+                           type="checkbox"
+                           name="type"
+                           @change="filterTypeChange"
+                           checked
+                    >
+                    {{ $t('all') }}
+                    <span class="sort-select__checkbox"></span>
+                  </label>
+                  <label v-else :for="'select-all'+i">
+                    <input :id="'select-all'+i"
+                           class="conditions-check"
+                           v-model="checkedFilters"
+                           :value="option"
+                           @change="filterTypeChange"
+                           type="checkbox"
+                           name="type"
+                           checked
+                    >
+                    {{ option }}
+                    <span class="sort-select__checkbox"></span>
+                  </label>
                 </div>
               </div>
             </div>
@@ -82,12 +111,12 @@
           </div>
           <div class="report-table__head-actions">
             <div class="report-table__download" v-if="index === 0">
-              <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" clip-rule="evenodd"
-                      d="M16.0015 15C16.0015 15.5523 15.5537 16 15.0015 16L1.00146 16C0.44918 16 0.00146485 15.5523 0.00146486 15C0.00146486 14.4477 0.44918 14 1.00146 14L6.51452 14L1.82836 9.74006C1.41969 9.36856 1.38956 8.73611 1.76105 8.32744C2.13255 7.91878 2.765 7.88865 3.17367 8.26014L7.00102 11.7394L7.00102 -2.01468e-06L9.00102 -1.99083e-06L9.00102 11.7397L12.8283 8.26018C13.237 7.88866 13.8694 7.91876 14.2409 8.32741C14.6125 8.73606 14.5824 9.36851 14.1737 9.74002L9.48796 14L15.0015 14C15.5537 14 16.0015 14.4477 16.0015 15Z"
-                      fill="#24DBAF" />
-              </svg>
-              <span>XLS</span>
+              <DownloadFile
+                  :downloadable="true"
+                  :date-from="dateFrom"
+                  :date-to="dateTo"
+                  download-link="/api/reports/asr.php"
+              />
             </div>
             <div class="sort-select" v-if="index === 0" v-click-outside="closeSelect">
               <div class="sort-select__label">{{ $t('sorting-by') }}</div>
@@ -98,8 +127,12 @@
                   {{ $t('date') }}
                 </div>
                 <div class="sort-select__options" :class="{ 'is-open': openSortSelect }">
-                  <div class="sort-select__option" @click="sortChange('to-low', $t('sort-by-list.to-low'))">{{$t('sort-by-list.to-low')}}</div>
-                  <div class="sort-select__option" @click="sortChange('to-high', $t('sort-by-list.to-high'))">{{$t('sort-by-list.to-high')}}</div>
+                  <div class="sort-select__option" @click="sortChange('to-low', $t('sort-by-list.to-low'))">
+                    {{$t('sort-by-list.to-low')}}
+                  </div>
+                  <div class="sort-select__option" @click="sortChange('to-high', $t('sort-by-list.to-high'))">
+                    {{$t('sort-by-list.to-high')}}
+                  </div>
                 </div>
               </div>
             </div>
@@ -107,7 +140,7 @@
         </div>
         <div class="report-table__body" v-if="table.dataset && table.dataset.length">
           <div class="report-table__row js-row" v-for="(row, index) in table.dataset" :key="index">
-            <div class="report-table__date">{{row.date}}</div>
+            <div class="report-table__date">{{ row.date.split('.')[0].length === 1 ? '0' + row.date : row.date }}</div>
             <div class="report-table__type">
               <p class="report-table__trunc" ref="truncate">
                 {{row.type}}
@@ -148,7 +181,7 @@
                 </svg>
               </div>
             </div>
-            <div class="report-table__amount">{{row.summ}}</div>
+            <div class="report-table__amount">{{sign(row.summ)}}{{row.summ}}</div>
           </div>
         </div>
       </div>
@@ -157,6 +190,7 @@
 </template>
 
 <script>
+  import DownloadFile from '@/components/DownloadFile/DownloadFile';
   import httpClient from '@/utils/httpClient';
   import ClickOutside from 'vue-click-outside';
   import Datepicker from '@sum.cumo/vue-datepicker';
@@ -167,6 +201,7 @@
   export default {
     name: 'AccountReport',
     components: {
+      DownloadFile,
       Datepicker,
     },
     data() {
@@ -175,6 +210,8 @@
         ru,
         data: [],
         openSortSelect: false,
+        dateFrom: '',
+        dateTo: '',
         sortTypes: [
           {
             title: 'По возрастанию',
@@ -191,16 +228,9 @@
         disabledEndDates: {},
         startDate: '',
         endDate: '',
-        currentFilterType: {
-          id: 'all',
-          title: 'All'
-        },
-        types: [
-          {
-            id: 'all',
-            title: this.$i18n.messages[this.$i18n.locale].all
-          }
-        ],
+        checkedFilters: [this.$i18n.messages[this.$i18n.locale].all],
+        types: [this.$i18n.messages[this.$i18n.locale].all],
+        allSelected: true,
         currentReports: [],
         reportsNew: [],
         reports: [],
@@ -211,6 +241,7 @@
         if (!this.startDate && !this.endDate) this.updateData();
       },
       updateData() {
+        if (!this.reports) return;
 
         this.$store.dispatch('loader/show');
 
@@ -232,12 +263,15 @@
             let date = DateTime.fromFormat(dataset.date, 'dd-MM-yyyy');
             if (!date.c) date = DateTime.fromFormat(dataset.date, 'd.M.yyyy');
 
-            dataset.date = `${date.c.day}.${date.c.month}.${date.c.year}`;
+            let month = date.c.month;
+            month = month.toString().length < 2 ? '0' + month : month;
 
-            if (this.currentFilterType.id === 'all') {
+            dataset.date = `${date.c.day}.${month}.${date.c.year}`;
+
+            if (this.checkedFilters === this.$i18n.messages[this.$i18n.locale].all) {
               this.currentReports[index].dataset.push(dataset);
             } else {
-              if (dataset.type.toLowerCase() === this.currentFilterType.id) {
+              if (this.checkedFilters.includes(dataset.type.toLowerCase())) {
                 this.currentReports[index].dataset.push(dataset);
               }
             }
@@ -246,6 +280,8 @@
 
         // remove periods without data
         this.currentReports = this.currentReports.filter(report => report.dataset.length);
+
+        const defaultReports = this.currentReports;
 
         // Filter by chosen date range
         if (this.startDate && this.endDate) {
@@ -274,6 +310,23 @@
           }, []);
         }
 
+        // Sorting by inner dates
+        this.currentReports.forEach((period) => {
+          period.dataset.sort((x, y) => {
+            const keyA = DateTime.fromFormat(x.date, 'd.M.yyyy');
+            const keyB = DateTime.fromFormat(y.date, 'd.M.yyyy');
+
+            if (this.currentSortType === 'to-high') {
+              if (keyA > keyB) return -1;
+              if (keyA < keyB) return 1;
+            } else {
+              if (keyA < keyB) return -1;
+              if (keyA > keyB) return 1;
+            }
+            return 0;
+          });
+        });
+
         // Sorting by dates
         this.currentReports.sort((a, b) => {
           const keyA = DateTime.fromFormat(a.period.toLowerCase(), 'LL-yyyy', { locale: this.$i18n.locale });
@@ -290,6 +343,24 @@
           return 0;
         });
 
+        // disable dates with no data on load
+        const toDate = new Date(Math.min.apply(null, defaultReports.map((o) => new Date(DateTime.fromFormat(o.period, 'LL-yyyy', { locale: this.$i18n.locale }).startOf('month').toISO()))));
+        const endDate = new Date(Math.max.apply(null, defaultReports.map((o) => new Date(DateTime.fromFormat(o.period, 'LL-yyyy', { locale: this.$i18n.locale }).endOf('month').toISO()))));
+        this.disabledStartDates = {
+          to: toDate,
+          from: endDate,
+        };
+        this.disabledEndDates = {
+          to: toDate,
+          from: endDate,
+        };
+
+        if (this.currentReports.length) {
+          this.dateTo = this.currentReports[0].dataset[0].date;
+          const lastDataset = this.currentReports[this.currentReports.length - 1].dataset;
+          this.dateFrom = this.currentReports[this.currentReports.length - 1].dataset[lastDataset.length - 1].date;
+        }
+
         setTimeout(() => {
           this.truncate();
           this.$store.dispatch('loader/hide');
@@ -297,16 +368,12 @@
       },
       onStartDateSelect(time) {
         this.startDate = time;
-        this.disabledEndDates = {
-          to: time,
-        };
+        this.disabledEndDates.to = time;
         if (this.startDate && this.endDate) this.updateData();
       },
       onEndDateSelect(time) {
         this.endDate = time;
-        this.disabledStartDates = {
-          from: time,
-        };
+        this.disabledStartDates.from = time;
         if (this.startDate && this.endDate) this.updateData();
       },
       closeSelect() {
@@ -316,13 +383,11 @@
         this.openTypeSelect = false;
       },
       sortChange(option) {
-        // console.log(option);
         this.currentSortType = option;
         this.openSortSelect = false;
         this.updateData();
       },
-      filterTypeChange(option) {
-        this.currentFilterType = option;
+      filterTypeChange() {
         this.openTypeSelect = false;
         this.updateData();
       },
@@ -340,10 +405,13 @@
           });
         }
       },
+      sign(value) {
+        return value.includes('-') ? '' : '+';
+      }
     },
     watch: {
       '$i18n.locale': function () {
-        // this.$i18n.messages[this.$i18n.locale].title
+        this.checkedFilters[0] = this.$i18n.messages[this.$i18n.locale].all;
         if (Object.keys(this.reports).length) this.updateData();
       }
     },
@@ -357,6 +425,8 @@
           },
         })
         .then((response) => {
+          if (!response) return;
+
           this.reports = response;
 
           const map = new Map();
@@ -364,20 +434,44 @@
             report.strings.forEach((dataset) => {
               if (!map.has(dataset.type) && dataset.type) {
                 map.set(dataset.type, true);
-                this.types.push({
-                  id: dataset.type.toLowerCase(),
-                  title: dataset.type,
-                });
+                this.types.push(dataset.type.toLowerCase());
               }
             });
           });
+          this.checkedFilters = this.types; // show all filters on load
           this.updateData();
         });
       setTimeout(() => {
         this.truncate();
       }, 1000);
     },
-    computed: {},
+    computed: {
+      selectAll: {
+        get() {
+          return this.types ? this.checkedFilters.length === this.types.length : false;
+        },
+        set(value) {
+          this.checkedFilters = [];
+          if (value) {
+            this.types.forEach((company) => {
+              this.checkedFilters.push(company);
+            });
+          } else {
+            this.checkedFilters = [this.$i18n.messages[this.$i18n.locale].all];
+          }
+        }
+      },
+      checkedFiltersRender() {
+        let filters = this.checkedFilters;
+
+        if (filters.length === this.types.length || this.checkedFilters.length <= 1) {
+          return filters[0] = this.$i18n.messages[this.$i18n.locale].all;
+        } else {
+          [, ...filters] = filters;
+          return filters.join(', ');
+        }
+      }
+    },
     directives: {
       ClickOutside
     },

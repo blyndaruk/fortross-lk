@@ -69,6 +69,12 @@
       flex-wrap: wrap;
     }
 
+    &.is-highlighted {
+      background-color: #eeeeee;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+
     &.is-open {
       white-space: normal;
       overflow: visible;
@@ -227,6 +233,7 @@
 
   &__download {
     display: flex;
+    margin-bottom: 1px;
     @include semi;
     color: $secondary;
     cursor: pointer;

@@ -7,7 +7,7 @@
           <SortSelect :options="sortTypes" @selected-option="sortDocs" />
         </div>
         <div class="documents__list">
-          <div class="documents-no-data" v-if="!filteredDocs.length">{{ $t('no-data') }}</div>
+          <div class="documents-no-data" v-if="!filteredDocs.length">{{ $t('no-docs-data') }}</div>
           <Document v-for="(document, index) in filteredDocs" :key="index" :document="document" />
         </div>
       </div>
@@ -69,6 +69,8 @@
       httpClient
         .get('/api/docs/investors_letters_docs.php')
         .then((response) => {
+          if (!response) return;
+
           Object.entries(response[0]).map((period) => {
             this.currentYear = period[0] || currentYear;
             this.documents = period[1];
@@ -92,7 +94,11 @@
     },
     computed: {
       filteredDocs() {
-        return this.documents.filter(doc => doc.file_name.toLowerCase().includes(this.search.toLowerCase()));
+        if (this.documents.length) {
+          return this.documents.filter(doc => doc.file_name.toLowerCase().includes(this.search.toLowerCase()));
+        } else {
+          return [];
+        }
       },
     }
   }

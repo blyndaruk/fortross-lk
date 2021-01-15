@@ -65,6 +65,8 @@
         sortOption: 'company_valuation',
         currentIndex: 0,
         currentTab: 'all',
+        exitTab: false,
+        exitAmount: 0,
         companies: [],
         industriesAmount: [],
         industries: [{
@@ -75,6 +77,7 @@
           suppressScrollY: true,
           suppressScrollX: false,
           wheelPropagation: true,
+          useBothWheelAxes: true,
         },
       }
     },
@@ -115,10 +118,32 @@
                 title: company.industry,
               });
             }
+            if (!map.has('exit') && company.status.toLowerCase() === 'exit') {
+              this.exitTab = true;
+              map.set('exit', true);
+            }
+            if (company.status.toLowerCase() === 'exit') {
+              this.exitAmount += 1;
+            }
           });
+
+          if (this.exitTab) {
+            this.industries = this.insert(this.industries, 1, {
+              id: 'exit',
+              title: 'Exit',
+              amount: this.exitAmount
+            });
+          }
         });
     },
     methods: {
+      insert(arr, index, newItem) {
+        return [
+          ...arr.slice(0, index),
+          newItem,
+          ...arr.slice(index)
+        ]
+      },
       filterCompanies(id, index) {
         this.currentTab = id;
         this.currentIndex = index;
@@ -144,10 +169,14 @@
 
         if (this.currentTab === 'all') {
           return companies;
+        } else if (this.currentTab === 'exit') {
+          return companies.filter((company) => {
+            return company.status.toLowerCase() === 'exit';
+          });
         } else {
           return companies.filter((company) => {
             return company.industry === this.currentTab;
-          })
+          });
         }
       },
       companiesCount() {
@@ -162,7 +191,10 @@
       },
       filteredIndustries() {
         return this.industries.map(category => {
-          const amount = category.id === 'all' ? this.companies.length : this.companiesCount[category.id];
+          let amount = category.id === 'all' ? this.companies.length : this.companiesCount[category.id];
+          if (category.id === 'exit') {
+            amount = this.exitAmount;
+          }
           return { ...category, amount };
         });
       },

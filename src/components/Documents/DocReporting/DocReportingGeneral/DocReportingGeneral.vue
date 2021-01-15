@@ -4,20 +4,20 @@
       <div class="documents__section">
         <div class="documents__head">
           <h2 class="documents__title" v-if="currentYear">{{ currentYear }}<span>{{ $t('current-year') }}</span></h2>
-          <SortSelect :options="sortTypes" @selected-option="sortSigning" />
+          <SortSelect :options="sortTypes" @selected-option="sortSigning" v-if="filteredCurrentYearDocs.length" />
         </div>
         <div class="documents__list">
-          <div class="documents-no-data" v-if="!filteredCurrentYearDocs.length">{{ $t('no-data') }}</div>
+          <div class="documents-no-data" v-if="!filteredCurrentYearDocs.length">{{ $t('no-docs-data') }}</div>
           <Document v-for="(document, index) in filteredCurrentYearDocs" :key="index" :document="document" />
         </div>
       </div>
       <div class="documents__section">
         <div class="documents__head">
           <h2 class="documents__title">{{ $t('last-years') }}</h2>
-          <SortSelect :options="sortTypes" @selected-option="sortToSign" />
+          <SortSelect :options="sortTypes" @selected-option="sortToSign" v-if="filteredPreviousDocs.length" />
         </div>
         <div class="documents__list">
-          <div class="documents-no-data" v-if="!filteredPreviousDocs.length">{{ $t('no-data') }}</div>
+          <div class="documents-no-data" v-if="!filteredPreviousDocs.length">{{ $t('no-docs-data') }}</div>
           <Document v-for="(document, index) in filteredPreviousDocs" :key="index" :document="document" />
         </div>
       </div>
@@ -81,6 +81,7 @@
           }
         })
         .then((response) => {
+          if (!response) return;
           const allDocs = Object.values(response)[0];
           this.currentYearDocs = Object.values(allDocs)[0];
           this.currentYearDocs = Object.values(this.currentYearDocs)[0];

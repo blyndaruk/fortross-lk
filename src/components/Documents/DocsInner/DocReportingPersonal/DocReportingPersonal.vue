@@ -4,21 +4,25 @@
       <div class="documents__section">
         <div class="documents__head">
           <h2 class="documents__title">{{ $t('documents.to-sign') }}</h2>
-          <SortSelect :options="sortTypes" @selected-option="sortSigning" />
+          <SortSelect :options="sortTypes" @selected-option="sortSigning" v-if="filteredSigningDocs.length" />
         </div>
         <div class="documents__list">
-          <div class="documents-no-data" v-if="!filteredSigningDocs.length">{{ $t('no-data') }}</div>
-          <Document v-for="(document, index) in filteredSigningDocs" :key="index" :document="document" />
+          <div class="documents-no-data" v-if="!filteredSigningDocs.length">{{ $t('no-docs-data') }}</div>
+          <div v-if="filteredSigningDocs.length">
+            <Document v-for="(document, index) in filteredSigningDocs" :key="index" :document="document" />
+          </div>
         </div>
       </div>
       <div class="documents__section">
         <div class="documents__head">
           <h2 class="documents__title">{{ $t('documents.signed') }}</h2>
-          <SortSelect :options="sortTypes" @selected-option="sortToSign" />
+          <SortSelect :options="sortTypes" @selected-option="sortToSign" v-if="filteredToSignDocs.length" />
         </div>
         <div class="documents__list">
-          <div class="documents-no-data" v-if="!filteredToSignDocs.length">{{ $t('no-data') }}</div>
-          <Document v-for="(document, index) in filteredToSignDocs" :key="index" :document="document" />
+          <div class="documents-no-data" v-if="!filteredToSignDocs.length">{{ $t('no-docs-data') }}</div>
+          <div v-if="filteredToSignDocs.length">
+            <Document v-for="(document, index) in filteredToSignDocs" :key="index" :document="document" />
+          </div>
         </div>
       </div>
     </div>
@@ -66,6 +70,7 @@
           }
         })
         .then((response) => {
+          if (!response) return;
           this.signingDocs = Object.values(response)[0];
           this.toSignDocs = Object.values(response)[1];
         });
@@ -107,10 +112,22 @@
     },
     computed: {
       filteredSigningDocs() {
-        return this.signingDocs.filter(doc => doc.file_name.toLowerCase().includes(this.search.toLowerCase()));
+        if (this.signingDocs.length) {
+          return this.signingDocs.filter(doc => {
+            return doc.file_name.toLowerCase().includes(this.search.toLowerCase())
+          });
+        } else {
+          return [];
+        }
       },
       filteredToSignDocs() {
-        return this.toSignDocs.filter(doc => doc.file_name.toLowerCase().includes(this.search.toLowerCase()));
+        if (this.toSignDocs) {
+          return this.toSignDocs.filter(doc => {
+            return doc.file_name.toLowerCase().includes(this.search.toLowerCase())
+          });
+        } else {
+          return [];
+        }
       }
     }
   }

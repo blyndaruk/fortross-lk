@@ -6,6 +6,7 @@
     "portfolio-companies": "Портфельные компании",
     "documents": "Документы"
   },
+  "sign-out": "Выйти",
   "dashboard": {
     "state": "Текущий баланс (cash)",
     "commited": "Обязательства подписки",
@@ -58,9 +59,12 @@
   "company-card": {
     "valuation": "оценка компании",
     "investments": "инвестиции фонда",
-    "share": "доля фонда"
+    "share": "доля фонда",
+    "exit": "доход"
   },
   "no-data": "Нет данных для отображения",
+  "no-docs-data": "Нет документов для отображения",
+  "open-desktop": "Откройте десктоп версию",
   "documents": {
     "payment-title": "Документы на оплату",
     "paid-title": "Оплаченные документы",

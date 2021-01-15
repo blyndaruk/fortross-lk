@@ -39,6 +39,7 @@
           },
         })
         .then((response) => {
+          if (!response) return;
           this.toSign = response.signing_docs;
           this.paymentDocs = response.for_payment_docs;
           this.reports = response.recent_transaction.strings;

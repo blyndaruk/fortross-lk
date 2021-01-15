@@ -108,18 +108,17 @@
           </div>
           <div class="report-table__head-actions">
             <div class="report-table__download" v-if="index === 0">
-              <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" clip-rule="evenodd"
-                      d="M16.0015 15C16.0015 15.5523 15.5537 16 15.0015 16L1.00146 16C0.44918 16 0.00146485 15.5523 0.00146486 15C0.00146486 14.4477 0.44918 14 1.00146 14L6.51452 14L1.82836 9.74006C1.41969 9.36856 1.38956 8.73611 1.76105 8.32744C2.13255 7.91878 2.765 7.88865 3.17367 8.26014L7.00102 11.7394L7.00102 -2.01468e-06L9.00102 -1.99083e-06L9.00102 11.7397L12.8283 8.26018C13.237 7.88866 13.8694 7.91876 14.2409 8.32741C14.6125 8.73606 14.5824 9.36851 14.1737 9.74002L9.48796 14L15.0015 14C15.5537 14 16.0015 14.4477 16.0015 15Z"
-                      fill="#24DBAF" />
-              </svg>
-              <span>XLS</span>
+              <DownloadFile
+                  :downloadable="true"
+                  :forecast="periodsQuery"
+                  download-link="/api/reports/abf.php"
+              />
             </div>
           </div>
         </div>
 
         <div class="report-table__body">
-          <div class="report-table__row" v-for="(row, index) in period.strings" :key="index">
+          <div class="report-table__row" v-for="(row, index) in period.strings" :key="index" :class="{ 'is-highlighted': row.mark }">
 
             <v-clamp class="report-table__text" autoresize :max-lines="1">
               {{row.description}} (For test - {{row.year}} {{row.quarter}})
@@ -156,6 +155,7 @@
 </template>
 
 <script>
+  import DownloadFile from '@/components/DownloadFile/DownloadFile';
   import httpClient from '@/utils/httpClient';
   import ClickOutside from 'vue-click-outside';
   import VClamp from 'vue-clamp';
@@ -166,6 +166,7 @@
   export default {
     name: 'Forecast',
     components: {
+      DownloadFile,
       Datepicker,
       VClamp,
     },
@@ -179,6 +180,9 @@
           'Q3',
           'Q4',
         ],
+        dateFrom: '',
+        dateTo: '',
+        periodsQuery: '',
         periods: [],
         startDate: '',
         endDate: '',
@@ -220,7 +224,7 @@
     },
     methods: {
       onBlur() {
-        if (!this.startDate && !this.endDate) this.updateData();
+        if (!this.startDate || !this.endDate) this.updateData();
       },
       onStartDateSelect(time) {
         this.startDate = time;
@@ -253,7 +257,24 @@
         if (this.startDate && this.endDate && this.currentToQ && this.currentFromQ) this.updateData();
       },
       updateData() {
+        if (!this.dataset || !this.dataset.length) return;
+
         this.$store.dispatch('loader/show');
+
+        // disable dates with no data on load
+        const toDate = new Date(Math.min.apply(Math, this.currentReports.map((o) => parseInt(o.period_year))).toString());
+        const endDate = new Date(Math.max.apply(Math, this.currentReports.map((o) => parseInt(o.period_year))).toString());
+        this.disabledStartDates = {
+          to: toDate,
+          from: endDate,
+        };
+        this.disabledEndDates = {
+          to: toDate,
+          from: endDate,
+        };
+
+
+
 
         if (this.startDate && this.endDate && this.currentToQ && this.currentFromQ) {
           this.startDateFormatted = DateTime.fromJSDate(this.startDate).startOf('year').plus({ quarter: parseInt(this.currentFromQ.match(/\d+/)[0] - 1) });
@@ -272,6 +293,14 @@
             return reports;
           }, []);
         }
+
+        this.periodsQuery = '';
+
+        this.currentReports.map((period) => {
+          this.periodsQuery = this.periodsQuery + period.period + ';';
+        });
+        this.periodsQuery = this.periodsQuery.slice(0, -1);
+
         setTimeout(() => {
           this.$store.dispatch('loader/hide');
         }, 400);

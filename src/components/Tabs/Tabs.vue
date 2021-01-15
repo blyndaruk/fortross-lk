@@ -46,6 +46,7 @@
           suppressScrollY: true,
           suppressScrollX: false,
           wheelPropagation: true,
+          useBothWheelAxes: true,
         },
       };
     },

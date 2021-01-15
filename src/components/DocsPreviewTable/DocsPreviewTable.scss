@@ -111,10 +111,16 @@
       background-position: center center;
       background-repeat: no-repeat;
       background-size: contain;
-
-      //@include xs {
-      //  top: -11px;
-      //}
     }
   }
+}
+
+.docs-preview-no-data {
+  display: flex;
+  justify-content: center;
+  min-height: 80px;
+  padding-top: 30px;
+  color: $primary;
+  font-size: 20px;
+  text-align: center;
 }

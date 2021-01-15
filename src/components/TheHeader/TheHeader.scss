@@ -39,6 +39,14 @@
     }
   }
 
+  &__right {
+    display: flex;
+
+    & > div {
+      display: flex;
+    }
+  }
+
   &__center {
     position: absolute;
     left: 50%;
@@ -68,6 +76,9 @@
     @include semi;
     @include lspacing;
     text-transform: uppercase;
+    @include lg {
+      margin-left: auto;
+    }
     @include xs {
       margin-top: 20px;
     }
@@ -78,12 +89,30 @@
     }
   }
 
+  &__sign-out {
+    display: block;
+    width: 20px;
+    height: 20px;
+    margin-left: 20px;
+    background-image: url(~@/assets/images/logout.svg);
+    background-repeat: no-repeat;
+    background-position: center center;
+    cursor: pointer;
+    @include xs {
+      position: absolute;
+      top: 0;
+      right: 25px;
+      margin-left: 0;
+      margin-top: 20px;
+    }
+  }
+
   &__sub-row {
     position: absolute;
     left: 0;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    //justify-content: space-between;
     width: 100%;
     padding: 30px 40px;
     background-color: $main-bg;
@@ -126,7 +155,6 @@
       opacity: 0.1;
     }
   }
-
 
 
   &.is-burger-active {

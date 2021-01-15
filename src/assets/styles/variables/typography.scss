@@ -1,19 +1,24 @@
-$ff-default: 'Montserrat', Arial, Helvetica, sans-serif;
+$ff-default: 'Montserrat Medium', Arial, Helvetica, sans-serif;
 
 $fz-default: 16px;
 $fz-bigger: 18px;
 
 @mixin FMont {
-  font-family: 'Montserrat', Arial, Helvetica, sans-serif;
+  font-family: 'Montserrat Medium', Arial, Helvetica, sans-serif;
   font-weight: 500;
+  font-display: swap;
 }
 
 @mixin bold {
+  font-family: 'Montserrat Bold', Arial, Helvetica, sans-serif;
   font-weight: bold;
+  font-display: swap;
 }
 
 @mixin semi {
+  font-family: 'Montserrat SemiBold', Arial, Helvetica, sans-serif;
   font-weight: 600;
+  font-display: swap;
 }
 
 @mixin lspacing {

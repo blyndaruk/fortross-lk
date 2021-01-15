@@ -4,10 +4,10 @@
       <div class="documents__section">
         <div class="documents__head">
           <h2 class="documents__title" v-if="currentYear">{{ currentYear }}<span>{{ $t('current-year') }}</span></h2>
-          <SortSelect :options="sortTypes" @selected-option="sortDocs" />
+          <SortSelect :options="sortTypes" @selected-option="sortDocs" v-if="filteredDocs.length" />
         </div>
         <div class="documents__list">
-          <div class="documents-no-data" v-if="!filteredDocs.length">{{ $t('no-data') }}</div>
+          <div class="documents-no-data" v-if="!filteredDocs.length">{{ $t('no-docs-data') }}</div>
           <Document v-for="(document, index) in filteredDocs" :key="index" :document="document" />
         </div>
       </div>
@@ -75,6 +75,8 @@
           }
         })
         .then((response) => {
+          if (!response) return;
+
           Object.entries(response[0]).map((period) => {
             this.currentYear = period[0] || currentYear;
             this.documents = period[1];
@@ -98,7 +100,11 @@
     },
     computed: {
       filteredDocs() {
-        return this.documents.filter(doc => doc.file_name.toLowerCase().includes(this.search.toLowerCase()));
+        if (this.documents.length) {
+          return this.documents.filter(doc => doc.file_name.toLowerCase().includes(this.search.toLowerCase()));
+        } else {
+          return [];
+        }
       },
     }
   }

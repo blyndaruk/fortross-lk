@@ -6,6 +6,7 @@
     "portfolio-companies": "Portfolio Companies",
     "documents": "Documents"
   },
+  "sign-out": "Sign out",
   "dashboard": {
     "state": "Current balance (cash)",
     "commited": "Committed capital",
@@ -58,9 +59,12 @@
   "company-card": {
     "valuation": "company valuation",
     "investments": "fund investments",
-    "share": "fund share"
+    "share": "fund share",
+    "exit": "proceeds"
   },
   "no-data": "No data to display",
+  "no-docs-data": "No documents to display",
+  "open-desktop": "Open desktop version",
   "documents": {
     "payment-title": "Payments due",
     "paid-title": "Paid documents",

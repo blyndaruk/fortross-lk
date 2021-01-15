@@ -53,7 +53,13 @@ select,
 a
   -webkit-tap-highlight-color: rgba(0,0,0,0)
 
+*
+  -webkit-locale: auto
 
+  //-webkit-font-feature-settings: "locl" 0
+  //-moz-font-feature-settings:    "locl" 0
+  //-ms-font-feature-settings:     "locl" 0
+  //font-feature-settings:         "locl" 0
 @media (prefers-reduced-motion: reduce)
   *
     transition: none !important

@@ -9,9 +9,12 @@
             <div class="field__placeholder-left">{{ $t('datepicker.from') }}</div>
             <datepicker
                 format="d.MM.yyyy"
+                initial-view="year"
                 :disabled-dates="disabledStartDates"
                 :typeable="true"
                 :language="$i18n.locale === 'ru' ? ru : en"
+                :open-date="disabledStartDates.from"
+                :monday-first="true"
                 @selected="onStartDateSelect"
                 @blur="onBlur"
             ></datepicker>
@@ -27,9 +30,12 @@
             <div class="field__placeholder-left">{{ $t('datepicker.to') }}</div>
             <datepicker
                 format="d.MM.yyyy"
+                initial-view="year"
                 :disabled-dates="disabledEndDates"
                 :typeable="true"
                 :language="$i18n.locale === 'ru' ? ru : en"
+                :open-date="disabledEndDates.from"
+                :monday-first="true"
                 @selected="onEndDateSelect"
                 @blur="onBlur"
             ></datepicker>
@@ -51,6 +57,7 @@
             <label :for="'payments_income'">
               <input type="checkbox"
                      :name="'payments_income'"
+                     :disabled="disabledIncome"
                      :id="'payments_income'"
                      v-model="paymentsIncome"
                      @change="onPaymentTypeChange"
@@ -64,6 +71,7 @@
               <input type="checkbox"
                      :name="'payments_outcome'"
                      :id="'payments_outcome'"
+                     :disabled="disabledOutcome"
                      v-model="paymentsOutcome"
                      @change="onPaymentTypeChange"
               >
@@ -85,12 +93,12 @@
           </div>
           <div class="report-table__head-actions">
             <div class="report-table__download" v-if="index === 0">
-              <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" clip-rule="evenodd"
-                      d="M16.0015 15C16.0015 15.5523 15.5537 16 15.0015 16L1.00146 16C0.44918 16 0.00146485 15.5523 0.00146486 15C0.00146486 14.4477 0.44918 14 1.00146 14L6.51452 14L1.82836 9.74006C1.41969 9.36856 1.38956 8.73611 1.76105 8.32744C2.13255 7.91878 2.765 7.88865 3.17367 8.26014L7.00102 11.7394L7.00102 -2.01468e-06L9.00102 -1.99083e-06L9.00102 11.7397L12.8283 8.26018C13.237 7.88866 13.8694 7.91876 14.2409 8.32741C14.6125 8.73606 14.5824 9.36851 14.1737 9.74002L9.48796 14L15.0015 14C15.5537 14 16.0015 14.4477 16.0015 15Z"
-                      fill="#24DBAF" />
-              </svg>
-              <span>XLS</span>
+              <DownloadFile
+                  :downloadable="true"
+                  :date-from="dateFrom"
+                  :date-to="dateTo"
+                  download-link="/api/reports/pr.php"
+              />
             </div>
             <div class="sort-select" v-if="index === 0" v-click-outside="closeSelect">
               <div class="sort-select__label">{{ $t('sorting-by') }}</div>
@@ -110,7 +118,7 @@
         </div>
         <div class="report-table__body" v-if="table.dataset && table.dataset.length">
           <div class="report-table__row js-row" v-for="(row, index) in table.dataset" :key="index">
-            <div class="report-table__date">{{row.date}}</div>
+            <div class="report-table__date">{{ row.date.split('.')[0].length === 1 ? '0' + row.date : row.date }}</div>
 
 <!--            <div class="report-table__description">-->
 <!--              <p class="report-table__trunc" ref="truncate">-->
@@ -132,7 +140,7 @@
 <!--                </svg>-->
 <!--              </div>-->
 <!--            </div>-->
-            <div class="report-table__amount">{{row.summ}}</div>
+            <div class="report-table__amount">{{sign(row.type)}}{{row.summ}}</div>
           </div>
         </div>
       </div>
@@ -141,6 +149,7 @@
 </template>
 
 <script>
+  import DownloadFile from '@/components/DownloadFile/DownloadFile';
   import httpClient from '@/utils/httpClient';
   import ClickOutside from 'vue-click-outside';
   import Datepicker from '@sum.cumo/vue-datepicker';
@@ -151,6 +160,7 @@
   export default {
     name: 'PaymentReport',
     components: {
+      DownloadFile,
       Datepicker,
     },
     data() {
@@ -159,7 +169,11 @@
         ru,
         openSortSelect: false,
         paymentsIncome: true,
-        paymentsOutcome: false,
+        paymentsOutcome: true,
+        disabledIncome: false,
+        disabledOutcome: false,
+        dateFrom: '',
+        dateTo: '',
         sortTypes: [
           {
             title: 'По возрастанию',
@@ -191,9 +205,11 @@
         if (!this.startDate && !this.endDate) this.updateData();
       },
       updateData() {
-        this.$store.dispatch('loader/show');
+        if (!this.reports) return;
 
+        this.$store.dispatch('loader/show');
         this.currentReports = [];
+
         this.reports.periods.forEach((report) => {
           const formatted = DateTime.fromFormat(report.period, 'LL-yyyy', { locale: this.$i18n.locale });
           const month = formatted.monthLong;
@@ -202,7 +218,12 @@
           const dataset = report.strings.filter((dataset) => {
             let date = DateTime.fromFormat(dataset.date, 'dd-MM-yyyy');
             if (!date.c) date = DateTime.fromFormat(dataset.date, 'd.M.yyyy');
-            dataset.date = `${date.c.day}.${date.c.month}.${date.c.year}`;
+
+            let month = date.c.month;
+            month = month.toString().length < 2 ? '0' + month : month;
+
+            dataset.date = `${date.c.day}.${month}.${date.c.year}`;
+
             return (dataset.type.includes('Ingoing') && this.paymentsIncome) || (dataset.type.includes('Outgoing') && this.paymentsOutcome);
           });
 
@@ -216,6 +237,9 @@
             });
           }
         });
+
+
+        const defaultReports = this.currentReports;
 
         // Filter by chosen date range
         if (this.startDate && this.endDate) {
@@ -242,6 +266,24 @@
           }, []);
         }
 
+
+        // Sorting by inner dates
+        this.currentReports.forEach((period) => {
+          period.dataset.sort((x, y) => {
+            const keyA = DateTime.fromFormat(x.date, 'd.M.yyyy');
+            const keyB = DateTime.fromFormat(y.date, 'd.M.yyyy');
+
+            if (this.currentSortType === 'to-high') {
+              if (keyA > keyB) return -1;
+              if (keyA < keyB) return 1;
+            } else {
+              if (keyA < keyB) return -1;
+              if (keyA > keyB) return 1;
+            }
+            return 0;
+          });
+        });
+
         // Sorting by dates
         this.currentReports.sort((a, b) => {
           const keyA = DateTime.fromFormat(a.period.toLowerCase(), 'LL-yyyy', { locale: this.$i18n.locale });
@@ -258,6 +300,24 @@
           return 0;
         });
 
+        // disable dates with no data on load
+        const toDate = new Date( Math.min.apply(null, defaultReports.map((o) => new Date(DateTime.fromFormat(o.period, 'LL-yyyy', { locale: this.$i18n.locale }).startOf('month').toISO()) )) );
+        const endDate = new Date( Math.max.apply(null, defaultReports.map((o) => new Date(DateTime.fromFormat(o.period, 'LL-yyyy', { locale: this.$i18n.locale }).endOf('month').toISO()) )) );
+        this.disabledStartDates = {
+          to: toDate,
+          from: endDate,
+        };
+        this.disabledEndDates = {
+          to: toDate,
+          from: endDate,
+        };
+
+        if (this.currentReports.length) {
+          this.dateTo = this.currentReports[0].dataset[0].date;
+          const lastDataset = this.currentReports[this.currentReports.length - 1].dataset;
+          this.dateFrom = this.currentReports[this.currentReports.length - 1].dataset[lastDataset.length - 1].date;
+        }
+
         setTimeout(() => {
           this.truncate();
           this.$store.dispatch('loader/hide');
@@ -265,16 +325,12 @@
       },
       onStartDateSelect(time) {
         this.startDate = time;
-        this.disabledEndDates = {
-          to: time,
-        };
+        this.disabledEndDates.to = time;
         if (this.startDate && this.endDate) this.updateData();
       },
       onEndDateSelect(time) {
         this.endDate = time;
-        this.disabledStartDates = {
-          from: time,
-        };
+        this.disabledStartDates.from = time;
         if (this.startDate && this.endDate) this.updateData();
       },
       closeSelect() {
@@ -289,6 +345,14 @@
         this.updateData();
       },
       onPaymentTypeChange() {
+        if (!this.paymentsIncome) {
+         this.disabledOutcome = true;
+        } else if (!this.paymentsOutcome) {
+         this.disabledIncome = true;
+        } else {
+         this.disabledOutcome = false;
+         this.disabledIncome = false;
+        }
         this.updateData();
       },
       toggleMore(e) {
@@ -305,6 +369,9 @@
           });
         }
       },
+      sign(value) {
+        return value.includes('Ingoing') ? '+' : '-';
+      }
     },
     mounted() {
       const investor = document.querySelector('.investor').value;
@@ -316,6 +383,7 @@
           },
         })
         .then((response) => {
+          if (!response) return;
           this.reports = response;
           this.updateData();
         });

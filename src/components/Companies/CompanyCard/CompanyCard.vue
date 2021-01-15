@@ -1,21 +1,29 @@
 <template>
-  <div class="company-card" :class="company.inactive && 'is-inactive'">
+  <div class="company-card" :class="company.status.toLowerCase() === 'exit' && 'is-inactive'">
     <div class="company-card__category" @click="onClick(company.industry)">{{company.industry}}</div>
 
     <a :href="protocolFix(company.website)" class="company-card__inner" target="_blank">
-      <div class="company-card__image"></div>
+      <div class="company-card__image" :style="{ backgroundImage: 'url(' + company.logo + ')' }"></div>
+
       <div v-if="company.company_valuation" class="company-card__row">
         ${{ shortenLargeNumber( parseInt(company.company_valuation, 10) ) }} USD
         <span>{{$t('company-card.valuation')}}</span>
       </div>
+
       <div v-if="company.total_invested" class="company-card__row">
-        ${{ shortenLargeNumber( parseInt(company.total_invested, 10) ) }} USD
-        <span>{{$t('company-card.investments')}}</span>
+        ${{
+          company.status.toLowerCase() === 'exit'
+          ? shortenLargeNumber( parseInt(company.proceeds, 10) )
+          : shortenLargeNumber( parseInt(company.total_invested, 10) )
+        }} USD
+        <span>{{ company.status.toLowerCase() === 'exit' ? $t('company-card.exit') : $t('company-card.investments') }}</span>
       </div>
+
       <div v-if="company.fund_share" class="company-card__row">
         {{parseFloat(company.fund_share).toFixed(1)}}%
         <span>{{$t('company-card.share')}}</span>
       </div>
+
       <span class="company-card__icon"></span>
     </a>
   </div>
@@ -37,19 +45,20 @@
       protocolFix(url) {
         return url.indexOf('http') === -1 || url.indexOf('https') === -1 ? '//' + url : url;
       },
-      shortenLargeNumber(num) {
-        const units = ['K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
-        let decimal;
+      shortenLargeNumber(value) {
+        const min = 1e3;
+        // Alter numbers larger than 1k
+        if (value >= min) {
+          const units = ["K", "M", "B", "T"];
 
-        for (let i = units.length - 1; i >= 0; i--) {
-          decimal = Math.pow(1000, i + 1);
+          const order = Math.floor(Math.log(value) / Math.log(1000));
 
-          if (num <= -decimal || num >= decimal) {
-            return +(num / decimal).toFixed(0) + units[i];
-          }
+          const unitName = units[(order - 1)];
+          const num = parseFloat(parseFloat(value / 1000 ** order).toFixed(2));
+          return num + unitName
         }
-
-        return num;
+        // return formatted original number
+        return value.toLocaleString('ru');
       }
     },
   }
