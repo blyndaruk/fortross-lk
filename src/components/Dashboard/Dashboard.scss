@@ -228,14 +228,14 @@
           font-size: 14px;
           opacity: .4;
           font-weight: 500;
-          max-width: 195px;
+          //max-width: 195px;
           width: 100%;
           padding-left: 21px;
           margin-top: 3px;
         }
-        @include xs {
-          max-width: 225px;
-        }
+        //@include xs {
+        //  max-width: 225px;
+        //}
       }
     }
   }
@@ -283,7 +283,7 @@
     overflow: hidden;
 
     @include ru {
-      max-width: 170px;
+      max-width: 184px;
     }
 
     @include sm {

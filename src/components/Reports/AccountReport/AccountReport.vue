@@ -181,7 +181,13 @@
                 </svg>
               </div>
             </div>
-            <div class="report-table__amount">{{sign(row.summ)}}{{row.summ}}</div>
+            <div class="report-table__amount">
+              {{sign(row.summ)}}{{
+              parseFloat(row.summ)
+              .toLocaleString('ru', {minimumFractionDigits: 2,maximumFractionDigits: 2})
+              .replace(',', '.')
+              }}
+            </div>
           </div>
         </div>
       </div>

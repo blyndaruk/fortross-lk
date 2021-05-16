@@ -1,6 +1,6 @@
 module.exports = {
   devServer: {
-    proxy: 'https://www:Bureau@fortross.dev.vr.buroburo.tech/',
+    proxy: 'https://www:Bureau@fortross.vc/',
   },
   css: {
     loaderOptions: {

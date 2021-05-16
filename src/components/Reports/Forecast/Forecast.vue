@@ -121,7 +121,7 @@
           <div class="report-table__row" v-for="(row, index) in period.strings" :key="index" :class="{ 'is-highlighted': row.mark }">
 
             <v-clamp class="report-table__text" autoresize :max-lines="1">
-              {{row.description}} (For test - {{row.year}} {{row.quarter}})
+              {{row.description}}
               <template #after="{ toggle, expanded, clamped }">
                 <button
                     v-if="expanded || clamped"
@@ -146,7 +146,14 @@
               </template>
             </v-clamp>
 
-            <div class="report-table__amount">{{row.summ}}</div>
+
+            <div class="report-table__amount">
+              {{
+              parseFloat(row.summ)
+              .toLocaleString('ru', {minimumFractionDigits: 2,maximumFractionDigits: 2})
+              .replace(',', '.')
+              }}
+            </div>
           </div>
         </div>
       </div>

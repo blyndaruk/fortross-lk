@@ -140,7 +140,14 @@
 <!--                </svg>-->
 <!--              </div>-->
 <!--            </div>-->
-            <div class="report-table__amount">{{sign(row.type)}}{{row.summ}}</div>
+<!--            <div class="report-table__amount">{{sign(row.type)}}{{row.summ}}</div>-->
+            <div class="report-table__amount">
+              {{sign(row.type)}}{{
+              parseFloat(row.summ)
+              .toLocaleString('ru', {minimumFractionDigits: 2,maximumFractionDigits: 2})
+              .replace(',', '.')
+              }}
+            </div>
           </div>
         </div>
       </div>

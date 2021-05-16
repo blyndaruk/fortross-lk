@@ -1,16 +1,35 @@
 <template>
   <div class="investors">
     <div class="documents">
-      <div class="documents__section">
+
+      <div class="documents__section" v-for="(item, index) in documentsAll" :key="index">
         <div class="documents__head">
-          <h2 class="documents__title">{{ currentYear }}<span>{{ $t('current-year') }}</span></h2>
-          <SortSelect :options="sortTypes" @selected-option="sortDocs" />
+          <h2 class="documents__title">
+            {{ Object.keys(item)[0] }}
+            <span v-if="index === 0">{{ $t('current-year') }}</span>
+            <span v-else>{{ $t('year') }}</span>
+          </h2>
+          <SortSelect v-if="index === 0" :options="sortTypes" @selected-option="sortDocs" />
         </div>
         <div class="documents__list">
-          <div class="documents-no-data" v-if="!filteredDocs.length">{{ $t('no-docs-data') }}</div>
-          <Document v-for="(document, index) in filteredDocs" :key="index" :document="document" />
+          <div class="documents-no-data" v-if="!Object.values(item)[0].length">{{ $t('no-docs-data') }}</div>
+          <Document v-for="(document, index) in Object.values(item)[0]" :key="index" :document="document" />
         </div>
       </div>
+
+<!--      <br><br><br>-->
+
+
+<!--      <div class="documents__section">-->
+<!--        <div class="documents__head">-->
+<!--          <h2 class="documents__title">{{ currentYear }}<span>{{ $t('current-year') }}</span></h2>-->
+<!--          <SortSelect :options="sortTypes" @selected-option="sortDocs" />-->
+<!--        </div>-->
+<!--        <div class="documents__list">-->
+<!--          <div class="documents-no-data" v-if="!filteredDocs.length">{{ $t('no-docs-data') }}</div>-->
+<!--          <Document v-for="(document, index) in filteredDocs" :key="index" :document="document" />-->
+<!--        </div>-->
+<!--      </div>-->
     </div>
   </div>
 </template>
@@ -40,7 +59,8 @@
             type: 'to-less'
           },
         ],
-        documents: []
+        documents: [],
+        documentsAll: [],
       }
     },
     props: {
@@ -71,10 +91,14 @@
         .then((response) => {
           if (!response) return;
 
-          Object.entries(response[0]).map((period) => {
-            this.currentYear = period[0] || currentYear;
-            this.documents = period[1];
+          Object.values(response).map((period, index) => {
+            if (index === 0) this.currentYear = Object.keys(period)[0] || currentYear;
+            this.documentsAll.push(period);
           });
+          // Object.entries(response[0]).map((period) => {
+          //   this.currentYear = period[0] || currentYear;
+          //   this.documents = period[1];
+          // });
         });
     },
     methods: {
@@ -94,7 +118,7 @@
     },
     computed: {
       filteredDocs() {
-        if (this.documents.length) {
+        if (this.documentsAll.length) {
           return this.documents.filter(doc => doc.file_name.toLowerCase().includes(this.search.toLowerCase()));
         } else {
           return [];

@@ -10,7 +10,7 @@
   "dashboard": {
     "state": "Текущий баланс (cash)",
     "commited": "Обязательства подписки",
-    "unfunded": "Не профинансированные обязательства",
+    "unfunded": "Остаток обязательств",
     "contributed-capital": "Внесенные средства",
     "contributed-account": "Текущий баланс (cash)",
     "portfolio_companies": "портфельные компании",
@@ -41,7 +41,7 @@
   "toggle-all-companies": "Выделить все компании",
   "my-account": {
     "account-report-tab": "Отчет о состоянии счета",
-    "payment-report-tab": "Отчет о движении средств (ввод/вывод)",
+    "payment-report-tab": "Отчет о движении средств",
     "forecast-tab": "Прогноз"
   },
   "datepicker": {
@@ -78,7 +78,8 @@
   },
   "search": "Поиск по названию",
   "search-by-name": "Названию",
-  "current-year": "текущий",
+  "current-year": "текущий год",
+  "year": "год",
   "personal": "Личное",
   "general": "Общее",
   "last-years": "Прошлые года"

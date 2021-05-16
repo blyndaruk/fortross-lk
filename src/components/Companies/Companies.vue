@@ -111,6 +111,14 @@
 
           const map = new Map();
           this.companies.forEach((company) => {
+
+            if (company.company_valuation_unit2 === 'thousand') {
+              company.company_valuation *= 1000;
+            }
+            if (company.total_invested_unit2 === 'thousand') {
+              company.total_invested *= 1000;
+            }
+
             if (!map.has(company.industry) && company.industry) {
               map.set(company.industry, true);
               this.industries.push({

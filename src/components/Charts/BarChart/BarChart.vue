@@ -34,7 +34,9 @@
               },
               ticks: {
                 beginAtZero: true,
-                callback: value => this.unit === '%' ? value + this.unit : this.unit + value,
+                callback: value => {
+                  return this.unit === '%' ? this.commarize(value) + this.unit : this.unit + this.commarize(value);
+                },
               }
             }],
           },
@@ -46,6 +48,8 @@
             enabled: false,
 
             custom(tooltipModel) {
+              const unit = document.querySelector('#unit_type').value === '%' ? '%' : '';
+
               // Tooltip Element
               let tooltipEl = document.getElementById('chartjs-tooltip');
 
@@ -95,7 +99,7 @@
                   style += '; border-width: 2px';
                   const span = '<span style="' + style + '"></span>';
                   const str = body[0].split(': ');
-                  const title = this._chart.options.unit === '$' ? Math.round(parseFloat(str[0])).toLocaleString() : str[0] + '%';
+                  const title = unit === '%' ? str[0] + '%' : Math.round(parseFloat(str[0])).toLocaleString();
                   innerHtml += '<tr><td>' + span + title + '</td></tr>';
                 });
                 innerHtml += '</tbody>';
@@ -133,7 +137,27 @@
     },
     mounted () {
       this.renderChart(this.chartData, this.options)
-    }
+    },
+    methods: {
+      commarize(value) {
+        const min = 1e3;
+        // Alter numbers larger than 1k
+        if (value >= min && this.unit !== '%') {
+          const units = ["K", "M", "B", "T"];
+
+          const order = Math.floor(Math.log(value) / Math.log(1000));
+
+          const unitName = units[(order - 1)];
+          const num = Math.floor(value / 1000 ** order);
+
+          // output number remainder + unitname
+          return num + unitName
+        }
+
+        // return formatted original number
+        return value.toLocaleString()
+      }
+    },
   }
 </script>
 

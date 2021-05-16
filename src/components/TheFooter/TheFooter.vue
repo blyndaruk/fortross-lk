@@ -4,6 +4,7 @@
       <div class="container">
         <div class="footer__inner">
           <p class="footer__copy">© Fort Ross Ventures 2020</p>
+          <a href="https://www.fortross.vc/privacy/" class="footer__privacy">Privacy Policy</a>
           <div class="footer__socials">
             <Socials />
           </div>
@@ -35,13 +36,39 @@
     &__inner {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      /*justify-content: space-between;*/
       min-height: 100px;
       @include xs {
-        flex-direction: column-reverse;
+        /*flex-direction: column-reverse;*/
+        flex-direction: column;
         align-items: flex-start;
         justify-content: center;
         min-height: 158px;
+      }
+    }
+
+    &__privacy {
+      margin-left: 20px;
+      font-size: 12px;
+      color: #ababab;
+      text-decoration: none;
+      transition: color $easing-default;
+      @include xs {
+        margin-left: 0;
+        margin-top: 10px;
+        order: 3;
+      }
+
+      &:hover {
+        color: #ffffff;
+      }
+    }
+
+    &__socials {
+      margin-left: auto;
+      @include xs {
+        margin-left: 0;
+        order: 1;
       }
     }
 
@@ -50,6 +77,7 @@
       @include FMont;
       @include xs {
         margin-top: 30px;
+        order: 2;
       }
     }
   }

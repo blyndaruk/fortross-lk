@@ -11,6 +11,7 @@
     mixins: [reactiveProp],
     data() {
       return {
+        rectangleSet: false,
         options: {
           responsive: true,
           maintainAspectRatio: false,
@@ -45,7 +46,9 @@
               ticks: {
                 beginAtZero: true,
                 callback: value => {
-                  return this.unit === '%' ? this.commarize(value) + this.unit : this.unit + this.commarize(value);
+                  const negative = value < 0;
+                  const editedUSD = negative ? this.commarize(value) : this.unit + this.commarize(value);
+                  return this.unit === '%' ? this.commarize(value) + this.unit : editedUSD;
                 },
               }
             }]
@@ -121,7 +124,8 @@
                 values.forEach(function (body, i) {
                   const str = body[0].split(': ');
                   const title = str[0];
-                  const value = Math.round(parseFloat(str[1])).toLocaleString();
+                  // const value = parseFloat(str[1]).toFixed(1).toLocaleString(); // %
+                  const value = unit === '%' ? parseFloat(str[1]).toFixed(1).toLocaleString('ru') : Math.round(parseFloat(str[1])).toLocaleString('ru');
                   const colors = sortedColors[i];
                   let style = 'background:' + colors.backgroundColor;
                   style += '; border-color:' + colors.borderColor;
@@ -150,6 +154,38 @@
               tooltipEl.style.pointerEvents = 'none';
             }
           },
+          animation: {
+            onComplete() {
+              this.rectangleSet = false;
+            },
+            onProgress() {
+              // TODO: set debounced function
+              const scrollable = document.querySelector('#scrollable').value;
+              if (!this.rectangleSet && !!scrollable) {
+                const scale = window.devicePixelRatio;
+
+                const sourceCanvas = this.canvas;
+                const copyWidth = this.scales['y-axis-0'].width - 6;
+                const copyHeight = this.scales['y-axis-0'].height + this.scales['y-axis-0'].top + 10;
+
+                const targetCtx = document.getElementById("x-axis").getContext("2d");
+
+                targetCtx.scale(scale, scale);
+                targetCtx.canvas.width = copyWidth * scale;
+                targetCtx.canvas.height = copyHeight * scale;
+
+                targetCtx.canvas.style.width = `${copyWidth}px`;
+                targetCtx.canvas.style.height = `${copyHeight}px`;
+                targetCtx.drawImage(sourceCanvas, 0, 1, copyWidth * scale, copyHeight * scale, 0, 0, copyWidth * scale, copyHeight * scale);
+
+                const sourceCtx = sourceCanvas.getContext('2d');
+
+                // Normalize coordinate system to use css pixels.
+                sourceCtx.clearRect(0, 0, copyWidth, copyHeight);
+                this.rectangleSet = true;
+              }
+            },
+          }
         },
       }
     },
@@ -160,11 +196,15 @@
       },
       unit: {
         type: String
-      }
+      },
     },
     methods: {
       commarize(value) {
         const min = 1e3;
+
+        const negative = value < 0;
+        if (negative) value *= -1;
+
         // Alter numbers larger than 1k
         if (value >= min && this.unit !== '%') {
           const units = ["K", "M", "B", "T"];
@@ -172,10 +212,18 @@
           const order = Math.floor(Math.log(value) / Math.log(1000));
 
           const unitName = units[(order - 1)];
-          const num = Math.floor(value / 1000 ** order);
+          let num = Math.floor(value / 1000 ** order);
 
           // output number remainder + unitname
+          if (negative) {
+            num *= -1;
+            num = num.toString().slice(0, 1)+this.unit+ num.toString().slice(1)
+          }
           return num + unitName
+        }
+
+        if (this.unit === '%' && negative) {
+          value *= -1;
         }
 
         // return formatted original number

@@ -126,8 +126,16 @@
 
         <div :class="{ 'has-scroll': this.labels.length > 18 }">
           <vue-custom-scrollbar class="scroll-area" :settings="scrollSettings">
-            <line-chart class="chart chart-line" :class="{ 'has-scroll': this.labels.length > 18 }" v-if="isHistorical" :chart-data="datacollection" :unit="getUnit"></line-chart>
+            <line-chart
+                v-if="isHistorical"
+                class="chart chart-line"
+                :class="{ 'has-scroll': this.labels.length > 18 }"
+                :chart-data="datacollection"
+                :unit="getUnit"
+            ></line-chart>
           </vue-custom-scrollbar>
+          <canvas v-show="isHistorical" class="chart-line chart-line--x-axis" :class="{ 'has-scroll': this.labels.length > 18 }" id="x-axis" height="300" width="0"></canvas>
+          <input id="scrollable" type="hidden" name="scrollable" :value="this.labels.length > 18">
         </div>
 
         <bar-chart
@@ -284,6 +292,7 @@
 
               this.data.forEach((el) => {
                 // set all available metrics
+                if (el.metric_unit_text_2 === 'thousand' && el.metric_unit_text_1 === 'USD') el.metric_value *= 1000;
                 if (!metricsMap.has(el.metric_name)) {
                   metricsMap.set(el.metric_name, true);
                   this.metrics.push({
@@ -315,11 +324,12 @@
     methods: {
       onMetricClick(metric, index) {
         this.currentMetricIndex = index;
-        this.chartType = 'line';
-        this.currentTimeline = {
-          id: 'historical',
-          title: 'historical',
-        };
+        // this.chartType = 'line';
+        // this.currentTimeline = {
+        //   id: 'historical',
+        //   title: 'historical',
+        // };
+        if (this.getUnit === '%') this.chartType = 'line';
         this.unit = this.getUnit;
         this.fillData();
       },

@@ -171,21 +171,21 @@
               },
             })
             .then((response) => {
-              this.companiesAmount = responseData.portfolio_companies;
-              this.exits = responseData.of_exits;
-              this.totalInvested = responseData.total_invested;
+              this.companiesAmount        = responseData.portfolio_companies;
+              this.exits                  = responseData.of_exits;
+              this.totalInvested          = responseData.total_invested;
               this.totalInvestedFormatted = responseData.total_invested_formated.toUpperCase();
-              this.fairValue = responseData.investment_fair_value;
-              this.fairValueFormatted = responseData.investment_fair_value_formated.toUpperCase();
+              this.fairValue              = responseData.investment_fair_value;
+              this.fairValueFormatted     = responseData.investment_fair_value_formated.toUpperCase();
 
               if (!response) return;
 
-              const allData = response.all;
-              this.mainAmount = parseInt(allData['Current_state_of_account'].summ).toLocaleString('ru');
-              this.sum = parseInt(allData['~Commitment'].summ);
-              this.capital = parseInt(allData['~Contributed_capital'].summ);
-              this.unfunded = this.sum - this.capital;
-              this.accountContribution = parseInt(allData['Current_state_of_account'].summ);
+              const allData               = response.all;
+              this.mainAmount             = parseInt(allData['Current_state_of_account'].summ).toLocaleString('ru');
+              this.sum                    = parseInt(allData['~Commitment'].summ);
+              this.capital                = parseInt(allData['~Contributed_capital'].summ);
+              this.unfunded               = parseInt(allData['~Unfunded_commitment'].summ) ? parseInt(allData['~Unfunded_commitment'].summ) : this.sum - this.capital;
+              this.accountContribution    = parseInt(allData['Current_state_of_account'].summ);
 
               setTimeout(() => {
                 this.updateData();
