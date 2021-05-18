@@ -2,7 +2,7 @@
   <div class="investors">
     <div class="documents">
 
-      <div class="documents__section" v-for="(item, index) in documentsAll" :key="index">
+      <div class="documents__section" v-for="(item, index) in filteredDocs" :key="index">
         <div class="documents__head">
           <h2 class="documents__title">
             {{ Object.keys(item)[0] }}
@@ -93,12 +93,9 @@
 
           Object.values(response).map((period, index) => {
             if (index === 0) this.currentYear = Object.keys(period)[0] || currentYear;
-            this.documentsAll.push(period);
           });
-          // Object.entries(response[0]).map((period) => {
-          //   this.currentYear = period[0] || currentYear;
-          //   this.documents = period[1];
-          // });
+
+          this.documentsAll = response;
         });
     },
     methods: {
@@ -114,12 +111,31 @@
           }
           return 0; //default return value (no sorting)
         });
-      }
+      },
     },
     computed: {
       filteredDocs() {
         if (this.documentsAll.length) {
-          return this.documents.filter(doc => doc.file_name.toLowerCase().includes(this.search.toLowerCase()));
+          const deepSearcher = (fields, query) =>
+              function matcher(object) {
+                const keys = Object.keys(object);
+                return keys.some(key => {
+                  const value = object[key];
+                  // handle sub arrays
+                  if (Array.isArray(value)) return value.some(matcher);
+                  // handle sub objects
+                  if (value instanceof Object) return matcher(value);
+                  // handle testable values
+                  if (fields.includes(key)) {
+                    // handle strings
+                    if (typeof value === "string") return value.toLowerCase().includes(query);
+                    // handle numbers
+                    return value.toString() === query.toString();
+                  }
+                  return false;
+                });
+              };
+          return this.documentsAll.filter( deepSearcher(['file_name'], this.search.toLowerCase()) );
         } else {
           return [];
         }
@@ -127,7 +143,3 @@
     }
   }
 </script>
-
-<style scoped>
-
-</style>

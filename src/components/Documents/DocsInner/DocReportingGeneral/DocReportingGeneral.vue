@@ -52,14 +52,9 @@
           }
         })
         .then((response) => {
-          // console.log(Object.values(response));
           if (!response) return;
 
-          // Object.values(response).map((docs) => {
-          //   console.log(docs);
-          // });
-
-          this.documents = Object.values(response)[0].signed;
+          Object.values(response).map(docs => this.documents.push(docs));
         });
     },
     watch: {
