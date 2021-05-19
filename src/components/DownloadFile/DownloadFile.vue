@@ -93,7 +93,6 @@
         save.target = '_blank';
         save.download = filename;
         save.setAttribute('download', filename);
-        console.log('url: ' + url, 'filename: ' + filename);
         document.body.appendChild(save);
         save.click();
         setTimeout(() => {
