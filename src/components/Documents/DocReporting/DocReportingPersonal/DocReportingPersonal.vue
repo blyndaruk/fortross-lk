@@ -1,14 +1,18 @@
 <template>
   <div class="personal">
     <div class="documents">
-      <div class="documents__section">
-        <div class="documents__head">
-          <h2 class="documents__title" v-if="currentYear">{{ currentYear }}<span>{{ $t('current-year') }}</span></h2>
-          <SortSelect :options="sortTypes" @selected-option="sortDocs" v-if="filteredDocs.length" />
+      <div class="documents-no-data" v-if="checkIfEmpty(filteredDocs)">{{ $t('no-docs-data') }}</div>
+
+      <div class="documents__section" v-for="(period, index) in filteredDocs" :key="index">
+        <div class="documents__head" v-if="period[0]">
+          <h2 class="documents__title">
+            {{ period[0].year }}
+            <span>{{ $t('year') }}</span>
+          </h2>
+          <SortSelect v-if="index === 0" :options="sortTypes" @selected-option="sortDocs" />
         </div>
         <div class="documents__list">
-          <div class="documents-no-data" v-if="!filteredDocs.length">{{ $t('no-docs-data') }}</div>
-          <Document v-for="(document, index) in filteredDocs" :key="index" :document="document" />
+          <Document v-for="(document, index) in period" :key="index" :document="document" />
         </div>
       </div>
     </div>
@@ -76,32 +80,40 @@
         })
         .then((response) => {
           if (!response) return;
-
-          Object.entries(response[0]).map((period) => {
-            this.currentYear = period[0] || currentYear;
-            this.documents = period[1];
-          });
+          this.currentYear = response[0].year || currentYear;
+          this.documents = response;
         });
     },
     methods: {
       sortDocs(option) {
-        this.documents.sort((a, b) => {
-          const nameA = a.file_name.toLowerCase(), nameB = b.file_name.toLowerCase();
-          if (option.type === 'to-less') {
-            if (nameA > nameB) return -1;
-            if (nameA < nameB) return 1;
-          } else {
-            if (nameA < nameB) return -1;
-            if (nameA > nameB) return 1;
-          }
-          return 0; //default return value (no sorting)
-        });
-      }
+        this.documents.map((period) => {
+          return period.sort((a, b) => {
+            const nameA = a.file_name.toLowerCase(), nameB = b.file_name.toLowerCase();
+            if (option.type === 'to-less') {
+              if (nameA > nameB) return -1;
+              if (nameA < nameB) return 1;
+            } else {
+              if (nameA < nameB) return -1;
+              if (nameA > nameB) return 1;
+            }
+            return 0; //default return value (no sorting)
+          });
+        })
+      },
+      checkIfEmpty(array) {
+        return Array.isArray(array) && (array.length === 0 || array.every(this.checkIfEmpty));
+      },
     },
     computed: {
       filteredDocs() {
         if (this.documents.length) {
-          return this.documents.filter(doc => doc.file_name.toLowerCase().includes(this.search.toLowerCase()));
+          return this.documents.map(k => {
+            if (k instanceof Array) {
+              return k.filter(e => e.file_name.toLowerCase().includes(this.search.toLowerCase()))
+            } else {
+              return Object.values(k).filter(e => e.file_name.toLowerCase().includes(this.search.toLowerCase()))
+            }
+          });
         } else {
           return [];
         }

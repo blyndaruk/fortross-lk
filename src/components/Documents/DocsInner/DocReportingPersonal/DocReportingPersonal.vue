@@ -112,8 +112,8 @@
     },
     computed: {
       filteredSigningDocs() {
-        if (this.signingDocs.length) {
-          return this.signingDocs.filter(doc => {
+        if (this.signingDocs) {
+          return Object.values(this.signingDocs).filter(doc => {
             return doc.file_name.toLowerCase().includes(this.search.toLowerCase())
           });
         } else {
@@ -122,7 +122,7 @@
       },
       filteredToSignDocs() {
         if (this.toSignDocs) {
-          return this.toSignDocs.filter(doc => {
+          return Object.values(this.toSignDocs).filter(doc => {
             return doc.file_name.toLowerCase().includes(this.search.toLowerCase())
           });
         } else {
