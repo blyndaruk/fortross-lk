@@ -3,7 +3,7 @@
     <div class="documents">
       <div class="documents__section">
         <div class="documents__head">
-          <h2 class="documents__title" v-if="currentYear">{{ currentYear }}<span>{{ $t('current-year') }}</span></h2>
+          <h2 class="documents__title" v-if="currentYear">{{ currentYear }}<span>{{ $t('year') }}</span></h2>
           <SortSelect :options="sortTypes" @selected-option="sortSigning" v-if="filteredCurrentYearDocs.length" />
         </div>
         <div class="documents__list">
@@ -82,11 +82,10 @@
         })
         .then((response) => {
           if (!response) return;
-          const allDocs = Object.values(response)[0];
-          this.currentYearDocs = Object.values(allDocs)[0];
-          this.currentYearDocs = Object.values(this.currentYearDocs)[0];
 
-          // test with normal data from server
+          const allDocs = response;
+          this.currentYearDocs = response[0];
+
           allDocs.forEach((docs, index) => {
             if (index === 0) return;
             Object.values(docs).map((doc) => {
