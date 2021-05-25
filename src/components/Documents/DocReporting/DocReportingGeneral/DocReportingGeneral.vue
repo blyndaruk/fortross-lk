@@ -11,7 +11,7 @@
           <Document v-for="(document, index) in filteredCurrentYearDocs" :key="index" :document="document" />
         </div>
       </div>
-      <div class="documents__section">
+      <div class="documents__section" v-if="filteredPreviousDocs.length">
         <div class="documents__head">
           <h2 class="documents__title">{{ $t('last-years') }}</h2>
           <SortSelect :options="sortTypes" @selected-option="sortToSign" v-if="filteredPreviousDocs.length" />
@@ -72,8 +72,6 @@
       }
     },
     mounted() {
-      this.currentYear = DateTime.fromJSDate(new Date()).year;
-
       httpClient
         .get('/api/docs/reporting_docs.php', {
           params: {
@@ -85,6 +83,7 @@
 
           const allDocs = response;
           this.currentYearDocs = response[0];
+          this.currentYear = response[0][0].year || DateTime.fromJSDate(new Date()).year;
 
           allDocs.forEach((docs, index) => {
             if (index === 0) return;
