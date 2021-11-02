@@ -10,7 +10,7 @@
            :key="index"
            @click="onMetricClick(metric, index)"
       >
-        {{metric.id}}
+        {{ $t(metric.id) }}
       </div>
       <div class="chart-metric-more">
         <div class="chart-metric"
@@ -19,7 +19,7 @@
              @click="toggleOtherMetrics"
              v-click-outside="hide"
         >
-          Other
+          {{ $t('Other') }}
         </div>
         <div class="chart-metric-more__wrapper"
              :class="{ 'is-active': this.showMoreMetrics }"
@@ -30,7 +30,7 @@
                :class="{ 'is-active': currentMetricIndex === showedMetrics.length+index }"
                @click="onMetricClick(metric, showedMetrics.length+index)"
           >
-            {{metric.id}}
+            {{ $t(metric.id) }}
           </div>
         </div>
       </div>

@@ -8,7 +8,7 @@
         <a href="mailto:investorservicesiom@ocorian.com">investorservicesiom@ocorian.com</a>
       </div>
 
-      <div class="docs-preview-no-data" v-if="!list || !list.length">{{ $t('no-data') }}</div>
+      <div class="docs-preview-no-data" v-if="!getList || !getList.length">{{ $t('no-data') }}</div>
 
       <div class="docs-preview-table__list">
         <div class="docs-preview-table__row" v-for="(item, index) in list" :key="index">
@@ -55,10 +55,15 @@
       note: {
         type: Boolean,
       },
-      list: {
-        // type: Array || Object,
+      list: {}
+    },
+    computed: {
+      getList() {
+        if (!this.list) return [];
+        if (this.list && !this.list.isArray) return [...Object.values(this.list)];
+        return this.list;
       }
-    }
+    },
   }
 </script>
 

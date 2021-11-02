@@ -82,5 +82,17 @@
   "year": "год",
   "personal": "Личное",
   "general": "Общее",
-  "last-years": "Прошлые года"
+  "Other": "Другие",
+  "last-years": "Прошлые года",
+  "Revenue": "Выручка",
+  "Gross profit": "Валовая прибыль",
+  "Gross profit margin": "Валовая маржа",
+  "Cash Burn": "Расход ДС",
+  "Bank Debt": "Задолженность",
+  "Cash position": "Остаток ДС",
+  "Total invested": "Инвестиции фонда",
+  "Investment fair value": "Оценка инвестиции",
+  "Company valuation": "Оценка компании",
+  "Last round  valuation": "Последний раунд",
+  "Fund share": "Доля фонда"
 }

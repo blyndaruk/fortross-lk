@@ -82,5 +82,17 @@
   "year": "year",
   "personal": "Private",
   "general": "General",
-  "last-years": "Last years"
+  "Other": "Other",
+  "last-years": "Last years",
+  "Revenue": "Revenue",
+  "Gross profit": "Gross Profit",
+  "Gross profit margin": "Gross Profit Margin",
+  "Cash Burn": "Cash Burn",
+  "Bank Debt": "Bank Debt",
+  "Cash position": "Cash Position",
+  "Total invested": "Total Invested",
+  "Investment fair value": "Investment fair value",
+  "Company valuation": "Company Valuation",
+  "Last round  valuation": "Last Round Valuation",
+  "Fund share": "Fund Share"
 }
