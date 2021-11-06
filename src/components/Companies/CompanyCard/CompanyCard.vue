@@ -19,7 +19,12 @@
         <span>{{ company.status.toLowerCase() === 'exit' ? $t('company-card.exit') : $t('company-card.investments') }}</span>
       </div>
 
-      <div v-if="company.fund_share" class="company-card__row">
+      <div v-if="company.status.toLowerCase() === 'exit' && company.total_invested" class="company-card__row">
+        ${{ shortenLargeNumber( parseInt(company.total_invested, 10) ) }} USD
+        <span>{{ $t('company-card.investments') }}</span>
+      </div>
+
+      <div v-if="company.status.toLowerCase() !== 'exit' && company.fund_share" class="company-card__row">
         {{parseFloat(company.fund_share).toFixed(1)}}%
         <span>{{$t('company-card.share')}}</span>
       </div>

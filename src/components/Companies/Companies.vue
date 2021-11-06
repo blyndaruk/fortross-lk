@@ -2,8 +2,8 @@
   <div class="companies">
     <div class="companies__tabs-wrap" ref="companiesTabs">
       <div class="companies__head">
-        <div class="companies__title">{{ $t('companies-title') }}</div>
-        <SortSelect :options="sortTypes" @selected-option="updateOption" />
+        <div class="companies__title">{{ title || $t('companies-title') }}</div>
+        <SortSelect :options="sortType" @selected-option="updateOption" />
       </div>
       <vue-custom-scrollbar class="scroll-area" :settings="scrollSettings">
         <div class="companies__tabs">
@@ -34,7 +34,6 @@
 <script>
   import CompanyCard from '@/components/Companies/CompanyCard/CompanyCard';
   import SortSelect from '@/components/SortSelect/SortSelect';
-  import httpClient from '@/utils/httpClient';
 
   import vueCustomScrollbar from 'vue-custom-scrollbar';
   import 'vue-custom-scrollbar/dist/vueScrollbar.css';
@@ -46,33 +45,35 @@
       CompanyCard,
       vueCustomScrollbar,
     },
+    props: {
+      companies: {
+        type: Array,
+        default: () => [],
+      },
+      industries: {
+        type: Array,
+        default: () => [{
+          id: 'all',
+          title: 'All companies'
+        }]
+      },
+      sortType: {
+        type: Array,
+        default: () => []
+      },
+      title: {
+        type: String,
+        default: '',
+      },
+    },
     data() {
       return {
-        sortTypes: [
-          {
-            title: this.$i18n.messages[this.$i18n.locale]['portfolio-sorting'].valuation,
-            type: 'company_valuation'
-          },
-          {
-            title: this.$i18n.messages[this.$i18n.locale]['portfolio-sorting'].investments,
-            type: 'total_invested'
-          },
-          {
-            title: this.$i18n.messages[this.$i18n.locale]['portfolio-sorting'].share,
-            type: 'fund_share'
-          },
-        ],
         sortOption: 'company_valuation',
         currentIndex: 0,
         currentTab: 'all',
         exitTab: false,
         exitAmount: 0,
-        companies: [],
         industriesAmount: [],
-        industries: [{
-          id: 'all',
-          title: 'All companies'
-        }],
         scrollSettings: {
           suppressScrollY: true,
           suppressScrollX: false,
@@ -80,69 +81,6 @@
           useBothWheelAxes: true,
         },
       }
-    },
-
-    watch: {
-      '$i18n.locale': function () {
-        this.sortTypes = [
-          {
-            title: this.$i18n.messages[this.$i18n.locale]['portfolio-sorting'].valuation,
-            // title: 'Стоимости компании',
-            type: 'company_valuation'
-          },
-          {
-            title: this.$i18n.messages[this.$i18n.locale]['portfolio-sorting'].investments,
-            type: 'total_invested'
-          },
-          {
-            title: this.$i18n.messages[this.$i18n.locale]['portfolio-sorting'].share,
-            type: 'fund_share'
-          },
-        ];
-      }
-    },
-
-    mounted() {
-      const url = '/api/company_info_iblock.php';
-      httpClient
-        .get(url)
-        .then((response) => {
-          this.companies = response;
-
-          const map = new Map();
-          this.companies.forEach((company) => {
-
-            if (company.company_valuation_unit2 === 'thousand') {
-              company.company_valuation *= 1000;
-            }
-            if (company.total_invested_unit2 === 'thousand') {
-              company.total_invested *= 1000;
-            }
-
-            if (!map.has(company.industry) && company.industry) {
-              map.set(company.industry, true);
-              this.industries.push({
-                id: company.industry,
-                title: company.industry,
-              });
-            }
-            if (!map.has('exit') && company.status.toLowerCase() === 'exit') {
-              this.exitTab = true;
-              map.set('exit', true);
-            }
-            if (company.status.toLowerCase() === 'exit') {
-              this.exitAmount += 1;
-            }
-          });
-
-          if (this.exitTab) {
-            this.industries = this.insert(this.industries, 1, {
-              id: 'exit',
-              title: 'Exit',
-              amount: this.exitAmount
-            });
-          }
-        });
     },
     methods: {
       insert(arr, index, newItem) {
@@ -198,11 +136,15 @@
         }, {});
       },
       filteredIndustries() {
-        return this.industries.map(category => {
+        const localIndustries = this.industries;
+        if (!this.industries.some((ind) => ind.id === 'all')) {
+          localIndustries.unshift({
+            id: 'all',
+            title: 'All companies'
+          })
+        }
+        return localIndustries.map(category => {
           let amount = category.id === 'all' ? this.companies.length : this.companiesCount[category.id];
-          if (category.id === 'exit') {
-            amount = this.exitAmount;
-          }
           return { ...category, amount };
         });
       },

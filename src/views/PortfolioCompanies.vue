@@ -2,12 +2,13 @@
   <div class="portfolio-companies-view">
     <Dashboard viewType="simple" />
     <Charts />
-    <Companies />
+    <Companies :companies="companies" :industries="industries" :title="$t('companies-title')" :sortType="sortTypes" />
+    <Companies :companies="companiesExits" :industries="industriesExits" :title="$t('Exits')" :sortType="sortTypesExits" />
   </div>
 </template>
 
 <script>
-  // import httpClient from '@/utils/httpClient';
+  import httpClient from '@/utils/httpClient';
   import Charts from '@/components/Charts/Charts';
   import Companies from '@/components/Companies/Companies';
   import Dashboard from '@/components/Dashboard/Dashboard';
@@ -21,17 +22,126 @@
     },
     data() {
       return {
-        // chartsData: [],
+        companies: [],
+        companiesExits: [],
+        industries: [],
+        industriesExits: [],
+        sortTypes: [
+          {
+            title: this.$i18n.messages[this.$i18n.locale]['portfolio-sorting'].valuation,
+            type: 'company_valuation'
+          },
+          {
+            title: this.$i18n.messages[this.$i18n.locale]['portfolio-sorting'].investments,
+            type: 'total_invested'
+          },
+          {
+            title: this.$i18n.messages[this.$i18n.locale]['portfolio-sorting'].share,
+            type: 'fund_share'
+          },
+        ],
+        sortTypesExits: [
+          {
+            title: this.$i18n.messages[this.$i18n.locale]['portfolio-sorting'].valuation,
+            type: 'company_valuation'
+          },
+          {
+            title: this.$i18n.messages[this.$i18n.locale]['portfolio-sorting'].investments,
+            type: 'total_invested'
+          },
+        ],
       }
     },
     mounted() {
-      // httpClient
-      //   .get('/lk/graf_data_full_api.php')
-      //   .then((response) => this.chartsData = response);
+      const url = '/api/company_info_iblock.php';
+      httpClient
+        .get(url)
+        .then((response) => {
+          this.companies = response;
+
+          const map = new Map();
+          this.companies.forEach((company) => {
+
+            if (company.company_valuation_unit2 === 'thousand') {
+              company.company_valuation *= 1000;
+            }
+            if (company.total_invested_unit2 === 'thousand') {
+              company.total_invested *= 1000;
+            }
+
+            if (!map.has(company.industry) && company.industry) {
+              map.set(company.industry, true);
+              this.industries.push({
+                id: company.industry,
+                title: company.industry,
+              });
+            }
+            if (!map.has('exit') && company.status.toLowerCase() === 'exit') {
+              this.exitTab = true;
+              map.set('exit', true);
+            }
+            if (company.status.toLowerCase() === 'exit') {
+              this.exitAmount += 1;
+            }
+          });
+        });
+
+
+      const urlExits = '/api/company_info_iblock_exits.php';
+      httpClient
+        .get(urlExits)
+        .then((response) => {
+          this.companiesExits = response;
+
+          const map = new Map();
+
+          this.companiesExits.forEach((company) => {
+            if (company.company_valuation_unit2 === 'thousand') {
+              company.company_valuation *= 1000;
+            }
+            if (company.total_invested_unit2 === 'thousand') {
+              company.total_invested *= 1000;
+            }
+
+            if (!map.has(company.industry) && company.industry) {
+              map.set(company.industry, true);
+              this.industriesExits.push({
+                id: company.industry,
+                title: company.industry,
+              });
+            }
+          });
+        });
+    },
+
+    watch: {
+      '$i18n.locale': function () {
+        this.sortTypes = [
+          {
+            title: this.$i18n.messages[this.$i18n.locale]['portfolio-sorting'].valuation,
+            type: 'company_valuation'
+          },
+          {
+            title: this.$i18n.messages[this.$i18n.locale]['portfolio-sorting'].investments,
+            type: 'total_invested'
+          },
+          {
+            title: this.$i18n.messages[this.$i18n.locale]['portfolio-sorting'].share,
+            type: 'fund_share'
+          },
+        ]
+
+        this.sortTypesExits = [
+          {
+            title: this.$i18n.messages[this.$i18n.locale]['portfolio-sorting'].valuation,
+            type: 'company_valuation'
+          },
+          {
+            title: this.$i18n.messages[this.$i18n.locale]['portfolio-sorting'].investments,
+            type: 'total_invested'
+          }
+        ]
+      }
     },
   }
 </script>
-
-<style lang="scss" scoped>
-
-</style>
