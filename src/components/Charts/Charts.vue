@@ -95,6 +95,7 @@
             </div>
           </div>
         </div>
+
       </div>
 
       <div class="charts-toggle-type" :class="{'is-active': isPie, 'is-disabled': getUnit === '%'}"
@@ -118,24 +119,121 @@
       </div>
     </div>
 
+
+    <!-- for quarters selection -->
+    <div v-show="isHistorical" class="quarters-selects">
+      <div class="field field--date">
+        <div class="field__label">{{ $t('period') }}</div>
+        <div class="field__inner">
+
+          <div class="field__col">
+            <div class="field__date">
+              <div class="field__placeholder-left">{{ $t('datepicker.from') }}</div>
+              <datepicker
+                  format="yyyy"
+                  minimum-view="year"
+                  :disabled-dates="disabledStartDates"
+                  :language="$i18n.locale === 'ru' ? ru : en"
+                  @selected="onStartDateSelect"
+                  @blur="onBlur"
+              ></datepicker>
+              <div class="field__placeholder-right">
+                <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd"
+                        d="M3 0H5V2H3V0ZM6 0H8V2H6V0ZM5 3H3V5H5V3ZM6 3H8V5H6V3ZM2 3H0V5H2V3ZM3 6H5V8H3V6ZM2 6H0V8H2V6Z"
+                        fill="#0B204E" />
+                </svg>
+              </div>
+            </div>
+            <div class="field__date field__date--quoter">
+              <div class="sort-select" v-click-outside="closeFromQSelect">
+                <div class="sort-select__wrap" @blur="openFromQSelect = false">
+                  <div class="sort-select__active" :class="{ 'is-open': openFromQSelect }"
+                       @click="openFromQSelect = !openFromQSelect"
+                  >
+                    {{ currentFromQ || $t('quarter') }}
+                  </div>
+                  <div class="sort-select__options" :class="{ 'is-open': openFromQSelect }">
+                    <div
+                        class="sort-select__option"
+                        v-for="(option, i) in quartersReadable"
+                        :key="i"
+                        @click="sortFromQChange(option)"
+                    >
+                      {{ option }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="field__col">
+            <div class="field__date">
+              <div class="field__placeholder-left">{{ $t('datepicker.to') }}</div>
+              <datepicker
+                  format="yyyy"
+                  minimum-view="year"
+                  :disabled-dates="disabledEndDates"
+                  :typeable="true"
+                  :language="$i18n.locale === 'ru' ? ru : en"
+                  @selected="onEndDateSelect"
+                  @blur="onBlur"
+              ></datepicker>
+              <div class="field__placeholder-right">
+                <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd"
+                        d="M3 0H5V2H3V0ZM6 0H8V2H6V0ZM5 3H3V5H5V3ZM6 3H8V5H6V3ZM2 3H0V5H2V3ZM3 6H5V8H3V6ZM2 6H0V8H2V6Z"
+                        fill="#0B204E" />
+                </svg>
+              </div>
+            </div>
+            <div class="field__date field__date--quoter">
+              <div class="sort-select" v-click-outside="closeToQSelect">
+                <div class="sort-select__wrap" @blur="openToQSelect = false">
+                  <div class="sort-select__active" :class="{ 'is-open': openToQSelect }"
+                       @click="openToQSelect = !openToQSelect"
+                  >
+                    {{ currentToQ || $t('quarter') }}
+                  </div>
+                  <div class="sort-select__options" :class="{ 'is-open': openToQSelect }">
+                    <div
+                        class="sort-select__option"
+                        v-for="(option, i) in quartersReadable"
+                        :key="i"
+                        @click="sortToQChange(option)"
+                    >
+                      {{ option }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+
     <mq-layout mq="laptop+">
       <div class="chart-wrapper">
 
         <div class="charts-wrapper-notification" v-if="noGraphData"><span>{{ $t('no-data') }}</span></div>
         <input id="unit_type" type="hidden" name="unit_type" :value="unit">
 
-        <div :class="{ 'has-scroll': this.labels.length > 18 }">
-          <vue-custom-scrollbar class="scroll-area" :settings="scrollSettings">
+        <div :class="{ 'has-scroll': this.labels.length > 8 }">
+          <vue-custom-scrollbar class="scroll-area" :settings="scrollSettings" ref="scrollable" v-show="isHistorical">
             <line-chart
                 v-if="isHistorical"
                 class="chart chart-line"
-                :class="{ 'has-scroll': this.labels.length > 18 }"
+                :class="{ 'has-scroll': this.labels.length > 8 }"
                 :chart-data="datacollection"
                 :unit="getUnit"
             ></line-chart>
           </vue-custom-scrollbar>
-          <canvas v-show="isHistorical" class="chart-line chart-line--x-axis" :class="{ 'has-scroll': this.labels.length > 18 }" id="x-axis" height="300" width="0"></canvas>
-          <input id="scrollable" type="hidden" name="scrollable" :value="this.labels.length > 18">
+          <canvas v-show="isHistorical" class="chart-line chart-line--x-axis" :class="{ 'has-scroll': this.labels.length > 8 }" id="x-axis" height="300" width="0"></canvas>
+          <input id="scrollable" type="hidden" name="scrollable" :value="this.labels.length > 8">
         </div>
 
         <bar-chart
@@ -170,6 +268,16 @@
         <span class="companies__check"></span>
         <span>{{company.id}}</span>
         <span class="company-color" :style="{ backgroundColor: company.color }"></span>
+        <span class="companies__tooltip">
+            <span class="report-table__info-icon"
+                 v-tooltip.right="{ content: getTooltipContent(company), classes: 'company-tooltip' } ">
+              <svg width="2" height="8" viewBox="0 0 2 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd"
+                      d="M1.00098 2C1.55326 2 2.00098 1.55228 2.00098 1C2.00098 0.447715 1.55326 0 1.00098 0C0.448692 0 0.000976562 0.447715 0.000976562 1C0.000976562 1.55228 0.448692 2 1.00098 2ZM2.00098 4C2.00098 3.44772 1.55326 3 1.00098 3C0.448692 3 0.000976562 3.44772 0.000976562 4V7C0.000976562 7.55228 0.448692 8 1.00098 8C1.55326 8 2.00098 7.55228 2.00098 7L2.00098 4Z"
+                      fill="white" />
+              </svg>
+            </span>
+        </span>
       </label>
     </div>
 
@@ -200,6 +308,9 @@
   import tinycolor from "tinycolor2";
   import Chart from 'chart.js';
   import ClickOutside from 'vue-click-outside';
+  import Datepicker from '@sum.cumo/vue-datepicker';
+  import { DateTime } from 'luxon';
+  import { en, ru } from '@sum.cumo/vue-datepicker/dist/locale';
 
   import httpClient from '@/utils/httpClient';
   import setDesktopViewport from '@/utils/setDesktopViewport';
@@ -219,9 +330,12 @@
       PieChart,
       LineChart,
       vueCustomScrollbar,
+      Datepicker,
     },
     data() {
       return {
+        en,
+        ru,
         chartType: 'line',
         openTimeSelect: false,
         openDateSelect: false,
@@ -260,7 +374,10 @@
         companiesSelected: [],
         datacollection: {},
         currentData: [],
+        currentDataNonMut: [],
         labels: [],
+        labelsRaw: [],
+        labelsCutted: [],
         labelsAvailable: [],
         unit: 'USD',
         datasets: [],
@@ -270,10 +387,38 @@
           "Q3": 6,
           "Q4": 9
         },
+
+
+        quartersReadable: [
+          'Q1',
+          'Q2',
+          'Q3',
+          'Q4',
+        ],
+
+
+        disabledStartDates: {},
+        disabledEndDates: {},
+        startDate: '',
+        endDate: '',
+        currentQuarter: '',
+        currentYear: '',
+        startDateFormatted: '',
+        endDateFormatted: '',
+        openFromQSelect: false,
+        currentFromQ: '',
+        fromQuarters: [],
+        openToQSelect: false,
+        currentToQ: '',
+        toQuarters: [],
       }
     },
     props: {},
     mounted() {
+      const currentDate = DateTime.fromJSDate(new Date());
+      this.currentYear = currentDate.year;
+      // this.currentQuarter = this.quarters[currentDate.quarter - 1];
+
       const url = '/api/grafik_info_iblock.php';
       // : 'data/chart_online.json';
       httpClient
@@ -347,11 +492,16 @@
         this.datacollection = {};
         this.datasets = [];
         this.labels = [];
+        this.labelsNonMut = [];
+        this.labelsRaw = [];
+        this.labelsCutted = [];
         this.currentData = [];
+        this.currentDataNonMut = [];
         this.companiesData = [];
 
         const map = new Map();
         const periodMap = new Map();
+        const periodMapCutted = new Map();
 
         // test with more data
         this.data.sort(this.sortByTime);
@@ -405,6 +555,7 @@
                     periodMap.set(obj.period, true);
                     const str = obj.period.replace(" ", "'").slice(0, 3);
                     this.labels.push(str + obj.period.slice(5))
+                    this.labelsRaw.push(obj.period)
                   }
                 }
 
@@ -412,14 +563,78 @@
                   const str = obj.period.replace(" ", "'").slice(0, 3);
                   if (this.currentQuoter === (str + obj.period.slice(5))) {
                     this.currentData.push(obj);
+                    this.currentDataNonMut.push(obj);
                   }
                 } else {
-                  this.currentData.push(obj);
+                  if (obj.period) { // TODO: separate fix, need to test
+                    this.currentData.push(obj);
+                    this.currentDataNonMut.push(obj);
+                  }
                 }
               }
             });
           }
         });
+
+
+        this.labelsNonMut = JSON.parse(JSON.stringify(this.labels));
+        const dataForTimeFilter = JSON.parse(JSON.stringify(this.currentDataNonMut));
+        // set non active select dates by calc available data
+        const toDate = new Date(Math.min.apply(Math, dataForTimeFilter.map((o) => parseInt(o.period.substr(o.period.length - 4)))).toString());
+        const endDate = new Date(Math.max.apply(Math, dataForTimeFilter.map((o) => parseInt(o.period.substr(o.period.length - 4)))).toString());
+
+
+        this.disabledStartDates = {
+          to: toDate,
+          from: endDate,
+        };
+        this.disabledEndDates = {
+          to: toDate,
+          from: endDate,
+        };
+
+
+
+        // filter historical chart by datepicker
+        if (this.isHistorical) {
+          if (this.startDate && this.endDate && this.currentToQ && this.currentFromQ) {
+            this.labels = [];
+
+            this.startDateFormatted = DateTime.fromJSDate(this.startDate).startOf('year').plus({ quarter: parseInt(this.currentFromQ.match(/\d+/)[0] - 1) });
+            this.endDateFormatted = DateTime.fromJSDate(this.endDate).startOf('year').plus({ quarter: parseInt(this.currentToQ.match(/\d+/)[0] - 1) });
+
+            const dataForTimeFilter = JSON.parse(JSON.stringify(this.currentDataNonMut));
+
+            this.currentData = dataForTimeFilter.reduce((periods, data) => {
+              const { period } = data;
+              if (period) {
+                const year = period.substr(period.length - 4)
+                const quarter = period.slice(0, 2);
+                const datasetDate = DateTime.fromFormat(year, 'yyyy').plus({ quarter: parseInt(quarter.match(/\d+/)[0] - 1) });
+                if (datasetDate && datasetDate >= this.startDateFormatted && datasetDate <= this.endDateFormatted) {
+                  periods.push(data);
+                  if (!periodMapCutted.has(data.period) && data.period) {
+                    if (data.metric_value && (data.metric_value !== 'NA' && data.metric_value !== '') && !this.isHistorical || this.isHistorical) {
+                      periodMapCutted.set(data.period, true);
+                      const str = data.period.replace(" ", "'").slice(0, 3);
+                      this.labels.push(str + data.period.slice(5))
+                    }
+                  }
+                }
+              }
+              return periods;
+            }, []);
+          }
+        }
+
+        // set scroll position default on last quarters
+        setTimeout(() => {
+          if (this.$refs.scrollable) {
+            this.$refs.scrollable.$el.scrollLeft = this.$refs.scrollable.$el.scrollWidth;
+            this.$refs.scrollable.update();
+          }
+        },0)
+
 
         this.currentData.forEach((obj) => {
           this.datasets.some((company) => {
@@ -466,16 +681,18 @@
         }
 
 
+        // start handling reverse data and labels for non historic
+        // set first quoter as default (reverse labels to prepare for quarters data)
         if (this.isHistorical) {
-          // set first quoter as default (reverse labels to prepare for quarters data)
-          // (quarters reversed, historic non reversed)
-          this.labelsAvailable = this.labels;
-          this.labelsAvailable = this.labelsAvailable.reverse();
+          const labels = JSON.parse(JSON.stringify(this.labelsNonMut));
+          this.labelsAvailable = labels.reverse();
           this.currentQuoter = this.labelsAvailable[0];
         } else {
           this.labels = [];
           this.labels[0] = this.currentQuoter;
         }
+        // end handling reverse data and labels for non historic
+
 
         // sorting from min to max for bar chart
         if (!this.isHistorical) {
@@ -628,6 +845,46 @@
       },
       closeSortSelect() {
         this.openSortSelect = false;
+      },
+      onBlur() {
+        if (!this.startDate && !this.endDate) this.updateDataHistoricQuarters();
+      },
+      onStartDateSelect(time) {
+        this.startDate = time;
+        this.disabledEndDates = {
+          to: time,
+        };
+        if (this.startDate && this.endDate && this.currentToQ && this.currentFromQ) this.updateDataHistoricQuarters();
+      },
+      onEndDateSelect(time) {
+        this.endDate = time;
+        this.disabledStartDates = {
+          from: time,
+        };
+        if (this.startDate && this.endDate && this.currentToQ && this.currentFromQ) this.updateDataHistoricQuarters();
+      },
+
+      closeFromQSelect() {
+        this.openFromQSelect = false;
+      },
+      sortFromQChange(option) {
+        this.currentFromQ = option;
+        this.openFromQSelect = false;
+        if (this.startDate && this.endDate && this.currentToQ && this.currentFromQ) this.updateDataHistoricQuarters();
+      },
+      closeToQSelect() {
+        this.openToQSelect = false;
+      },
+      sortToQChange(option) {
+        this.currentToQ = option;
+        this.openToQSelect = false;
+        if (this.startDate && this.endDate && this.currentToQ && this.currentFromQ) this.updateDataHistoricQuarters();
+      },
+      updateDataHistoricQuarters() {
+        this.fillData();
+      },
+      getTooltipContent(content) {
+        return '<b>'+content.id+'</b>';
       },
       setDesktopViewport,
       setMobileViewport,

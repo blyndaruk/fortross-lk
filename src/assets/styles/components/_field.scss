@@ -24,6 +24,7 @@
   }
 
   &__placeholder-left {
+    pointer-events: none;
     color: $dark-gray;
     cursor: default;
     @include en {
