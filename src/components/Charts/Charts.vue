@@ -465,11 +465,13 @@
           });
         }
 
-        this.labelsAvailable = this.labels;
 
         if (this.isHistorical) {
-          // set first quoter as default
-          this.currentQuoter = this.labels[0];
+          // set first quoter as default (reverse labels to prepare for quarters data)
+          // (quarters reversed, historic non reversed)
+          this.labelsAvailable = this.labels;
+          this.labelsAvailable = this.labelsAvailable.reverse();
+          this.currentQuoter = this.labelsAvailable[0];
         } else {
           this.labels = [];
           this.labels[0] = this.currentQuoter;
