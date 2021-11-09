@@ -268,8 +268,8 @@
         <span class="companies__check"></span>
         <span>{{company.id}}</span>
         <span class="company-color" :style="{ backgroundColor: company.color }"></span>
-        <span class="companies__tooltip">
-            <span class="report-table__info-icon"
+        <span class="chart-company-tooltip" v-if="company.date_investment">
+            <span class="chart-company-tooltip__info-icon"
                  v-tooltip.right="{ content: getTooltipContent(company), classes: 'company-tooltip' } ">
               <svg width="2" height="8" viewBox="0 0 2 8" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" clip-rule="evenodd"
@@ -402,7 +402,6 @@
         startDate: '',
         endDate: '',
         currentQuarter: '',
-        currentYear: '',
         startDateFormatted: '',
         endDateFormatted: '',
         openFromQSelect: false,
@@ -415,12 +414,7 @@
     },
     props: {},
     mounted() {
-      const currentDate = DateTime.fromJSDate(new Date());
-      this.currentYear = currentDate.year;
-      // this.currentQuarter = this.quarters[currentDate.quarter - 1];
-
       const url = '/api/grafik_info_iblock.php';
-      // : 'data/chart_online.json';
       httpClient
         .get(url)
         .then((responseData) => {
@@ -430,39 +424,45 @@
             .get('/api/company_info_iblock.php')
             .then((response) => {
               const companies = response;
-              this.companiesSet = response;
-              this.data = responseData;
-              const map = new Map();
-              const metricsMap = new Map();
 
-              this.data.forEach((el) => {
-                // set all available metrics
-                if (el.metric_unit_text_2 === 'thousand' && el.metric_unit_text_1 === 'USD') el.metric_value *= 1000;
-                if (!metricsMap.has(el.metric_name)) {
-                  metricsMap.set(el.metric_name, true);
-                  this.metrics.push({
-                    id: el.metric_name,
-                    unit: el.metric_unit_text_1
-                  });
-                }
+              httpClient
+              .get('/api/company_info_iblock_exits.php')
+              .then((responseExits) => {
+                Array.prototype.push.apply(companies, responseExits);
 
-                // set all available companies
-                if (!map.has(el.company_id)) {
-                  map.set(el.company_id, true);
-                  const matchingCompany = companies.find(x => {
-                    return x.company_id === el.company_id
-                  });
-                  this.companies.push({
-                    id: el.company_id,
-                    color: matchingCompany ? matchingCompany.color : '#000000',
-                    len: 0
-                  });
-                }
+                this.companiesSet = response;
+                this.data = responseData;
+                const map = new Map();
+                const metricsMap = new Map();
+
+                this.data.forEach((el) => {
+                  // set all available metrics
+                  if (el.metric_unit_text_2 === 'thousand' && el.metric_unit_text_1 === 'USD') el.metric_value *= 1000;
+                  if (!metricsMap.has(el.metric_name)) {
+                    metricsMap.set(el.metric_name, true);
+                    this.metrics.push({
+                      id: el.metric_name,
+                      unit: el.metric_unit_text_1
+                    });
+                  }
+
+                  // set all available companies
+                  if (!map.has(el.company_id)) {
+                    map.set(el.company_id, true);
+                    const matchingCompany = companies.find(x => x.company_id === el.company_id);
+                    this.companies.push({
+                      id: el.company_id,
+                      color: matchingCompany ? matchingCompany.color : '#000000',
+                      date_investment: matchingCompany ? matchingCompany.date_investment : null,
+                      len: 0,
+                    });
+                  }
+                });
+
+                // set first company as default (for first load)
+                this.companiesSelected.push(this.companies[0]);
+                this.fillData();
               });
-
-              // set first company as default (for first load)
-              this.companiesSelected.push(this.companies[0]);
-              this.fillData();
             });
         });
     },
@@ -715,6 +715,9 @@
 
         setTimeout(() => {
           this.$store.dispatch('loader/hide');
+          if (this.$refs.scrollable) {
+            this.$refs.scrollable.update();
+          }
         }, 650);
       },
       sortByTime(lhs, rhs) {
@@ -884,7 +887,7 @@
         this.fillData();
       },
       getTooltipContent(content) {
-        return '<b>'+content.id+'</b>';
+        return `<b>${this.$t("date_investment")}: ${content.date_investment ? content.date_investment : ''}</b>`;
       },
       setDesktopViewport,
       setMobileViewport,
