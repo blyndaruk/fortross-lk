@@ -6,7 +6,7 @@
       <div class="company-card__image" :style="{ backgroundImage: 'url(' + company.logo + ')' }"></div>
 
       <div v-if="company.company_valuation" class="company-card__row">
-        ${{ shortenLargeNumber( parseInt(company.company_valuation, 10) ) }} USD
+        ${{ shortenLargeNumber( parseInt(company.company_valuation, 10) ) }}
         <span>{{$t('company-card.valuation')}}</span>
       </div>
 
@@ -15,12 +15,12 @@
           company.status.toLowerCase() === 'exit'
           ? shortenLargeNumber( parseInt(company.proceeds, 10) )
           : shortenLargeNumber( parseInt(company.total_invested, 10) )
-        }} USD
+        }}
         <span>{{ company.status.toLowerCase() === 'exit' ? $t('company-card.exit') : $t('company-card.investments') }}</span>
       </div>
 
       <div v-if="company.status.toLowerCase() === 'exit' && company.total_invested" class="company-card__row">
-        ${{ shortenLargeNumber( parseInt(company.total_invested, 10) ) }} USD
+        ${{ shortenLargeNumber( parseInt(company.total_invested, 10) ) }}
         <span>{{ $t('company-card.investments') }}</span>
       </div>
 

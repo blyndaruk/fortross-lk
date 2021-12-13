@@ -60,7 +60,7 @@
     "valuation": "оценка компании",
     "investments": "инвестиции фонда",
     "share": "доля фонда",
-    "exit": "доход"
+    "exit": "сумма выхода"
   },
   "no-data": "Нет данных для отображения",
   "no-docs-data": "Нет документов для отображения",
@@ -88,13 +88,13 @@
   "Gross profit": "Валовая прибыль",
   "Gross profit margin": "Валовая маржа",
   "Cash Burn": "Расход ДС",
-  "Bank Debt": "Задолженность",
+  "Bank Debt": "Кредиты",
   "Cash position": "Остаток ДС",
   "Total invested": "Инвестиции фонда",
   "Investment fair value": "Оценка инвестиции",
   "Company valuation": "Оценка компании",
   "Last round  valuation": "Последний раунд",
   "Fund share": "Доля фонда",
-  "Exits": "Exits",
+  "Exits": "Выходы",
   "date_investment": "Первая инвестиция"
 }

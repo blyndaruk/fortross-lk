@@ -12,7 +12,6 @@
               <datepicker
                   format="yyyy"
                   minimum-view="year"
-                  :disabled-dates="disabledStartDates"
                   :typeable="true"
                   :language="$i18n.locale === 'ru' ? ru : en"
                   @selected="onStartDateSelect"
@@ -55,7 +54,6 @@
               <datepicker
                   format="yyyy"
                   minimum-view="year"
-                  :disabled-dates="disabledEndDates"
                   :typeable="true"
                   :language="$i18n.locale === 'ru' ? ru : en"
                   @selected="onEndDateSelect"
@@ -272,12 +270,12 @@
         const toDate = new Date(Math.min.apply(Math, this.currentReports.map((o) => parseInt(o.period_year))).toString());
         const endDate = new Date(Math.max.apply(Math, this.currentReports.map((o) => parseInt(o.period_year))).toString());
         this.disabledStartDates = {
-          to: toDate,
+          // to: toDate,
           from: endDate,
         };
         this.disabledEndDates = {
           to: toDate,
-          from: endDate,
+          // from: endDate,
         };
 
 

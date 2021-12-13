@@ -121,7 +121,7 @@
 
 
     <!-- for quarters selection -->
-    <div v-show="isHistorical" class="quarters-selects">
+    <div v-if="isHistorical" class="quarters-selects">
       <div class="field field--date">
         <div class="field__label">{{ $t('period') }}</div>
         <div class="field__inner">
@@ -132,7 +132,6 @@
               <datepicker
                   format="yyyy"
                   minimum-view="year"
-                  :disabled-dates="disabledStartDates"
                   :language="$i18n.locale === 'ru' ? ru : en"
                   @selected="onStartDateSelect"
                   @blur="onBlur"
@@ -174,7 +173,6 @@
               <datepicker
                   format="yyyy"
                   minimum-view="year"
-                  :disabled-dates="disabledEndDates"
                   :typeable="true"
                   :language="$i18n.locale === 'ru' ? ru : en"
                   @selected="onEndDateSelect"
@@ -625,6 +623,17 @@
               return periods;
             }, []);
           }
+
+          // change to quarter chart if only one quarter period chosen
+          if (this.labels.length === 1) {
+            this.currentTimeline = {
+              id: "date",
+              title: "quarter",
+            };
+            this.openTimeSelect = false;
+            this.currentQuoter = this.labels[0];
+            this.fillData();
+          }
         }
 
         // set scroll position default on last quarters
@@ -821,6 +830,11 @@
         this.allCompaniesShown = !this.allCompaniesShown;
       },
       timeLineChange(option) {
+        console.log(option);
+
+        this.startDate = '';
+        this.endDate = '';
+
         this.currentTimeline = option;
         this.openTimeSelect = false;
         if (this.isHistorical) this.currentQuoter = '';
