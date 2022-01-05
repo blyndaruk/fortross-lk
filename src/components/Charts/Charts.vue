@@ -5,7 +5,7 @@
     </mq-layout>
     <div class="charts-wrapper__metrics">
       <div class="chart-metric"
-           :class="{ 'is-active': currentMetricIndex === index }"
+           :class="{ 'is-active': currentMetricIndex === index, [`metric-${metric.id.toLowerCase().replaceAll(' ', '-')}`]: true }"
            v-for="(metric, index) in showedMetrics"
            :key="index"
            @click="onMetricClick(metric, index)"
@@ -366,7 +366,7 @@
         data: [],
         metrics: [],
         currentMetricIndex: 0,
-        maxMetricsToShow: 4,
+        maxMetricsToShow: 6,
         showMoreMetrics: false,
         companies: [],
         companiesSelected: [],
@@ -410,7 +410,12 @@
         toQuarters: [],
       }
     },
-    props: {},
+    props: {
+      chosenMetric: {
+        type: String,
+        default: null
+      }
+    },
     mounted() {
       const url = '/api/grafik_info_iblock.php';
       httpClient
@@ -456,6 +461,23 @@
                     });
                   }
                 });
+
+                this.metrics.forEach((metric, index) => {
+                  if (metric.id === 'Total invested') {
+                    this.metrics.splice(index, 1)
+                    this.metrics.splice(4, 0, {
+                      id: 'Total invested',
+                      unit: 'USD'
+                    })
+                  }
+                  if (metric.id === 'Investment fair value') {
+                    this.metrics.splice(index, 1)
+                    this.metrics.splice(5, 0, {
+                      id: 'Investment fair value',
+                      unit: 'USD'
+                    })
+                  }
+                })
 
                 // set first company as default (for first load)
                 this.companiesSelected.push(this.companies[0]);
@@ -923,7 +945,7 @@
         return this.currentTimeline.id === 'historical';
       },
       showedMetrics() {
-        return this.metrics.slice(0, this.isMobile ? 1 : 4);
+        return this.metrics.slice(0, this.isMobile ? 1 : 6);
       },
       getUnit() {
         return this.metrics[this.currentMetricIndex] && this.metrics[this.currentMetricIndex].unit === 'USD' ? '$' : '%';
@@ -950,6 +972,42 @@
           this.companiesSelected = selected;
         }
       },
+    },
+    watch:{
+      '$route.params': {
+        handler: function(params) {
+          if (params.tab === 'total-invested') {
+            this.currentMetricIndex = 4 // current Total investment index
+          }
+          if (params.tab === 'investment-fair-value') {
+            this.currentMetricIndex = 5 // current investment fair value index
+          }
+          if (params.tab === 'exits') {
+            this.$emit('scroll-to', 'exits')
+          }
+          if (params.tab === 'portfolio') {
+            this.$emit('scroll-to', 'portfolio')
+          }
+        },
+        deep: true,
+        immediate: true
+      },
+      chosenMetric (value) {
+        if (value === 'total-invested') {
+          this.onMetricClick({
+            id: 'Total invested',
+            unit: 'USD'
+          }, 4)
+          this.$emit('metric-to-default')
+        }
+        if (value === 'investment-fair-value') {
+          this.onMetricClick({
+            id: 'Investment fair value',
+            unit: 'USD'
+          }, 5)
+          this.$emit('metric-to-default')
+        }
+      }
     },
     directives: {
       ClickOutside

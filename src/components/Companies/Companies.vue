@@ -1,5 +1,5 @@
 <template>
-  <div class="companies">
+  <div class="companies" :class="{ [`js-companies-${type}`]: type }">
     <div class="companies__tabs-wrap" ref="companiesTabs">
       <div class="companies__head">
         <div class="companies__title">{{ title || $t('companies-title') }}</div>
@@ -62,6 +62,10 @@
         default: () => []
       },
       title: {
+        type: String,
+        default: '',
+      },
+      type: {
         type: String,
         default: '',
       },
@@ -148,7 +152,7 @@
           return { ...category, amount };
         });
       },
-    }
+    },
   }
 </script>
 

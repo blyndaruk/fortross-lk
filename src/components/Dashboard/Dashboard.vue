@@ -1,24 +1,24 @@
 <template>
   <div v-if="isSimple" class="dashboard is-simple">
-    <div class="dashboard__col" v-if="companiesAmount">
+    <div class="dashboard__col" v-if="companiesAmount" @click="onScrollTo('portfolio')">
       <div class="dashboard__col-inner">
         <div class="dashboard__title-value">{{ companiesAmount }}</div>
         <div class="dashboard__note">{{ $t('dashboard.portfolio_companies') }}</div>
       </div>
     </div>
-    <div class="dashboard__col" v-if="exits">
+    <div class="dashboard__col" v-if="exits" @click="onScrollTo('exits')">
       <div class="dashboard__col-inner">
         <div class="dashboard__title-value">{{ exits }}</div>
         <div class="dashboard__note">{{ $t('dashboard.exits') }}</div>
       </div>
     </div>
-    <div class="dashboard__col" v-if="totalInvestedFormatted">
+    <div class="dashboard__col" v-if="totalInvestedFormatted" @click="onMetricChange('total-invested')">
       <div class="dashboard__col-inner">
         <div class="dashboard__title-value">{{ totalInvestedFormatted }} USD</div>
         <div class="dashboard__note">{{ $t('dashboard.total-invested') }}</div>
       </div>
     </div>
-    <div class="dashboard__col" v-if="fairValueFormatted">
+    <div class="dashboard__col" v-if="fairValueFormatted" @click="onMetricChange('investment-fair-value')">
       <div class="dashboard__col-inner">
         <div class="dashboard__title-value">{{ fairValueFormatted }} USD</div>
         <div class="dashboard__note">{{ $t('dashboard.fair-value') }}</div>
@@ -27,11 +27,11 @@
   </div>
 
   <div v-else-if="isMedium || isFull" class="dashboard is-default">
-    <div class="dashboard__main">
+    <router-link to="/my-account" class="dashboard__main">
       <div class="dashboard__main-amount">{{ mainAmount || 0 }} USD</div>
       <div class="dashboard__main-note">{{ $t('dashboard.state') }}</div>
-    </div>
-    <div class="dashboard__info">
+    </router-link>
+    <router-link to="/my-account" class="dashboard__info">
       <div class="dashboard__info-left">
         <div class="dashboard__row">{{sum.toLocaleString('ru')}} USD</div>
         <div class="dashboard__row is-commited">{{ $t('dashboard.commited') }}</div>
@@ -94,33 +94,33 @@
           </div>
         </div>
       </div>
-    </div>
+    </router-link>
 
     <div class="dashboard__bottom" v-if="isFull">
-      <div class="dashboard__col" v-if="companiesAmount">
+      <router-link :to="{ name: 'portfolio-companies', params: { tab: 'portfolio' }}" class="dashboard__col" v-if="companiesAmount">
         <div class="dashboard__col-inner">
           <div class="dashboard__title-value">{{ companiesAmount }}</div>
           <div class="dashboard__note">{{ $t('dashboard.portfolio_companies') }}</div>
         </div>
-      </div>
-      <div class="dashboard__col" v-if="exits">
+      </router-link>
+      <router-link :to="{ name: 'portfolio-companies', params: { tab: 'exits' }}" class="dashboard__col" v-if="exits">
         <div class="dashboard__col-inner">
           <div class="dashboard__title-value">{{ exits }}</div>
           <div class="dashboard__note">{{ $t('dashboard.exits') }}</div>
         </div>
-      </div>
-      <div class="dashboard__col" v-if="totalInvestedFormatted">
+      </router-link>
+      <router-link :to="{ name: 'portfolio-companies', params: { tab: 'total-invested' }}" class="dashboard__col" v-if="totalInvestedFormatted">
         <div class="dashboard__col-inner">
           <div class="dashboard__title-value">{{ totalInvestedFormatted }} USD</div>
           <div class="dashboard__note">{{ $t('dashboard.total-invested') }}</div>
         </div>
-      </div>
-      <div class="dashboard__col" v-if="fairValueFormatted">
+      </router-link>
+      <router-link :to="{ name: 'portfolio-companies', params: { tab: 'investment-fair-value' }}" class="dashboard__col" v-if="fairValueFormatted">
         <div class="dashboard__col-inner">
           <div class="dashboard__title-value">{{ fairValueFormatted }} USD</div>
           <div class="dashboard__note">{{ $t('dashboard.fair-value') }}</div>
         </div>
-      </div>
+      </router-link>
     </div>
   </div>
 </template>
@@ -205,7 +205,13 @@
         this.fullStroke = this.$mq === 'tablet' || this.$mq === 'mobile' ? 483.56 : 219.8;
         this.activePercentage = this.fullStroke - this.fullStroke / 100 * (this.capitalPercentage - this.contributionAccountPercent);
         this.activeAccountContributionPercentage = Math.abs(this.fullStroke - this.fullStroke / 100 * this.capitalPercentage);
-      }
+      },
+      onMetricChange (value) {
+        this.$emit('on-metric-select', value)
+      },
+      onScrollTo (value) {
+        this.$emit('on-scroll-to', value)
+      },
     },
     computed: {
       isSimple() {

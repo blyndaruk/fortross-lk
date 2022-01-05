@@ -53,7 +53,7 @@
               </svg>
             </div>
           </div>
-          <div class="report-table__amount">{{sign(row.summ)}}{{row.summ}}</div>
+          <div class="report-table__amount">{{ formatSum(row.summ) }}{{ numberWithSpaces(row.summ) }}</div>
         </div>
       </div>
     </div>
@@ -88,10 +88,10 @@
       window.removeEventListener('resize', this.truncate);
     },
     methods: {
-      toggleMore(e) {
+      toggleMore (e) {
         e.currentTarget.closest('.js-row').classList.toggle('is-open');
       },
-      truncate() {
+      truncate () {
         if (this.$refs.truncate) {
           const buttons = Array.prototype.slice.call(document.querySelectorAll('.js-row'));
           if (buttons.length) buttons.forEach(btn => btn.classList.remove('is-open'));
@@ -106,9 +106,17 @@
           });
         }
       },
-      sign(value) {
+      sign (value) {
         return value.includes('-') ? '' : '+';
       },
+      formatSum (value) {
+        return this.sign(value)
+      },
+      numberWithSpaces(x) {
+        const parts = x.toString().split('.');
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+        return parts.join('.');
+      }
     },
   }
 </script>

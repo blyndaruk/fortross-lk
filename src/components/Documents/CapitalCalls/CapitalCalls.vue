@@ -43,12 +43,12 @@
         paidDocs: [],
         sortTypes: [
           {
-            title: `${this.$i18n.messages[this.$i18n.locale]['search-by-name']} (A—Z)`,
-            type: 'to-more'
-          },
-          {
             title: `${this.$i18n.messages[this.$i18n.locale]['search-by-name']} (Z—A)`,
             type: 'to-less'
+          },
+          {
+            title: `${this.$i18n.messages[this.$i18n.locale]['search-by-name']} (A—Z)`,
+            type: 'to-more'
           },
         ],
       }
@@ -63,12 +63,12 @@
       '$i18n.locale': function () {
         this.sortTypes = [
           {
-            title: `${this.$i18n.messages[this.$i18n.locale]['search-by-name']} (A—Z)`,
-            type: 'to-more'
-          },
-          {
             title: `${this.$i18n.messages[this.$i18n.locale]['search-by-name']} (Z—A)`,
             type: 'to-less'
+          },
+          {
+            title: `${this.$i18n.messages[this.$i18n.locale]['search-by-name']} (A—Z)`,
+            type: 'to-more'
           },
         ];
       }
@@ -86,6 +86,7 @@
         .then((response) => {
           if (!response) return;
           this.paymentDocs = Object.values(response);
+          // this.paymentDocs = this.sortDocs(Object.values(response), { type: 'to-less' });
         });
 
       httpClient
@@ -98,6 +99,7 @@
         .then((response) => {
           if (!response) return;
           this.paidDocs = Object.values(response);
+          // this.paidDocs = this.sortDocs(Object.values(response), { type: 'to-less' });
         });
     },
     methods: {
@@ -109,7 +111,7 @@
       },
       // TODO: to utils method
       sortDocs(docs, type) {
-        docs.sort(function (a, b) {
+        return docs.sort(function (a, b) {
           const nameA = a.file_name.toLowerCase(), nameB = b.file_name.toLowerCase();
           if (type.type === 'to-less') {
             if (nameA > nameB) return -1;

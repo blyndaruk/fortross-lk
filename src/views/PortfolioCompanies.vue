@@ -1,9 +1,21 @@
 <template>
   <div class="portfolio-companies-view">
-    <Dashboard viewType="simple" />
-    <Charts />
-    <Companies :companies="companies" :industries="industries" :title="$t('companies-title')" :sortType="sortTypes" />
-    <Companies :companies="companiesExits" :industries="industriesExits" :title="$t('Exits')" :sortType="sortTypesExits" />
+    <Dashboard viewType="simple" @on-metric-select="onMetricSelect" @on-scroll-to="onScrollToSection" />
+    <Charts :chosen-metric="chosenMetric" @metric-to-default="onMetricReset" @scroll-to="onScrollToSection" />
+    <Companies
+        :companies="companies"
+        :industries="industries"
+        :title="$t('companies-title')"
+        :sortType="sortTypes"
+        type="portfolio"
+    />
+    <Companies
+        :companies="companiesExits"
+        :industries="industriesExits"
+        :title="$t('Exits')"
+        :sortType="sortTypesExits"
+        type="exits"
+    />
   </div>
 </template>
 
@@ -12,6 +24,7 @@
   import Charts from '@/components/Charts/Charts';
   import Companies from '@/components/Companies/Companies';
   import Dashboard from '@/components/Dashboard/Dashboard';
+  import { mapState } from 'vuex';
 
   export default {
     name: 'PortfolioCompanies',
@@ -26,6 +39,8 @@
         companiesExits: [],
         industries: [],
         industriesExits: [],
+        chosenMetric: null,
+        scrollToSectionName: null,
         sortTypes: [
           {
             title: this.$i18n.messages[this.$i18n.locale]['portfolio-sorting'].valuation,
@@ -113,7 +128,30 @@
           });
         });
     },
-
+    methods: {
+      onMetricSelect (val) {
+        this.chosenMetric = val
+      },
+      onMetricReset () {
+        this.chosenMetric = null
+      },
+      onScrollToSection (val) {
+        this.scrollToSectionName = val
+        this.scrollToSection(val)
+      },
+      scrollToSection (section) {
+        const elem = document.querySelector(`.js-companies-${section}`)
+        if (!elem) return
+        window.scrollTo({
+          top: elem.getBoundingClientRect().top,
+          behavior: 'smooth'
+        })
+        this.scrollToSectionName = null
+      },
+    },
+    computed: {
+      ...mapState('loader', ['loading']),
+    },
     watch: {
       '$i18n.locale': function () {
         this.sortTypes = [
@@ -141,7 +179,12 @@
             type: 'total_invested'
           }
         ]
-      }
+      },
+      loading(active) {
+        if (!active && this.scrollToSectionName) {
+          this.scrollToSection(this.scrollToSectionName)
+        }
+      },
     },
   }
 </script>

@@ -27,12 +27,12 @@
       return {
         sortTypes: [
           {
-            title: `${this.$i18n.messages[this.$i18n.locale]['search-by-name']} (A—Z)`,
-            type: 'to-more'
-          },
-          {
             title: `${this.$i18n.messages[this.$i18n.locale]['search-by-name']} (Z—A)`,
             type: 'to-less'
+          },
+          {
+            title: `${this.$i18n.messages[this.$i18n.locale]['search-by-name']} (A—Z)`,
+            type: 'to-more'
           },
         ],
         documents: [],
