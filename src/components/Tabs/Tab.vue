@@ -1,6 +1,6 @@
 <template>
   <transition name="fade" mode="out-in">
-    <div v-show="isActive">
+    <div v-show="isActive" :class="{'is-active': isActive}">
       <slot></slot>
     </div>
   </transition>

@@ -230,8 +230,8 @@
                 :unit="getUnit"
             ></line-chart>
           </vue-custom-scrollbar>
-          <canvas v-show="isHistorical" class="chart-line chart-line--x-axis" :class="{ 'has-scroll': this.labels.length > 8 }" id="x-axis" height="300" width="0"></canvas>
-          <input id="scrollable" type="hidden" name="scrollable" :value="this.labels.length > 8">
+          <canvas v-show="isHistorical" class="chart-line chart-line--x-axis js-x-axis" :class="{ 'has-scroll': this.labels.length > 8 }" height="300" width="0"></canvas>
+          <input class="js-scrollable-val" type="hidden" name="scrollable" :value="this.labels.length > 8">
         </div>
 
         <bar-chart
@@ -524,6 +524,7 @@
         const periodMapCutted = new Map();
 
         // test with more data
+        console.log(this.data);
         this.data.sort(this.sortByTime);
         this.data.sort(this.sortByQuoter);
 
@@ -743,6 +744,8 @@
         if (!this.isHistorical && this.isLine) {
           this.datacollection = this.drawBar(this.datacollection);
         }
+
+        console.log(this.datacollection);
 
         setTimeout(() => {
           this.$store.dispatch('loader/hide');

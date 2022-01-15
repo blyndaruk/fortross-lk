@@ -160,7 +160,7 @@
             },
             onProgress() {
               // TODO: set debounced function
-              const scrollable = document.querySelector('#scrollable').value;
+              const scrollable = this.canvas.closest('.chart-wrapper').querySelector('.js-scrollable-val').value;
               if (!this.rectangleSet && !!scrollable) {
                 const scale = window.devicePixelRatio;
 
@@ -168,7 +168,7 @@
                 const copyWidth = this.scales['y-axis-0'].width - 6;
                 const copyHeight = this.scales['y-axis-0'].height + this.scales['y-axis-0'].top + 10;
 
-                const targetCtx = document.getElementById("x-axis").getContext("2d");
+                const targetCtx = this.canvas.closest('.chart-wrapper').querySelector(".js-x-axis").getContext("2d");
 
                 targetCtx.scale(scale, scale);
                 targetCtx.canvas.width = copyWidth * scale;

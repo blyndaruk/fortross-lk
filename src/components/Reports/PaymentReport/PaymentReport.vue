@@ -81,6 +81,34 @@
           </div>
         </div>
       </div>
+
+      <div class="payment-report__show-chart">
+        <button @click="openGraphics">
+          {{ $t('InfoGraphics') }}
+        </button>
+      </div>
+    </div>
+
+    <div v-if="currentReports.length && !graphicsHidden" class="report-table__chart">
+      <mq-layout mq="laptop+">
+        <div class="chart-wrapper">
+          <input id="unit_type" type="hidden" name="unit_type" value="$">
+
+          <div :class="{ 'has-scroll': this.labels.length > 8 }">
+            <vue-custom-scrollbar class="scroll-area" :settings="scrollSettings" ref="scrollable">
+              <line-chart
+                  class="chart chart-line"
+                  :class="{ 'has-scroll': this.labels.length > 8 }"
+                  :chart-data="datacollection"
+                  :style="{'width': `${this.labels.length * 30}px`, 'min-width': '100%'}"
+                  unit="$"
+              ></line-chart>
+            </vue-custom-scrollbar>
+            <canvas class="chart-line chart-line--x-axis js-x-axis" :class="{ 'has-scroll': this.labels.length > 8 }" height="300" width="0"></canvas>
+            <input class="js-scrollable-val" type="hidden" name="scrollable" :value="this.labels.length > 8">
+          </div>
+        </div>
+      </mq-layout>
     </div>
 
     <div class="report-no-data" v-if="!currentReports.length">{{ $t('no-data') }}</div>
@@ -156,12 +184,16 @@
 </template>
 
 <script>
+  import Chart from 'chart.js';
   import DownloadFile from '@/components/DownloadFile/DownloadFile';
   import httpClient from '@/utils/httpClient';
   import ClickOutside from 'vue-click-outside';
   import Datepicker from '@sum.cumo/vue-datepicker';
   import { DateTime } from "luxon";
   import { en, ru } from '@sum.cumo/vue-datepicker/dist/locale';
+  import LineChart from '@/components/Charts/LineChart/LineChart';
+  import vueCustomScrollbar from 'vue-custom-scrollbar';
+  import 'vue-custom-scrollbar/dist/vueScrollbar.css';
 
 
   export default {
@@ -169,6 +201,8 @@
     components: {
       DownloadFile,
       Datepicker,
+      LineChart,
+      vueCustomScrollbar,
     },
     data() {
       return {
@@ -200,6 +234,15 @@
         currentReports: [],
         reportsNew: [],
         reports: [],
+        scrollSettings: {
+          suppressScrollY: true,
+          suppressScrollX: false,
+          wheelPropagation: true,
+          useBothWheelAxes: true,
+        },
+        datacollection: {},
+        labels: [],
+        graphicsHidden: true,
       }
     },
     watch: {
@@ -239,6 +282,7 @@
               period: report.period,
               periodMonth: month,
               periodYear: year,
+              quarter: formatted.quarter,
               periodFormatted: month + ', ' + year,
               dataset,
             });
@@ -266,6 +310,7 @@
                 dataset: tt,
                 periodMonth: month,
                 periodYear: year,
+                quarter: formatted.quarter,
                 periodFormatted: month + ', ' + year,
               });
             }
@@ -325,10 +370,60 @@
           this.dateFrom = this.currentReports[this.currentReports.length - 1].dataset[lastDataset.length - 1].date;
         }
 
+        this.updateGraphics(this.currentReports)
+
         setTimeout(() => {
           this.truncate();
           this.$store.dispatch('loader/hide');
         }, 400);
+      },
+      updateGraphics (reports) {
+        this.chartBackgroundColor()
+        this.labels = []
+
+        const data = reports.reduce((app, period) => {
+          return app.concat(period.dataset.map((data) => +data.summ))
+        }, [])
+        this.labels = reports.reduce((app, period) => {
+          return app.concat(period.dataset.map((data) => data.date.slice(0, -4) + + data.date.slice(data.date.length - 2)))
+        }, [])
+
+        const datasets = [{
+          backgroundColor: "#008941",
+          borderColor: "#008941",
+          data,
+          fill: false,
+          id: "LendingHome",
+          label: "Value",
+        }]
+
+        this.datacollection = {
+          datasets,
+          labels: this.labels,
+        }
+        setTimeout(() => {
+          if (this.$refs.scrollable) {
+            this.$refs.scrollable.update();
+          }
+        },0)
+      },
+      openGraphics () {
+        this.graphicsHidden = !this.graphicsHidden
+        this.updateGraphics(this.currentReports)
+      },
+      chartBackgroundColor() {
+        Chart.pluginService.register({
+          beforeDraw: function (chart) {
+            if (chart.config.options.chartArea && chart.config.options.chartArea.backgroundColor) {
+              const ctx = chart.chart.ctx;
+              const chartArea = chart.chartArea;
+              ctx.save();
+              ctx.fillStyle = chart.config.options.chartArea.backgroundColor;
+              ctx.fillRect(chartArea.left, chartArea.top, chartArea.right - chartArea.left, chartArea.bottom - chartArea.top);
+              ctx.restore();
+            }
+          }
+        });
       },
       onStartDateSelect(time) {
         this.startDate = time;
@@ -426,6 +521,104 @@
           margin-right: 0;
         }
       }
+    }
+
+    &__show-chart {
+      display: flex;
+      align-items: flex-end;
+      margin-left: auto;
+      margin-top: auto;
+
+      button {
+        padding: 4px 20px;
+        height: 40px;
+        font-size: 16px;
+        font-weight: 600;
+        color: #ffffff;
+        border: 1px solid rgb(36, 219, 175);
+        background-color: rgb(36, 219, 175);
+        border-radius: 6px;
+        transition: all .3s ease;
+
+        &:hover {
+          background-color: transparent;
+          color: rgb(36, 219, 175);
+        }
+      }
+    }
+  }
+
+  .charts-wrapper {
+    position: relative;
+    background-color: #ffffff;
+    padding: 30px;
+    margin-bottom: 40px;
+
+    @include xs {
+      margin-left: -20px;
+      margin-right: -20px;
+      padding: 20px;
+    }
+  }
+  .chart-wrapper {
+    position: relative;
+    //width: 600px;
+    overflow-x: auto;
+
+    &::v-deep .ps__rail-x {
+      display: none !important;
+    }
+
+    &::v-deep .chart-line {
+      &.has-scroll {
+        //width: 5000px;
+
+        & ~ .ps__rail-x {
+          display: block !important;
+        }
+      }
+
+      &:not(.has-scroll) {
+        & + .ps__rail-x {
+          display: none !important;
+        }
+      }
+
+      &--x-axis {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        background-color: #ffffff;
+      }
+    }
+
+
+    .has-scroll {
+      &::v-deep .ps__rail-x {
+        display: block !important;
+      }
+    }
+    //&:not(.has-scroll) {
+    //  &::v-deep .ps__rail-x {
+    //    display: none !important;
+    //  }
+    //}
+
+    .ps-container {
+      padding-bottom: 20px;
+    }
+
+    &::v-deep .ps__rail-x {
+      height: 6px !important;
+      opacity: 1 !important;
+    }
+    &::v-deep .ps__thumb-x {
+      background-color: #bebebe !important;
+      height: 6px !important;
+      opacity: 1 !important;
     }
   }
 </style>
