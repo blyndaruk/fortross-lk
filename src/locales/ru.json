@@ -97,5 +97,13 @@
   "Fund share": "Доля фонда",
   "Exits": "Выходы",
   "date_investment": "Первая инвестиция",
-  "InfoGraphics": "Инфографика"
+  "InfoGraphics": "Инфографика",
+  "contribution": "Вклад",
+  "investment": "инвестиции",
+  "expenses": "расходы",
+  "management fee": "Плата за управление",
+  "distribution": "распределение",
+  "additional amount": "дополнительная сумма",
+  "catch-up": "Catch-Up",
+  "initial investment": "первоначальные инвестиции"
 }

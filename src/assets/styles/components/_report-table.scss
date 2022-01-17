@@ -115,6 +115,7 @@
     flex-shrink: 0;
     width: 256px;
     padding: 20px 30px;
+    text-transform: capitalize;
     @include md {
       width: 32%;
       flex-shrink: 1;

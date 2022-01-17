@@ -97,5 +97,13 @@
   "Fund share": "Fund Share",
   "Exits": "Exits",
   "date_investment": "First Investment",
-  "InfoGraphics": "InfoGraphics"
+  "InfoGraphics": "InfoGraphics",
+  "contribution": "Contribution",
+  "investment": "Investment",
+  "expenses": "Expenses",
+  "management fee": "Management Fee",
+  "distribution": "Distribution",
+  "additional amount": "Additional Amount",
+  "catch-up": "Catch-Up",
+  "initial investment": "Initial Investment"
 }

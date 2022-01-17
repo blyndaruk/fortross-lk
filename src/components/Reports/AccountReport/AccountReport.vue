@@ -89,7 +89,7 @@
                            name="type"
                            checked
                     >
-                    {{ option }}
+                    {{ $t(option) }}
                     <span class="sort-select__checkbox"></span>
                   </label>
                 </div>
@@ -174,7 +174,7 @@
             <div class="report-table__date">{{ row.date.split('.')[0].length === 1 ? '0' + row.date : row.date }}</div>
             <div class="report-table__type">
               <p class="report-table__trunc" ref="truncate">
-                {{row.type}}
+                {{ $t(row.type.toLowerCase()) }}
               </p>
               <div class="report-table__info-icon" v-if="row.typeTooltip"
                    v-tooltip.top-start="{ content: row.typeTooltip, classes: 'report-tooltip' } ">
@@ -596,6 +596,9 @@
       },
       checkedFiltersRender() {
         let filters = this.checkedFilters;
+        filters = filters.map((filter, index) => {
+          if (index > 0) return this.$i18n.messages[this.$i18n.locale][filter]
+        })
 
         if (filters.length === this.types.length || this.checkedFilters.length <= 1) {
           return filters[0] = this.$i18n.messages[this.$i18n.locale].all;
