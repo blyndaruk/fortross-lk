@@ -82,11 +82,27 @@
         </div>
       </div>
 
-      <div class="payment-report__show-chart">
+      <mq-layout mq="laptop+" class="payment-report__show-chart">
+        <div class="charts-toggle-type" :class="{'is-active': isLine}">
+          <div class="charts-toggle-type__active"></div>
+          <div class="charts-toggle-type__inner">
+            <button @click="toggleType('line')">
+              <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+                <path d="M496 384H64V80c0-8.84-7.16-16-16-16H16C7.16 64 0 71.16 0 80v336c0 17.67 14.33 32 32 32h464c8.84 0 16-7.16 16-16v-32c0-8.84-7.16-16-16-16zM464 96H345.94c-21.38 0-32.09 25.85-16.97 40.97l32.4 32.4L288 242.75l-73.37-73.37c-12.5-12.5-32.76-12.5-45.25 0l-68.69 68.69c-6.25 6.25-6.25 16.38 0 22.63l22.62 22.62c6.25 6.25 16.38 6.25 22.63 0L192 237.25l73.37 73.37c12.5 12.5 32.76 12.5 45.25 0l96-96 32.4 32.4c15.12 15.12 40.97 4.41 40.97-16.97V112c.01-8.84-7.15-16-15.99-16z" fill="currentColor"/>
+              </svg>
+            </button>
+            <button @click="toggleType('bar')">
+              <svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M6 0H4V9H6V0ZM3 5H1V9H3V5ZM7 3H9V9H7V3ZM0 10V12H10V10H0Z"
+                      fill="currentColor" />
+              </svg>
+            </button>
+          </div>
+        </div>
         <button @click="openGraphics">
           {{ $t('InfoGraphics') }}
         </button>
-      </div>
+      </mq-layout>
     </div>
 
     <div v-if="currentReports.length && !graphicsHidden" class="report-table__chart">
@@ -94,7 +110,7 @@
         <div class="chart-wrapper">
           <input id="unit_type" type="hidden" name="unit_type" value="$">
 
-          <div :class="{ 'has-scroll': this.labels.length > 8 }">
+          <div v-if="isLine" :class="{ 'has-scroll': this.labels.length > 8 }">
             <vue-custom-scrollbar class="scroll-area" :settings="scrollSettings" ref="scrollable">
               <line-chart
                   class="chart chart-line"
@@ -107,6 +123,13 @@
             <canvas class="chart-line chart-line--x-axis js-x-axis" :class="{ 'has-scroll': this.labels.length > 8 }" height="300" width="0"></canvas>
             <input class="js-scrollable-val" type="hidden" name="scrollable" :value="this.labels.length > 8">
           </div>
+
+          <bar-chart
+              v-if="!isLine"
+              class="chart-bar"
+              :chart-data="datacollection"
+              unit="$"
+          ></bar-chart>
         </div>
       </mq-layout>
     </div>
@@ -192,6 +215,7 @@
   import { DateTime } from "luxon";
   import { en, ru } from '@sum.cumo/vue-datepicker/dist/locale';
   import LineChart from '@/components/Charts/LineChart/LineChart';
+  import BarChart from '@/components/Charts/BarChart/BarChart';
   import vueCustomScrollbar from 'vue-custom-scrollbar';
   import 'vue-custom-scrollbar/dist/vueScrollbar.css';
 
@@ -202,6 +226,7 @@
       DownloadFile,
       Datepicker,
       LineChart,
+      BarChart,
       vueCustomScrollbar,
     },
     data() {
@@ -243,6 +268,7 @@
         datacollection: {},
         labels: [],
         graphicsHidden: true,
+        chartType: 'line',
       }
     },
     watch: {
@@ -388,21 +414,40 @@
           return app.concat(period.dataset.map((data) => data.date.slice(0, -4) + + data.date.slice(data.date.length - 2)))
         }, [])
 
-        const datasets = [{
-          backgroundColor: "#008941",
-          borderColor: "#008941",
-          data,
-          fill: false,
-          id: "LendingHome",
-          label: "Value",
-        }]
+        const colors = data.map(() => {
+          return "#008941"
+        })
+        const hoverColors = data.map(() => {
+          return "#005629"
+        })
+
+        let datasets
+        if (this.isLine) {
+          datasets = [{
+            backgroundColor: "#008941",
+            borderColor: "#008941",
+            data: data.reverse(),
+            labels: this.labels.reverse(),
+            fill: false,
+            id: "LendingHome",
+            label: "Value",
+          }]
+        } else {
+          datasets = [{
+            backgroundColor: colors,
+            hoverBackgroundColor: hoverColors,
+            data: data.reverse(),
+            labels: this.labels.reverse(),
+          }]
+        }
 
         this.datacollection = {
           datasets,
-          labels: this.labels,
+          labels: this.labels.reverse(),
         }
         setTimeout(() => {
           if (this.$refs.scrollable) {
+            this.$refs.scrollable.$el.scrollLeft = this.$refs.scrollable.$el.scrollWidth;
             this.$refs.scrollable.update();
           }
         },0)
@@ -424,6 +469,16 @@
             }
           }
         });
+      },
+      toggleType (type) {
+        this.chartType = type;
+        this.updateGraphics(this.currentReports)
+        setTimeout(() => {
+          if (this.$refs.scrollable) {
+            this.$refs.scrollable.$el.scrollLeft = this.$refs.scrollable.$el.scrollWidth;
+            this.$refs.scrollable.update();
+          }
+        },0)
       },
       onStartDateSelect(time) {
         this.startDate = time;
@@ -493,7 +548,11 @@
         this.truncate();
       }, 1000)
     },
-    computed: {},
+    computed: {
+      isLine() {
+        return this.chartType === 'line';
+      },
+    },
     directives: {
       ClickOutside
     },
@@ -530,6 +589,7 @@
       margin-top: auto;
 
       button {
+        margin-left: 10px;
         padding: 4px 20px;
         height: 40px;
         font-size: 16px;
@@ -544,6 +604,23 @@
           background-color: transparent;
           color: rgb(36, 219, 175);
         }
+      }
+
+      svg {
+        display: block;
+        width: 20px;
+        height: 20px;
+      }
+    }
+
+    .charts-toggle-type {
+      button {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        padding-left: 4px;
+        padding-right: 4px;
+        width: 50px;
       }
     }
   }
@@ -567,6 +644,10 @@
 
     &::v-deep .ps__rail-x {
       display: none !important;
+    }
+
+    &::v-deep .chart-bar {
+      background-color: #fff;
     }
 
     &::v-deep .chart-line {
