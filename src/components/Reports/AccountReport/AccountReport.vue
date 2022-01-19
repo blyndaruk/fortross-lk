@@ -500,8 +500,8 @@
           datasets = [{
             backgroundColor: "#008941",
             borderColor: "#008941",
-            data: data.reverse(),
-            labels: this.labels.reverse(),
+            data: [...data].reverse(),
+            labels: [...this.labels].reverse(),
             fill: false,
             id: "LendingHome",
             label: "Value",
@@ -510,14 +510,14 @@
           datasets = [{
             backgroundColor: colors,
             hoverBackgroundColor: hoverColors,
-            data: data.reverse(),
-            labels: this.labels.reverse(),
+            data: [...data].reverse(),
+            labels: [...this.labels].reverse(),
           }]
         }
 
         this.datacollection = {
           datasets,
-          labels: this.labels.reverse(),
+          labels: [...this.labels].reverse()
         }
         setTimeout(() => {
           if (this.$refs.scrollable) {
