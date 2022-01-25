@@ -524,7 +524,7 @@
         const periodMapCutted = new Map();
 
         // test with more data
-        console.log(this.data);
+        // console.log(this.data);
         this.data.sort(this.sortByTime);
         this.data.sort(this.sortByQuoter);
 
@@ -730,7 +730,7 @@
         if (!this.isHistorical) {
           this.datasets = this.sortMinMax(this.datasets);
         }
-
+        // console.log(this.datasets);
         this.datacollection = {
           labels: this.labels,
           datasets: this.datasets,
@@ -855,7 +855,7 @@
         this.allCompaniesShown = !this.allCompaniesShown;
       },
       timeLineChange(option) {
-        console.log(option);
+        // console.log(option);
 
         this.startDate = '';
         this.endDate = '';

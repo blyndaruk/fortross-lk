@@ -2,6 +2,7 @@
   // import { addZeroes } from '@/utils/addZeroes';
   import { sortMinMaxTooltip } from '@/utils/sortMinMaxTooltip';
   import { Line, mixins } from 'vue-chartjs';
+  import { DateTime } from 'luxon';
 
   const { reactiveProp } = mixins;
 
@@ -22,18 +23,31 @@
           chartArea: {
             backgroundColor: '#f7f7f7'
           },
-          spanGaps: true,
+          spanGaps: !this.isReports,
           unit: this.unit,
           scales: {
             xAxes: [{
               display: true,
-              // stacked: true,
-              // beginAtZero: true,
-              ticks: {
-                autoSkip: true,
-                // suggestedMin: 12,
-                // maxTicksLimit: 18
-              },
+              ...(this.isReports && {
+                type:'time',
+                distribution: 'series',
+                time: {
+                  displayFormats: {
+                    day: 'D MM, YY'
+                  }
+                },
+                ticks: {
+                  source: "labels"
+                },
+              }),
+
+              ...(!this.isReports && {
+                ticks: {
+                  autoSkip: true,
+                  // suggestedMin: 12,
+                  // maxTicksLimit: 18
+                },
+              }),
               gridLines: {
                 color: "#FFFFFF"
               },
@@ -66,7 +80,8 @@
             }
           },
           hover: {
-            mode: 'index',
+            // mode: 'index', // for portfolio
+            mode: this.isReports ? 'x' : 'index', // for time axis
             intersect: false,
           },
           tooltips: {
@@ -74,6 +89,18 @@
             intersect: true,
             position: 'nearest',
             enabled: false,
+            ...(this.description && {
+              callbacks: {
+                title: function (context) {
+                  let title = context[0].label;
+                  return DateTime.fromISO(title).toFormat('dd-MM-yyyy');
+                },
+                label: this.description && function(tooltipItem, data) {
+                  const item = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                  return `${item.type} (${item.description}): ${item.y}`
+                }
+              },
+            }),
             custom(tooltipModel) {
               const unit = document.querySelector('#unit_type').value === '%' ? '%' : '';
               // Tooltip Element
@@ -196,6 +223,14 @@
       },
       unit: {
         type: String
+      },
+      description: {
+        type: Boolean,
+        default: false,
+      },
+      isReports: {
+        type: Boolean,
+        default: false,
       },
     },
     methods: {
