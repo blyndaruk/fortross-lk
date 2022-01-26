@@ -506,26 +506,39 @@
         })
 
 
+
+        /* start data for bar chart */
+        const data = reports.reduce((app, period) => {
+          return app.concat(period.dataset.map((data) => +data.summ))
+        }, [])
+        const colors = data.map(() => {
+          return "#008941"
+        })
+        const hoverColors = data.map(() => {
+          return "#005629"
+        })
+        /* end data for bar chart */
+
+
         let datasets
         if (this.isLine) {
           datasets = dataForGraphic
         } else {
-          // datasets = [{
-          //   backgroundColor: colors,
-          //   hoverBackgroundColor: hoverColors,
-          //   data: [...data].reverse(),
-          //   labels: [...this.labels].reverse(),
-          // }]
+          this.labels = reports.reduce((app, period) => {
+            return app.concat(period.dataset.map((data) => data.date.slice(0, -4) + + data.date.slice(data.date.length - 2)))
+          }, [])
+          datasets = [{
+            backgroundColor: colors,
+            hoverBackgroundColor: hoverColors,
+            data: [...data].reverse(),
+            labels: [...this.labels].reverse(),
+          }]
         }
 
 
-        // console.log(this.labels);
-        // console.log(datasets);
         this.datacollection = {
           datasets,
-          // description: [...description].reverse(),
-          labels: [...this.labels]
-          // labels: [...new Set(this.labels)].reverse()
+          labels: this.isLine ? [...this.labels] : [...this.labels].reverse()
         }
 
         setTimeout(() => {

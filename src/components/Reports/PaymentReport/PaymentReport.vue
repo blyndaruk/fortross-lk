@@ -118,6 +118,8 @@
                   :chart-data="datacollection"
                   :style="{'width': `${this.labels.length * 30}px`, 'min-width': '100%'}"
                   unit="$"
+                  :description="true"
+                  :is-reports="true"
               ></line-chart>
             </vue-custom-scrollbar>
             <canvas class="chart-line chart-line--x-axis js-x-axis" :class="{ 'has-scroll': this.labels.length > 8 }" height="300" width="0"></canvas>
@@ -406,33 +408,79 @@
       updateGraphics (reports) {
         this.chartBackgroundColor()
         this.labels = []
+        this.datacollection = []
 
+        const allData = reports.reduce((app, period) => {
+          return app.concat(period.dataset)
+        }, [])
+
+
+        const map = new Map();
+        const periodMap = new Map();
+        const dataForGraphic = []
+
+        allData.forEach(data => {
+
+          if (!periodMap.has(data.date)) {
+            periodMap.set(data.date, true);
+            this.labels.push(DateTime.fromFormat(data.date, "d.M.yyyy").toISO())
+            // this.labels.push(data.date)
+          }
+
+          if (!map.has(data.type)) {
+            map.set(data.type, true);
+            dataForGraphic.push({
+              backgroundColor: "#008941",
+              borderColor: "#008941",
+              fill: false,
+              labels: [],
+              data: [],
+              id: data.type,
+            });
+          }
+        })
+
+
+        allData.forEach(data => {
+          const type = dataForGraphic.find((report) => report.id === data.type)
+          type.data.push({
+            x: DateTime.fromFormat(data.date, 'd.M.yyyy').toISO(),
+            y: +data.summ,
+            description: data.description,
+            type: data.type
+          })
+        })
+
+
+        const typeColors = ['#008941', '#7a4900', '#0000a6', '#a30059', '#63ffac', '#8fb0ff', '#ba0900', '#b79762']
+
+        dataForGraphic.forEach((dataset, i) => {
+          dataset.backgroundColor = typeColors[i]
+          dataset.borderColor = typeColors[i]
+        })
+
+
+
+        /* start data for bar chart */
         const data = reports.reduce((app, period) => {
           return app.concat(period.dataset.map((data) => +data.summ))
         }, [])
-        this.labels = reports.reduce((app, period) => {
-          return app.concat(period.dataset.map((data) => data.date.slice(0, -4) + + data.date.slice(data.date.length - 2)))
-        }, [])
-
         const colors = data.map(() => {
           return "#008941"
         })
         const hoverColors = data.map(() => {
           return "#005629"
         })
+        /* end data for bar chart */
+
 
         let datasets
         if (this.isLine) {
-          datasets = [{
-            backgroundColor: "#008941",
-            borderColor: "#008941",
-            data: [...data].reverse(),
-            labels: [...this.labels].reverse(),
-            fill: false,
-            id: "LendingHome",
-            label: "Value",
-          }]
+          datasets = dataForGraphic
         } else {
+          this.labels = reports.reduce((app, period) => {
+            return app.concat(period.dataset.map((data) => data.date.slice(0, -4) + + data.date.slice(data.date.length - 2)))
+          }, [])
           datasets = [{
             backgroundColor: colors,
             hoverBackgroundColor: hoverColors,
@@ -441,10 +489,12 @@
           }]
         }
 
+
         this.datacollection = {
           datasets,
-          labels: [...this.labels].reverse(),
+          labels: this.isLine ? [...this.labels] : [...this.labels].reverse()
         }
+
         setTimeout(() => {
           if (this.$refs.scrollable) {
             this.$refs.scrollable.$el.scrollLeft = this.$refs.scrollable.$el.scrollWidth;

@@ -33,7 +33,8 @@
                 distribution: 'series',
                 time: {
                   displayFormats: {
-                    day: 'D MM, YY'
+                    day: 'D MM, YY',
+                    month: 'D MM, YY',
                   }
                 },
                 ticks: {
@@ -93,11 +94,12 @@
               callbacks: {
                 title: function (context) {
                   let title = context[0].label;
-                  return DateTime.fromISO(title).toFormat('dd-MM-yyyy');
+                  return DateTime.fromISO(title).toFormat('dd.MM.yyyy');
                 },
                 label: this.description && function(tooltipItem, data) {
                   const item = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-                  return `${item.type} (${item.description}): ${item.y}`
+                  const description = item.description ? `(${item.description}):` : ':';
+                  return `${item.type} ${description} ${item.y}`
                 }
               },
             }),
