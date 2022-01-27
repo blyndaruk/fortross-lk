@@ -150,6 +150,8 @@
               class="chart-bar"
               :chart-data="datacollection"
               unit="$"
+              :description="true"
+              :is-reports="true"
           ></bar-chart>
         </div>
       </mq-layout>
@@ -500,22 +502,64 @@
 
         const typeColors = ['#008941', '#7a4900', '#0000a6', '#a30059', '#63ffac', '#8fb0ff', '#ba0900', '#b79762']
 
-        dataForGraphic.forEach((dataset, i) => {
-          dataset.backgroundColor = typeColors[i]
-          dataset.borderColor = typeColors[i]
-        })
-
+        if (this.isLine) {
+          dataForGraphic.forEach((dataset, i) => {
+            dataset.backgroundColor = typeColors[i]
+            dataset.borderColor = typeColors[i]
+          })
+        }
 
 
         /* start data for bar chart */
-        const data = reports.reduce((app, period) => {
-          return app.concat(period.dataset.map((data) => +data.summ))
-        }, [])
-        const colors = data.map(() => {
-          return "#008941"
-        })
-        const hoverColors = data.map(() => {
-          return "#005629"
+        const barColors = []
+        const barHoverColors = []
+        const barData = [...allData].map((data) => {
+          // just hotfix, yep
+          switch (data.type) {
+            case 'Investment':
+              barColors.push('#008941')
+              barHoverColors.push('#005629')
+              break
+            case 'Management fee':
+              barColors.push('#7a4900')
+              barHoverColors.push('#653f00')
+              break
+            case 'Contribution':
+              barColors.push('#0000a6')
+              barHoverColors.push('#000064')
+              break
+            case 'Distribution':
+              barColors.push('#a30059')
+              barHoverColors.push('#600032')
+              break
+            case 'Additional amount':
+              barColors.push('#63ffac')
+              barHoverColors.push('#47b77e')
+              break
+            case 'Catch-up':
+              barColors.push('#8fb0ff')
+              barHoverColors.push('#566a9a')
+              break
+            case 'Expenses':
+              barColors.push('#ba0900')
+              barHoverColors.push('#700600')
+              break
+            case 'Initial Investment':
+              barColors.push('#b79762')
+              barHoverColors.push('#625034')
+              break
+            default:
+              barColors.push('#008941')
+              barHoverColors.push('#005629')
+              break
+          }
+          return {
+            ...data,
+            x: DateTime.fromFormat(data.date, 'd.M.yyyy').toISO(),
+            y: +data.summ,
+            description: data.description,
+            type: data.type,
+          }
         })
         /* end data for bar chart */
 
@@ -528,9 +572,9 @@
             return app.concat(period.dataset.map((data) => data.date.slice(0, -4) + + data.date.slice(data.date.length - 2)))
           }, [])
           datasets = [{
-            backgroundColor: colors,
-            hoverBackgroundColor: hoverColors,
-            data: [...data].reverse(),
+            backgroundColor: [...barColors].reverse(),
+            hoverBackgroundColor: [...barHoverColors].reverse(),
+            data: [...barData].reverse(),
             labels: [...this.labels].reverse(),
           }]
         }

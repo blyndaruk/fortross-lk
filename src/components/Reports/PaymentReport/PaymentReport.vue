@@ -131,6 +131,8 @@
               class="chart-bar"
               :chart-data="datacollection"
               unit="$"
+              :description="true"
+              :is-reports="true"
           ></bar-chart>
         </div>
       </mq-layout>
@@ -445,7 +447,7 @@
           const type = dataForGraphic.find((report) => report.id === data.type)
           type.data.push({
             x: DateTime.fromFormat(data.date, 'd.M.yyyy').toISO(),
-            y: +data.summ,
+            y: data.type === 'Outgoing payment' ? +data.summ * -1 : +data.summ,
             description: data.description,
             type: data.type
           })
@@ -454,22 +456,41 @@
 
         const typeColors = ['#008941', '#7a4900', '#0000a6', '#a30059', '#63ffac', '#8fb0ff', '#ba0900', '#b79762']
 
-        dataForGraphic.forEach((dataset, i) => {
-          dataset.backgroundColor = typeColors[i]
-          dataset.borderColor = typeColors[i]
-        })
-
+        if (this.isLine) {
+          dataForGraphic.forEach((dataset, i) => {
+            dataset.backgroundColor = typeColors[i]
+            dataset.borderColor = typeColors[i]
+          })
+        }
 
 
         /* start data for bar chart */
-        const data = reports.reduce((app, period) => {
-          return app.concat(period.dataset.map((data) => +data.summ))
-        }, [])
-        const colors = data.map(() => {
-          return "#008941"
-        })
-        const hoverColors = data.map(() => {
-          return "#005629"
+        const barColors = []
+        const barHoverColors = []
+        const barData = [...allData].map((data) => {
+          // just hotfix, yep
+          switch (data.type) {
+            case 'Outgoing payment':
+              barColors.push('#008941')
+              barHoverColors.push('#005629')
+              break
+            case 'Ingoing payment':
+              barColors.push('#0000a6')
+              barHoverColors.push('#000064')
+              break
+            default:
+              barColors.push('#008941')
+              barHoverColors.push('#005629')
+              break
+          }
+
+          return {
+            ...data,
+            x: DateTime.fromFormat(data.date, 'd.M.yyyy').toISO(),
+            y: data.type === 'Outgoing payment' ? +data.summ * -1 : +data.summ,
+            description: data.description,
+            type: data.type,
+          }
         })
         /* end data for bar chart */
 
@@ -482,14 +503,14 @@
             return app.concat(period.dataset.map((data) => data.date.slice(0, -4) + + data.date.slice(data.date.length - 2)))
           }, [])
           datasets = [{
-            backgroundColor: colors,
-            hoverBackgroundColor: hoverColors,
-            data: [...data].reverse(),
+            backgroundColor: [...barColors].reverse(),
+            hoverBackgroundColor: [...barHoverColors].reverse(),
+            data: [...barData].reverse(),
             labels: [...this.labels].reverse(),
           }]
         }
 
-
+        console.log(datasets);
         this.datacollection = {
           datasets,
           labels: this.isLine ? [...this.labels] : [...this.labels].reverse()

@@ -46,6 +46,19 @@
             // axis: 'y',
             // position: 'nearest',
             enabled: false,
+            ...(this.description && {
+              callbacks: {
+                title: function (context) {
+                  let title = context[0].label;
+                  return title
+                },
+                label: this.description && function(tooltipItem, data) {
+                  const item = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                  const description = item.description ? `(${item.description})` : ':';
+                  return `${item.y}: ${item.type} ${description}`
+                }
+              },
+            }),
 
             custom(tooltipModel) {
               const unit = document.querySelector('#unit_type').value === '%' ? '%' : '';
@@ -99,8 +112,9 @@
                   style += '; border-width: 2px';
                   const span = '<span style="' + style + '"></span>';
                   const str = body[0].split(': ');
+                  const secondval = str[1] ? str[1] + ': ' : ''
                   const title = unit === '%' ? str[0] + '%' : Math.round(parseFloat(str[0])).toLocaleString();
-                  innerHtml += '<tr><td>' + span + title + '</td></tr>';
+                  innerHtml += '<tr><td>' + span + secondval + title + '</td></tr>';
                 });
                 innerHtml += '</tbody>';
 
@@ -133,7 +147,15 @@
       },
       unit: {
         type: String
-      }
+      },
+      description: {
+        type: Boolean,
+        default: false,
+      },
+      isReports: {
+        type: Boolean,
+        default: false,
+      },
     },
     mounted () {
       this.renderChart(this.chartData, this.options)
