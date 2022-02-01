@@ -316,7 +316,7 @@
         datacollection: {},
         labels: [],
         graphicsHidden: true,
-        chartType: 'line',
+        chartType: 'bar',
       }
     },
     methods: {

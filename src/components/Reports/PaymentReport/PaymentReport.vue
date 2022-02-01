@@ -272,7 +272,7 @@
         datacollection: {},
         labels: [],
         graphicsHidden: true,
-        chartType: 'line',
+        chartType: 'bar',
       }
     },
     watch: {
@@ -510,7 +510,6 @@
           }]
         }
 
-        console.log(datasets);
         this.datacollection = {
           datasets,
           labels: this.isLine ? [...this.labels] : [...this.labels].reverse()
