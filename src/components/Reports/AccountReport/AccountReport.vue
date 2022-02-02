@@ -117,15 +117,10 @@
               </button>
             </div>
           </div>
-
-
-          <button @click="openGraphics">
-            {{ $t('InfoGraphics') }}
-          </button>
         </mq-layout>
       </div>
 
-    <div v-if="currentReports.length && !graphicsHidden" class="report-table__chart">
+    <div v-if="currentReports.length" class="report-table__chart">
       <mq-layout mq="laptop+">
         <div class="chart-wrapper">
           <input id="unit_type" type="hidden" name="unit_type" value="$">
@@ -315,9 +310,15 @@
         },
         datacollection: {},
         labels: [],
-        graphicsHidden: true,
+        // graphicsHidden: true,
         chartType: 'bar',
       }
+    },
+    props: {
+      forceUpdate: {
+        type: Boolean,
+        default: false,
+      },
     },
     methods: {
       onBlur() {
@@ -592,10 +593,6 @@
           }
         },0)
       },
-      openGraphics () {
-        this.graphicsHidden = !this.graphicsHidden
-        this.updateGraphics(this.currentReports)
-      },
       chartBackgroundColor() {
         Chart.pluginService.register({
           beforeDraw: function (chart) {
@@ -667,6 +664,11 @@
       '$i18n.locale': function () {
         this.checkedFilters[0] = this.$i18n.messages[this.$i18n.locale].all;
         if (Object.keys(this.reports).length) this.updateData();
+      },
+      forceUpdate: function (newVal) {
+        if (newVal) {
+          this.updateGraphics(this.currentReports)
+        }
       }
     },
     mounted() {

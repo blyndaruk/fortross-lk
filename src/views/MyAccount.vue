@@ -1,12 +1,12 @@
 <template>
   <div class="my-account">
     <Dashboard viewType="medium" />
-    <Tabs>
+    <Tabs @tab-toggle="onTabChange">
       <Tab :name="$t('my-account.account-report-tab')" :selected="true">
-        <AccountReport />
+        <AccountReport :force-update="renderComponent" />
       </Tab>
       <Tab :name="$t('my-account.payment-report-tab')">
-        <PaymentReport />
+        <PaymentReport :force-update="renderComponent" />
       </Tab>
       <Tab :name="$t('my-account.forecast-tab')">
         <Forecast />
@@ -37,12 +37,24 @@
     data() {
       return {
         data: null,
+        renderComponent: true,
       };
     },
     mounted() {
       // httpClient
       //   .get('/lk/portfolio_component.php')
       //   .then((response) => this.data = response);
+    },
+    methods: {
+      onTabChange () {
+        this.forceRerender()
+      },
+      forceRerender() {
+        this.renderComponent = false;
+        this.$nextTick(() => {
+          this.renderComponent = true;
+        });
+      }
     }
   }
 </script>
